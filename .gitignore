@@ -1,0 +1,9 @@
+*.classpath
+*.project
+*.class
+*.settings
+*.wav
+*.arff
+*.midi
+*.mp3
+*.flac
