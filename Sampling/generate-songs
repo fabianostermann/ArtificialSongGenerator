@@ -10,7 +10,7 @@ BITRATE=128
 CHANNELS=1
 SAMPLERATE=44100
 
-DIR="" # if empty directory string, files will be stored on path directory
+DIR="." # if empty directory string, files will be stored on path directory
 PROCESS_AUDIO="TRUE" # try to process wavs with vlc synth
 ## codec settings for vlc lame
 # mp3 codec settings
@@ -58,7 +58,7 @@ if [ "$1" == "--dir" ]; then
   shift $((OPTIND+1)) # consume option and argument
 fi
 
-if [ "$DIR" == "" ]; then
+if [ "$DIR" == "." ]; then
   echo "Empty directory string, using script's directory."
 else
   # create directory if needed
