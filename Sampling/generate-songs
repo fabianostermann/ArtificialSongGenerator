@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# author: Fabian Ostermann
+# 2019/02/28
+
+### global variables ###
+
+# audio settings
+BITRATE=128
+CHANNELS=1
+SAMPLERATE=44100
+
+DIR="" # if empty directory string, files will be stored on path directory
+PROCESS_AUDIO="TRUE" # try to process wavs with vlc synth
+## codec settings for vlc lame
+# mp3 codec settings
+ACODEC_MP3="acodec=mp3,ab=$BITRATE,channels=$CHANNELS,samplerate=$SAMPLERATE}:std{access=file,mux=dummy"
+ASUFFIX_MP3=".mp3" # audio output file suffix
+# flac codec settings
+ACODEC_FLAC="acodec=flac,ab=$BITRATE,channels=$CHANNELS,samplerate=$SAMPLERATE}:std{access=file,mux=raw"
+ASUFFIX_FLAC=".flac"
+# wav codec settings
+ACODEC_WAV="acodec=s16l,ab=$BITRATE,channels=$CHANNELS,samplerate=$SAMPLERATE}:std{access=file,mux=wav"
+ASUFFIX_WAV=".wav"
+# set mp3 as default
+ACODEC=$ACODEC_MP3
+ASUFFIX=$ASUFFIX_MP3
+
+### handle options ###
+
+# handle help option
+if [ "$1" == "-h" -o "$1" == "--help" ]; then
+  echo "This scripts generates a bunch of random midi songs using the ArtificialSongGenerator"
+  echo "The ArtificialSongGenerator.jar must in the same directory as this file."
+  echo "Java-Runtime-Env must be installed on the System."
+  echo "vlc fluidsynth and cvlc must be installed on the System for midi to audio."
+  echo "   -> try: sudo apt install vlc-plugin-fluidsynth vlc-nox"
+  echo ""
+  echo "ALL Parameters are used as file IDs."
+  echo "Example: ./generate-songs File1 File2"
+  echo "     or: ./generate-songs {001..100}"
+  echo ""
+  echo "Use '--dir' to specify a directory for all files to go (will be created)"
+  echo "Example: ./generate-songs --dir <directory> File1"
+  echo ""
+  echo "Use '--midi-only' to skip audio conversion."
+  echo ""
+  echo "Use '--audio-format' for different audio codecs, mp3 is default."
+  echo "Example: ./generate-songs --audio-format <mp3|flac|wav> File1"
+  echo ""
+  # help aborts program
+  exit
+fi
+
+# handle directory option
+if [ "$1" == "--dir" ]; then
+  DIR="$2"
+  shift $((OPTIND+1)) # consume option and argument
+fi
+
+if [ "$DIR" == "" ]; then
+  echo "Empty directory string, using script's directory."
+else
+  # create directory if needed
+  echo "create directory: $DIR"
+  mkdir -p "$DIR"
+fi
+
+# handle midi-only option
+if [ "$1" == "--midi-only" ]; then
+  PROCESS_AUDIO="FALSE"
+  shift $((OPTIND)) # consume option
+fi
+
+# handle audio format option
+if [ "$1" == "--audio-format" ]; then
+  FORMAT="$2"
+  if [ "$FORMAT" == "mp3" ]; then
+    ACODEC=$ACODEC_MP3
+    ASUFFIX=$ASUFFIX_MP3
+  fi
+  if [ "$FORMAT" == "flac" ]; then
+    ACODEC=$ACODEC_FLAC
+    ASUFFIX=$ASUFFIX_FLAC
+  fi
+  if [ "$FORMAT" == "wav" ]; then
+    ACODEC=$ACODEC_WAV
+    ASUFFIX=$ASUFFIX_WAV
+  fi
+  shift $((OPTIND+1)) # consume option and argument
+fi
+
+### do actual calculations ###
+
+for ID in $@; do
+  # generate midis and annotations
+  java -jar ArtificialSongGenerator.jar --title=$ID --dir=$DIR
+  # convert to mp3
+  if [ "$PROCESS_AUDIO" == "TRUE" ]; then
+  	cvlc --play-and-exit -vvv --sout "#transcode{$ACODEC,dst=$DIR/$ID$ASUFFIX}" $DIR/$ID.midi
+  fi
+done
+
+
+
+
+
