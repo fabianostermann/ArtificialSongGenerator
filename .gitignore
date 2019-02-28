@@ -7,3 +7,5 @@
 *.midi
 *.mp3
 *.flac
+JFugue-doc/*
+task-todo.md
