@@ -52,6 +52,12 @@ if [ "$1" == "-h" -o "$1" == "--help" ]; then
   exit
 fi
 
+if [ ! -f ./ArtificialSongGenerator.jar ]; then
+  echo "No jar file to execute found."
+  echo "Run ./makejar first."
+  exit
+fi
+
 # handle directory option
 if [ "$1" == "--dir" ]; then
   DIR="$2"
