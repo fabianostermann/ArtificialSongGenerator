@@ -32,7 +32,7 @@ public class Config {
 
 	// make random choice on tempo (memoizable)
 	public static int[] TEMPO_RANGE = new int[] { 60, 180 };
-	public static boolean MEM_TEMPO = false;
+	public static boolean MEM_TEMPO = true;
 	public static int tempo = -1;
 	public static int getRandomTempo() {
 		if (tempo == -1 || !MEM_TEMPO)

@@ -1,5 +1,6 @@
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
+import org.jfugue.rhythm.Rhythm;
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
@@ -10,6 +11,7 @@ public class Songpart implements PatternProducer {
 	
 	public final Melody melody;
 	public final ChordProgression chordProgression;
+	public final Rhythm rhythm;
 	
 	public String melodyInstrument;
 	public String chordInstrument;
@@ -30,8 +32,9 @@ public class Songpart implements PatternProducer {
 		melodyInstrument = Config.getRandomMelodyInstrument();
 		chordInstrument = Config.getRandomChordInstrument();
 		
-		chordProgression = ChordSequence.newRandomChordProgression(key, length);
 		melody = Melody.newRandomMelody(key, length);
+		chordProgression = ChordSequence.newRandomChordProgression(key, length);
+		rhythm = Drums.newRandomRhythm(length);
 	}
 	
 	public static Songpart newRandomSongpart() {
@@ -42,7 +45,8 @@ public class Songpart implements PatternProducer {
 	public Pattern getPattern() {
 		return new Pattern(
 			melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo),
-			chordProgression.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo)
+			chordProgression.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo),
+			rhythm.getPattern().setTempo(tempo)
 		);
 	}
 	
