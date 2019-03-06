@@ -5,7 +5,7 @@ import java.util.Map;
 public class Random {
 	
 	/**
-	 * This class was last time extended on 28 Feb 2019
+	 * This class has been extended on 6 March 2019
 	 */
 
 	private static SecureRandom random = new SecureRandom();
@@ -69,6 +69,18 @@ public class Random {
 				return strings[i];
 		}
 		return "error";
+	}
+	
+	/**
+	 * Gets an array of strings
+	 * @param strings Array of strings
+	 * @return One of the strings with even probability
+	 */
+	public static String fromArray(String[] strings) {
+		float[] probs = new float[strings.length];
+		for (int i=0; i<probs.length; i++)
+			probs[i] = 1.f;
+		return fromArray(strings, probs);
 	}
 	
 	/**

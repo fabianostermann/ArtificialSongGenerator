@@ -44,8 +44,8 @@ public class Songpart implements PatternProducer {
 	@Override
 	public Pattern getPattern() {
 		return new Pattern(
-			melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo),
-			chordProgression.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo),
+			//melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo),
+			//chordProgression.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo),
 			rhythm.getPattern().setTempo(tempo)
 		);
 	}
