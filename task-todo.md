@@ -25,5 +25,6 @@
 
 ## Make Script erstellen
 1. JFugue herunterladen (keine Lib im eigenen Repo)
-2. jar file builden automatisch
+2. jar file builden automatisch (Manifest-File)
 3. hinweis auf fluid-synth und vlc-nox (mit option das direkt zu laden)
+

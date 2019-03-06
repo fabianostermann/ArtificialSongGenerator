@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# run java program ArtificialSongGenerator given the jfugue library and binary directory
+java -cp ./lib/jfugue-5.0.9.jar:./bin/:. ArtificialSongGenerator $@

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# compile java given the jfugue library and source and binary directory
+javac -s ./src/ -d ./bin/ -cp ./lib/jfugue-5.0.9.jar ./src/*.java
+
