@@ -18,6 +18,8 @@ public class Random {
 	 * @throws exceptions   but nothing useful, be careful to use properly
 	 */
 	public static int rangeInt(int min, int max) {
+		if (min == max)
+			return min;
 		return (int)(random.nextInt(max-min)+min);
 	}
 	

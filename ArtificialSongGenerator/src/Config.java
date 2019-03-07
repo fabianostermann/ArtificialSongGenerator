@@ -1,3 +1,4 @@
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -12,16 +13,25 @@ import org.jfugue.theory.Key;
 
 public class Config {
 
+	/**
+	 * Instance of Config parameters. 
+	 * Used to load default settings after loading config file.
+	 */
 	public static Config GET;
 	
-	// Load every parameter as strings from a map, that is filled from file in the first place.
-	// If a key is not added by file, a default string is used from then on.
-	
+	/**
+	 * Load every parameter as strings from this map.
+	 * The map is filled from file in the first place.
+	 * If a key is not read from file, a default string is put in using the getConfig*() functions.
+	 */
 	private static Map<String, String[]> configMap = new HashMap<String, String[]>();
 	public static String CONFIG_FILENAME = "thesong.conf";
 	public static final String DUMMY_SUFFIX = ".dummy";
 	
-	public static final String SET = "=";
+	/**
+	 * Some char constants used when interpreting the config file
+	 */
+	public static final String ASSIGN = "=";
 	public static final String DELIM = ",";
 	public static final String COMMENT = "#";
 	
@@ -32,24 +42,41 @@ public class Config {
 	 * @param line The string to parse
 	 * @throws Exception If something cannot be parsed correctly
 	 */
-	public static void parseConfig(String line) {
-		line = line.substring(0, line.indexOf(COMMENT)).trim();
+	public static void parseConfigAndStore(String line) {
+		if (line.contains(COMMENT))
+			line = line.substring(0, line.indexOf(COMMENT));
+		line = line.trim();
 		if (line.isEmpty())
 			return;
-		String[] lineSet = line.trim().split(SET, 2);
-		// TODO make throw without catch
-//		if (lineSet.length < 2)
-//			throw new Exception("Config string must include the SET character "+SET);
+		String[] lineSet = line.trim().split(ASSIGN, 2);
+		if (lineSet.length < 2)
+			throw new RuntimeException("Config line must include the ASSIGN character "+ASSIGN);
 		String key = lineSet[0].trim();
 		String[] values = lineSet[1].trim().split(DELIM, 0);
 		for (int i=0; i<values.length; i++)
 			values[i] = values[i].trim();
 		configMap.put(key, values);
+//		System.out.println("Just put '"+values[0]+"' and maybe more to '"+key+"'");
 	}
 	
-	public static void loadFromFile() {
-		// TODO loading config from file
-		System.out.println("loading config from file not implemented yet");
+	/**
+	 * Loads the config file and stores all parameters in config map.
+	 * @throws IOException If something goes wrong while reading
+	 */
+	public static void loadFromFile() throws IOException {
+		
+		File file = new File(CONFIG_FILENAME);
+		if (!file.exists())
+			return; // test existence and aborts
+		
+		BufferedReader reader = Files.newBufferedReader(file.toPath(), StandardCharsets.UTF_8); // read only
+		
+		String line = "";
+		while ((line = reader.readLine()) != null) {
+			parseConfigAndStore(line);
+		}
+		reader.close();
+		System.out.println("Config file '"+CONFIG_FILENAME+"' loaded.");
 	}
 	
 	/**
@@ -129,15 +156,16 @@ public class Config {
 	
 	// TODO implement float loader if needed
 	
+	/**
+	 * Creates a dummy config file, that can be used as template.
+	 * @throws IOException If something goes wrong writing.
+	 */
 	public static void createDummyFile() throws IOException {
 		File file = new File(CONFIG_FILENAME+DUMMY_SUFFIX);
 		BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8,
 				StandardOpenOption.CREATE, // create if not exists
 				StandardOpenOption.TRUNCATE_EXISTING, // clear to zero length
 				StandardOpenOption.WRITE); // grant write access
-		
-		// TODO implement creating config dummy-file
-		System.out.println("creating config dummy-file not fully implemented yet");
 
 		// print config info header
 		writer.write(COMMENT+" This is a dummy config file. "+COMMENT); writer.newLine();
@@ -149,21 +177,33 @@ public class Config {
 		writer.write(COMMENT+" Settings syntax is: 'key = value' or 'key = value1, value2, value3, ...'"); writer.newLine();
 		writer.newLine();
 		
-				
+		// print config settings (encommented)
+		for (String key : configMap.keySet()) {
+			writer.write(COMMENT+key+" "+ASSIGN+" ");
+			String[] values = configMap.get(key);
+			for (int i=0; i<values.length-1; i++)
+				writer.write(values[i]+DELIM+" ");
+			writer.write(values[values.length-1]);
+			writer.newLine();
+		}
+		
 		writer.close();
 	}
 	
+	/**
+	 * Sets all config parameters, that are not set by config file, on default values.
+	 * Every parameter setting, that is not loaded from file until this call, will be overwritten.
+	 */
 	public static void loadDefaults() {
 		Config.GET = new Config();
 	}
 	
-	// ########## DEFAULT SETTINGS (non-static!) ###############
-	// every setting that is not loaded from file until now will be overwritten here
+	// ########## DEFAULT SETTINGS (non-static) ###############
 
 	public String THESONG_TITLE = getConfigString("title", "thesong");
 	public final String MIDI_SUFFIX = getConfigString("midi-suffix", ".midi");
 	public final String ARFF_SUFFIX = getConfigString("arff-suffix", ".arff");
-	public String OUTPUT_DIR = getConfigString("directory", "");
+	public String OUTPUT_DIR = getConfigString("directory", ".");
 	
 	public final int Nof_DIFFERENT_SONGPARTS = getConfigInt("number-of-different-songparts", 3);
 	public final int Nof_SONGPARTS_IN_SONG = getConfigInt("number-of-songparts-in-song", 8);

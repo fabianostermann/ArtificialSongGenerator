@@ -53,7 +53,11 @@ public class ArtificialSongGenerator {
 			System.out.println("Created config dummy file.");
 			System.exit(0);
 		}
-		Config.loadFromFile();
+		try { Config.loadFromFile();
+		} catch (IOException e) {
+			System.out.println("There was a problem reading the dummy file " +
+					"'"+Config.CONFIG_FILENAME+"': "+e.getMessage());
+		}
 		Config.loadDefaults();
 		
 		// change default midi file name
@@ -63,8 +67,10 @@ public class ArtificialSongGenerator {
 		// change default output directory
 		String dir = argsget("--dir=");
 		if (dir != null)
-			Config.GET.OUTPUT_DIR = dir+File.separator;
+			Config.GET.OUTPUT_DIR = dir;
 		
+		// #################################
+		// ### GENERATION PROCESS STARTS ###
 		
 		// generate some songparts
 		songparts = new Songpart[Config.GET.Nof_DIFFERENT_SONGPARTS];
@@ -98,7 +104,7 @@ public class ArtificialSongGenerator {
 		}
 		
 		// save song to file
-		String midiFileStr = Config.GET.OUTPUT_DIR+Config.GET.THESONG_TITLE+Config.GET.MIDI_SUFFIX;
+		String midiFileStr = Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE+Config.GET.MIDI_SUFFIX;
 		try {
 			MidiFileManager.savePatternToMidi(theSong, new File(midiFileStr));
 			System.out.println("Created song file '" + midiFileStr + "'");
@@ -107,7 +113,7 @@ public class ArtificialSongGenerator {
 		}
 		
 		// save .arff annotation file with segments to file
-		String arffFileStr = Config.GET.OUTPUT_DIR+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX;
+		String arffFileStr = Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX;
 		try {
 			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, new File(arffFileStr));
 		} catch (IOException e) {
