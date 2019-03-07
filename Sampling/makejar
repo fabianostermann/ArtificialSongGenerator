@@ -3,4 +3,10 @@
 # author: Fabian Ostermann
 # 2019/02/28
 
-echo "not implemented"
+echo "experimental!"
+
+cd ../ArtificialSongGenerator/
+./compile
+cd ../Sampling
+
+echo "TODO: pack jar file with manifest"

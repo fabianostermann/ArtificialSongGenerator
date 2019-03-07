@@ -2,6 +2,8 @@
 
 if [ ! -f ./lib/jfugue-5.0.9.jar ];then
   wget -P ./lib/ www.jfugue.org/jfugue-5.0.9.jar
+else
+  echo "found jfugue-5.0.9 installation"
 fi
 
 # compile java given the jfugue library and source and binary directory
