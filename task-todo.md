@@ -8,6 +8,7 @@
 3. ) Form von 8 Blöcken würfeln
 4. ) Abspielen mit Midi-Instrumenten: Melodie, Akkorde
 5. ) Formpart, Instrumente und Tempo zu Zeit in s annotieren (arff)
+6. ) einfache drums backbeat grooves mit fills
 
 ## Todo:
 
@@ -17,7 +18,6 @@
 
 * Config File auslesen
 
-* einfach drums backbeat grooves
 * harmonie zerlegungen (extra instrument oder bestehendes)
 * Bass noten hinzufügen
 
