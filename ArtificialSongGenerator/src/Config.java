@@ -274,10 +274,10 @@ public class Config {
 		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
 	}
 
-	public final boolean MELODY_ENABLED = getConfigBool("exploit-instruments", true);
-	public final boolean CHORDS_ENABLED = getConfigBool("exploit-instruments", true);
-	public final boolean DRUMS_ENABLED = getConfigBool("exploit-instruments", true);
+	public final boolean MELODY_ENABLED = getConfigBool("melody-enabled", true);
+	public final boolean CHORDS_ENABLED = getConfigBool("chords-enabled", true);
+	public final boolean DRUMS_ENABLED = getConfigBool("drums-enabled", true);
 	// TODO implement instrument types arpeggio and bass
-//	public final boolean ARPEGGIOS_ENABLED = getConfigBool("exploit-instruments", true);
-//	public final boolean BASS_ENABLED = getConfigBool("exploit-instruments", true);
+//	public final boolean ARPEGGIOS_ENABLED = getConfigBool("arpeggios-enabled", true);
+//	public final boolean BASS_ENABLED = getConfigBool("bass-enabled", true);
 }
