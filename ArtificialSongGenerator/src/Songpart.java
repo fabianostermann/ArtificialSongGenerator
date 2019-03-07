@@ -24,13 +24,13 @@ public class Songpart implements PatternProducer {
 	
 	private Songpart() {
 		
-		key = Config.getRandomKey();
-		tempo = Config.getRandomTempo();
+		key = Config.GET.randomKey();
+		tempo = Config.GET.randomTempo();
 		
-		length = Config.getRandomSongpartLength();
+		length = Config.GET.randomSongpartLength();
 		
-		melodyInstrument = Config.getRandomMelodyInstrument();
-		chordInstrument = Config.getRandomChordInstrument();
+		melodyInstrument = Config.GET.randomMelodyInstrument();
+		chordInstrument = Config.GET.randomChordInstrument();
 		
 		melody = Melody.newRandomMelody(key, length);
 		chordProgression = ChordSequence.newRandomChordProgression(key, length);
@@ -44,8 +44,8 @@ public class Songpart implements PatternProducer {
 	@Override
 	public Pattern getPattern() {
 		return new Pattern(
-			//melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo),
-			//chordProgression.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo),
+			melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo),
+			chordProgression.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo),
 			rhythm.getPattern().setTempo(tempo)
 		);
 	}

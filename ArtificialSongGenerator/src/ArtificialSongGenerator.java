@@ -10,7 +10,7 @@ import org.jfugue.player.Player;
 public class ArtificialSongGenerator {
 	
 	/** last date this unit was changed: 'version no-yyyy/mm/dd' */
-	public static final String VERSION = "v0.0-2019/02/28";
+	public static final String VERSION = "v0.0-2019/03/07";
 	
 	public static Songpart[] songparts = null;
 	public static Songpart[] songStructure = null;
@@ -31,28 +31,43 @@ public class ArtificialSongGenerator {
 			printHelp();
 			System.exit(0);
 		}
+		// state version
 		if (argscheck("--version") || argscheck("-v")) {
 			System.out.println(VERSION);
 			System.exit(0);
 		}
 
-//		if (argscheck("--config-dummy")) {
-//			Config.createDummyFile();
-//			System.exit(0);
-//		}
-
+		// choose config file
+		String configFilename = argsget("--config=");
+		if (configFilename != null)
+			Config.CONFIG_FILENAME = configFilename;
+		
+		// load config (must load from file first, gets overwritten by loadDefaults)
+		if (argscheck("--config-dummy")) {
+			Config.loadDefaults();
+			try { Config.createDummyFile();
+			} catch (IOException e) {
+				System.out.println("There was a problem saving the file " +
+						"'"+Config.CONFIG_FILENAME+Config.DUMMY_SUFFIX+"': "+e.getMessage());
+			}
+			System.out.println("Created config dummy file.");
+			System.exit(0);
+		}
+		Config.loadFromFile();
+		Config.loadDefaults();
+		
 		// change default midi file name
 		String title = argsget("--title=");
 		if (title != null)
-			Config.THESONG_TITLE = title;
+			Config.GET.THESONG_TITLE = title;
 		// change default output directory
 		String dir = argsget("--dir=");
 		if (dir != null)
-			Config.OUTPUT_DIR= dir+File.separator;
+			Config.GET.OUTPUT_DIR = dir+File.separator;
 		
 		
 		// generate some songparts
-		songparts = new Songpart[Config.Nof_DIFFERENT_SONGPARTS];
+		songparts = new Songpart[Config.GET.Nof_DIFFERENT_SONGPARTS];
 		for (int i = 0; i < songparts.length; i++) {
 			songparts[i] = Songpart.newRandomSongpart();
 		}
@@ -60,7 +75,7 @@ public class ArtificialSongGenerator {
 		// random formation of songparts to a song
 		//TODO make sure successive parts have different instrumentation
 		String songStructureStr = "";
-		songStructure = new Songpart[Config.Nof_SONGPARTS_IN_SONG];
+		songStructure = new Songpart[Config.GET.Nof_SONGPARTS_IN_SONG];
 		for (int i=0; i<songStructure.length; i++) {
 			Songpart nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
 			if (nextSongpart.mark == null)
@@ -83,7 +98,7 @@ public class ArtificialSongGenerator {
 		}
 		
 		// save song to file
-		String midiFileStr = Config.OUTPUT_DIR+Config.THESONG_TITLE+Config.MIDI_SUFFIX;
+		String midiFileStr = Config.GET.OUTPUT_DIR+Config.GET.THESONG_TITLE+Config.GET.MIDI_SUFFIX;
 		try {
 			MidiFileManager.savePatternToMidi(theSong, new File(midiFileStr));
 			System.out.println("Created song file '" + midiFileStr + "'");
@@ -92,9 +107,9 @@ public class ArtificialSongGenerator {
 		}
 		
 		// save .arff annotation file with segments to file
-		String arffFileStr = Config.OUTPUT_DIR+Config.THESONG_TITLE+Config.ARFF_SUFFIX;
+		String arffFileStr = Config.GET.OUTPUT_DIR+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX;
 		try {
-			ArffUtil.saveSongStructureToArff(Config.THESONG_TITLE, songStructure, new File(arffFileStr));
+			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, new File(arffFileStr));
 		} catch (IOException e) {
 			System.out.println("There was a problem saving the file '"+arffFileStr+"': "+e.getMessage());
 		}
@@ -146,17 +161,16 @@ public class ArtificialSongGenerator {
 				"Additionally an arff file with annotated segment borders is produced.\n" +
 				"\n" +
 				"Options:\n" +
-				"-h, --help            Prints this.\n" +
-				"-v, --version         Prints version.\n" +
-				"--play                Song is played back after generation.\n" +
-				"--print-staccato      Prints the Staccato code (JFugue's music syntax).\n" +
-				"--print-structure     Prints the structure of the song (e.g. AABACB).\n" +
-				"--title=<title>       Specifies the output title id " +
-					"(default is '"+Config.THESONG_TITLE+"'["+Config.MIDI_SUFFIX+"/"+Config.ARFF_SUFFIX+"]).\n" +
-				"--dir=<dir>           Specifies directory for output files " +
+				"-h, --help             Prints this.\n" +
+				"-v, --version          Prints version.\n" +
+				"--play                 Song is played back after generation.\n" +
+				"--print-staccato       Prints the Staccato code (JFugue's music syntax).\n" +
+				"--print-structure      Prints the structure of the song (e.g. AABACB).\n" +
+				"--title=<title>        Specifies the output title id.\n" +
+				"--dir=<dir>            Specifies directory for output files " +
 					"(ATTENTION: fails if directory does not exist).\n" +
-				// TODO introduce property file system
-				"--config-dummy        Creates a config overview dummy file -- not implemented yet.\n");
+				"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
+				"--config-dummy         Creates a config overview dummy file -- not implemented yet.\n");
 	}
 
 }

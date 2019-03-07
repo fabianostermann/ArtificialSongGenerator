@@ -8,4 +8,6 @@
 *.midi
 *.mp3
 *.flac
+*.conf
+*.conf.dummy
 JFugue-doc/*
