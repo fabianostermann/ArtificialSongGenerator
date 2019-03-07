@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jfugue.theory.Key;
@@ -211,6 +214,7 @@ public class Config {
 	// make random choice on major keys (memoizable)
 	public final String[] KEYS = getConfigStrings("keys", new String[]
 			{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
+	/** If true, key is constant for full song after randomly drawn once. */
 	public final boolean MEM_KEY = getConfigBool("memoize-keys", false);
 	private int keyPos = -1;
 	public Key randomKey() {
@@ -221,6 +225,7 @@ public class Config {
 
 	// make random choice on tempo (memoizable)
 	public final int[] TEMPO_RANGE = getConfigInts("tempo-range", new int[] { 60, 180 });
+	/** If true, tempo is constant for full song after randomly drawn once. */
 	public final boolean MEM_TEMPO = getConfigBool("memoize-tempo", true);
 	private int tempo = -1;
 	public int randomTempo() {
@@ -237,13 +242,21 @@ public class Config {
 	
 	// INFO: For all possible instruments see org.jfugue.midi:MidiDictionary.java
 		
+	/** If true, no instrument is occuring twice before all instruments were drawn once. */
+	public final boolean EXPLOIT_INSTRUMENTS = getConfigBool("exploit-instruments", true);
+	
 	// make random choice on melody instrument
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
 		"Vibraphone", "Distortion_Guitar", "Violin", "Trumpet", "Tenor_Sax",
 		"Flute", "Synth_Voice"
 	});
+	private final List<String> melodyInstList = new ArrayList<String>();
 	public String randomMelodyInstrument() {
-		return MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)];
+		if (!EXPLOIT_INSTRUMENTS)
+			return MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)];
+		if (melodyInstList.isEmpty())
+			melodyInstList.addAll(Arrays.asList(MELODY_INSTRUMENTS));
+		return melodyInstList.remove(Random.rangeInt(0, melodyInstList.size()));
 	}
 	
 	// make random choice on chord instrument
@@ -252,9 +265,19 @@ public class Config {
 		"Electric_Jazz_Guitar", "Overdriven_Guitar", "String_Ensemble_1",
 		"Poly_Synth"
 	});
+	private final List<String> chordInstList = new ArrayList<String>();
 	public String randomChordInstrument() {
-		return CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)];
+		if (!EXPLOIT_INSTRUMENTS)
+			return CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)];
+		if (chordInstList.isEmpty())
+			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
+		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
 	}
-	
-	
+
+	public final boolean MELODY_ENABLED = getConfigBool("exploit-instruments", true);
+	public final boolean CHORDS_ENABLED = getConfigBool("exploit-instruments", true);
+	public final boolean DRUMS_ENABLED = getConfigBool("exploit-instruments", true);
+	// TODO implement instrument types arpeggio and bass
+//	public final boolean ARPEGGIOS_ENABLED = getConfigBool("exploit-instruments", true);
+//	public final boolean BASS_ENABLED = getConfigBool("exploit-instruments", true);
 }

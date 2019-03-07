@@ -9,22 +9,19 @@
 4. ) Abspielen mit Midi-Instrumenten: Melodie, Akkorde
 5. ) Formpart, Instrumente und Tempo zu Zeit in s annotieren (arff)
 6. ) einfache drums backbeat grooves mit fills
+7. ) config file ist auslesbar
+8. ) unterschiedliche Instrumente pro Songpart (pro Buchstabe immer gleich)
 
 ## Todo:
 
 * kleine Test-Samplebib mit:
 * mp3s und arffs generieren (gleiche Songs vlc und NI) (10 songs mit drums/10 ohne)
-* unterschiedliche Instrumente pro Songpart (pro Buchstabe immer gleich)
 
-* Config File auslesen
-
-* harmonie zerlegungen (extra instrument oder bestehendes)
-* Bass noten hinzufügen
-
-
+* arpeggios implementieren
+* Bass noten implementieren
 
 ## Make Script erstellen
-1. JFugue herunterladen (keine Lib im eigenen Repo)
+1. JFugue herunterladen (keine Lib im eigenen Repo) [done]
 2. jar file builden automatisch (Manifest-File)
 3. hinweis auf fluid-synth und vlc-nox (mit option das direkt zu laden)
 

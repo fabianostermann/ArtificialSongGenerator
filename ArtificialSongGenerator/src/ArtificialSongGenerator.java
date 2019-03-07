@@ -25,6 +25,9 @@ public class ArtificialSongGenerator {
 	 */
 	public static void main(String[] args) {
 		ArtificialSongGenerator.args = args;
+
+		// ######################
+		// ### SYSTEM STARTUP ###
 		
 		// both help option installed for clueless users
 		if (argscheck("--help") || argscheck("-h")) {
@@ -79,7 +82,8 @@ public class ArtificialSongGenerator {
 		}
 		
 		// random formation of songparts to a song
-		//TODO make sure successive parts have different instrumentation
+		// NOTE: if EXPLOIT_INSTRUMENTS is true and Nof_DIFFERENT_SONGPARTS < number of instruments,
+		// then it is guaranteed, that each songpart has different instrumentation
 		String songStructureStr = "";
 		songStructure = new Songpart[Config.GET.Nof_SONGPARTS_IN_SONG];
 		for (int i=0; i<songStructure.length; i++) {

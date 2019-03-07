@@ -32,7 +32,7 @@ public class Melody implements PatternProducer {
 		return new Pattern(melodyString);
 	}
 
-	// TODO put this in map to match length and make calculations easier
+	// TODO put note length identifiers in map to match integer length and make calculations easier
 	public static final String SIXTEENTH = "s";
 	public static final String EIGTH = "i";
 	public static final String QUARTER = "q";
@@ -42,8 +42,7 @@ public class Melody implements PatternProducer {
 	public static final String NEXT = " ";
 	public static final String REST = "R";
 	
-	// TODO Note B is omitted like VII for now.
-	public static final String[] DIATONIC_SCALE = new String[] { "C", "D", "E", "F", "G", "A"};//, "B" }; 
+	public static final String[] DIATONIC_SCALE = new String[] { "C", "D", "E", "F", "G", "A", "B" }; 
 	private int currentNote = Random.rangeInt(0, DIATONIC_SCALE.length);
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */

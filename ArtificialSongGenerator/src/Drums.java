@@ -8,6 +8,7 @@ public class Drums {
 	
 	/** Probabilities for random choices in chord generation (memoized for one complete song) */
 	private static float PROB_startWithCrash = 0.6f;
+	private static float PROB_fillStartWithCrash = 0.5f;
 	private static float PROB_fillIn = 0.6f;
 	private static float PROB_halfBarFillIn = 0.5f;
 
@@ -168,7 +169,9 @@ public class Drums {
 				fillInst.put("l", 1f*(9-i));
 				snareAll += Random.fromMap(fillInst);
 				// cymbal gets rest
-				cymblAll += ".";
+				if (i==8 && Random.nextBoolean(PROB_fillStartWithCrash))
+					cymblAll += "C";
+				else cymblAll += ".";
 			}
 		} else {
 			// no fillIn
