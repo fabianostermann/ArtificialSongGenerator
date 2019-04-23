@@ -204,7 +204,7 @@ public class Config {
 	// ########## DEFAULT SETTINGS (non-static) ###############
 
 	public String THESONG_TITLE = getConfigString("title", "thesong");
-	public final String MIDI_SUFFIX = getConfigString("midi-suffix", ".midi");
+	public final String MIDI_SUFFIX = getConfigString("midi-suffix", ".mid");
 	public final String ARFF_SUFFIX = getConfigString("arff-suffix", ".arff");
 	public String OUTPUT_DIR = getConfigString("directory", ".");
 	
@@ -247,9 +247,15 @@ public class Config {
 	
 	// make random choice on melody instrument
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"Vibraphone", "Distortion_Guitar", "Violin", "Trumpet", "Tenor_Sax",
-		"Flute", "Synth_Voice"
+		"Trumpet", "Tenor_Sax", "Flute", "Violin"
+		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
+	public int getMelodyChannel(String melodyInstrument) {
+		for (int i=0; i<MELODY_INSTRUMENTS.length; i++)
+			if (MELODY_INSTRUMENTS[i].equals(melodyInstrument))
+				return i;
+		return -1;
+	}
 	private final List<String> melodyInstList = new ArrayList<String>();
 	public String randomMelodyInstrument() {
 		if (!EXPLOIT_INSTRUMENTS)
@@ -261,10 +267,15 @@ public class Config {
 	
 	// make random choice on chord instrument
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
-		"Piano", "Electric_Piano", "Vibraphone", "Rock_Organ", "Guitar",
-		"Electric_Jazz_Guitar", "Overdriven_Guitar", "String_Ensemble_1",
-		"Poly_Synth"
+		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1"
+		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
+	public int getChordsChannel(String chordInstrument) {
+		for (int i=0; i<CHORD_INSTRUMENTS.length; i++)
+			if (CHORD_INSTRUMENTS[i].equals(chordInstrument))
+				return i+MELODY_INSTRUMENTS.length;
+		return -1;
+	}
 	private final List<String> chordInstList = new ArrayList<String>();
 	public String randomChordInstrument() {
 		if (!EXPLOIT_INSTRUMENTS)

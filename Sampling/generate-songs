@@ -11,6 +11,7 @@ CHANNELS=1
 SAMPLERATE=44100
 
 DIR="." # if empty directory string, files will be stored on path directory
+CONFIG_COMMAND="" # config filename
 PROCESS_AUDIO="TRUE" # try to process wavs with vlc synth
 ## codec settings for vlc lame
 # mp3 codec settings
@@ -43,6 +44,9 @@ if [ "$1" == "-h" -o "$1" == "--help" ]; then
   echo "Use '--dir' to specify a directory for all files to go (will be created)"
   echo "Example: ./generate-songs --dir <directory> File1"
   echo ""
+  echo "Use '--config' to specify a specific config file to be used (default is 'thesong.conf')"
+  echo "Example: ./generate-songs --config <configfile> File1"
+  echo ""
   echo "Use '--midi-only' to skip audio conversion."
   echo ""
   echo "Use '--audio-format' for different audio codecs, mp3 is default."
@@ -70,6 +74,11 @@ else
   # create directory if needed
   echo "create directory: $DIR"
   mkdir -p "$DIR"
+fi
+
+if [ "$1" == "--config" ]; then
+  CONFIG_COMMAND="--config=$2"
+  shift $((OPTIND+1)) # consume option and argument
 fi
 
 # handle midi-only option
@@ -100,10 +109,10 @@ fi
 
 for ID in $@; do
   # generate midis and annotations
-  java -jar ArtificialSongGenerator.jar --title=$ID --dir=$DIR
+  java -jar ArtificialSongGenerator.jar --title=$ID --dir=$DIR $CONFIG_COMMAND
   # convert to mp3
   if [ "$PROCESS_AUDIO" == "TRUE" ]; then
-  	cvlc --play-and-exit -vvv --sout "#transcode{$ACODEC,dst=$DIR/$ID$ASUFFIX}" $DIR/$ID.midi
+  	cvlc --play-and-exit -vvv --sout "#transcode{$ACODEC,dst=$DIR/$ID$ASUFFIX}" $DIR/$ID.mid
   fi
 done
 

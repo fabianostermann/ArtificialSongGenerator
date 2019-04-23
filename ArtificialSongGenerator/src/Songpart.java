@@ -49,13 +49,28 @@ public class Songpart implements PatternProducer {
 	
 	@Override
 	public Pattern getPattern() {
+		int melodyChannel = Config.GET.getMelodyChannel(melodyInstrument);
+		int chordsChannel = Config.GET.getChordsChannel(chordInstrument);
+		int drumsChannel = 9;
+		System.out.print(melodyChannel+"-");
+		System.out.println(chordsChannel+"-"+drumsChannel);
+		
 		Pattern pattern = new Pattern();
 		if (melody != null)
-			pattern.add(melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo));
+			pattern.add(melody.getPattern().setVoice(melodyChannel).setInstrument(melodyInstrument).setTempo(tempo));
 		if (chords != null)
-			pattern.add(chords.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo));
+			pattern.add(chords.getPattern().setVoice(chordsChannel).setInstrument(chordInstrument).setTempo(tempo));
 		if (rhythm != null)
 			pattern.add(rhythm.getPattern().setTempo(tempo));
+		
+		//TODO dirty way to silent unused voices, think about cleaner way of channel setting
+		String restVoice = "";
+		for (int i=0; i<length; i++)
+			restVoice += "Rw ";
+		for (int channel=0; channel<16; channel++)
+			if (channel != melodyChannel && channel != chordsChannel && channel != drumsChannel)
+				pattern.add(new Pattern(restVoice).setVoice(channel).setTempo(tempo));
+		
 		return pattern;
 	}
 	

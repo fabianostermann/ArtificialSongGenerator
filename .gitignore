@@ -5,6 +5,7 @@
 *.metadata
 *.wav
 *.arff
+*.mid
 *.midi
 *.mp3
 *.flac

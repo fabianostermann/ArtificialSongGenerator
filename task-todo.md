@@ -14,9 +14,6 @@
 
 ## Todo:
 
-* kleine Test-Samplebib mit:
-* mp3s und arffs generieren (gleiche Songs vlc und NI) (10 songs mit drums/10 ohne)
-
 * arpeggios implementieren
 * Bass noten implementieren
 

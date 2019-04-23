@@ -3,10 +3,25 @@
 # author: Fabian Ostermann
 # 2019/02/28
 
-echo "experimental!"
+MANIFEST_FILE="manifest.mf"
+
+echo "NOTE: experimental script (using eclipse is safer)"
 
 cd ../ArtificialSongGenerator/
 ./compile
 cd ../Sampling
 
-echo "TODO: pack jar file with manifest"
+# META-INF/MANIFEST.MF:
+touch $MANIFEST_FILE
+echo "Manifest-Version: 1.0" > $MANIFEST_FILE
+#echo "Rsrc-Class-Path: ." >> $MANIFEST_FILE
+echo "Class-Path: . ../ArtificialSongGenerator/lib/jfugue-5.0.9.jar" >> $MANIFEST_FILE
+echo "Main-Class: ArtificialSongGenerator" >> $MANIFEST_FILE
+
+#echo "TODO: pack jar file with manifest"
+
+jar cfm ArtificialSongGenerator.jar $MANIFEST_FILE -C ../ArtificialSongGenerator/bin/ .
+
+rm $MANIFEST_FILE
+
+echo "NOTE: for now generated jar is operational inside this directory structure only (needs ../ArtificialSongGenerator/lib/jfugue-5.0.9.jar)"
