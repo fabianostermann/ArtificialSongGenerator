@@ -57,7 +57,8 @@ public class MidiEventInspector {
                         System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
                     } else if (sm.getCommand() == ShortMessage.PROGRAM_CHANGE) {
                         int instrument = sm.getData1();
-                        System.out.println("Program change, instrument=" + instrument +" "+ MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)instrument));
+                        int channel = sm.getChannel();
+                        System.out.println("Program change, channel="+channel+" instrument=" + instrument +" "+ MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)instrument));
                     } else {
                         System.out.println("Command:" + sm.getCommand());// +"-"+ sm.getData1() +"-"+ sm.getData2() +"-"+ sm.getStatus());
                     }

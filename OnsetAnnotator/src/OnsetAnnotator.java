@@ -1,4 +1,7 @@
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
@@ -20,7 +23,15 @@ public class OnsetAnnotator {
 	public static final int SET_TEMPO = 0x51;
 
 	public static int resolution;
-	public static int tempo;
+	public static int tempo; // in BPM (beats per minute)
+	
+	public static String[] instrumentOnChannel;
+	
+	public static HashMap<String, List<Integer>> keysOn = new HashMap<>(); // <instrument name, keys pressed>
+	public static HashMap<Long, List<ShortMessage>> messages = new HashMap<>(); // <tick, midiOn|midiOff>
+	
+	public static float[] onsetTimes;
+	public static int[][] onsetSimilarities; 
 
     public static void main(String[] args) throws Exception {
         Sequence sequence = MidiSystem.getSequence(new File("somesong.mid"));
@@ -37,6 +48,81 @@ public class OnsetAnnotator {
         initTickToSecond(sequence);
         System.out.println("Read tempo successfully (set tempo="+tempo+"bpm)");
 
+        // read in channel instrument mapping
+        instrumentOnChannel = new String[16];
+        for (int i = 0; i < instrumentOnChannel.length; i++)
+        	instrumentOnChannel[i] = "unknown_"+(i+1);
+        instrumentOnChannel[9] = "drums";
+        for (Track track :  sequence.getTracks()) {
+        	for (int i=0; i < track.size(); i++) { 
+                MidiEvent event = track.get(i);
+                MidiMessage message = event.getMessage();
+                if (message instanceof ShortMessage) {
+                	ShortMessage sm = (ShortMessage) message;
+                	if (sm.getCommand() == ShortMessage.PROGRAM_CHANGE){
+                		instrumentOnChannel[sm.getChannel()] = MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)sm.getData1());
+                	}
+                }
+        	}
+        }
+        
+        // all tracks to one long list (hashMap)
+        for (Track track :  sequence.getTracks()) {
+        	for (int i=0; i < track.size(); i++) { 
+        		MidiEvent event = track.get(i);
+        		MidiMessage message = event.getMessage();
+        		if (message instanceof ShortMessage) {
+                    ShortMessage sm = (ShortMessage) message;
+                    if (sm.getCommand() == ShortMessage.NOTE_ON ||
+                    		sm.getCommand() == ShortMessage.NOTE_OFF) {
+                    	long tick = event.getTick();
+                    	if (!messages.containsKey(tick))
+                    		messages.put(tick, new ArrayList<ShortMessage>());
+                    	messages.get(tick).add(sm);
+                    }
+        		}
+        	}
+        }
+        
+        // sort ticks
+        List<Long> sortedKeyList = new ArrayList<>(messages.keySet());
+        java.util.Collections.sort(sortedKeyList);
+        
+        // read onsets of instruments
+        onsetSimilarities = new int[sortedKeyList.size()][instrumentOnChannel.length];
+        onsetTimes = new float[sortedKeyList.size()];
+        for (String inst : instrumentOnChannel)
+        	keysOn.put(inst, new ArrayList<Integer>());
+        int i = -1;
+        for (Long tick : sortedKeyList) {
+        	i++;
+        	onsetTimes[i] = tickToSecond(tick);
+        	for (ShortMessage sm : messages.get(tick)) {
+        		Integer key = new Integer(sm.getData1());
+        		if (sm.getCommand() == ShortMessage.NOTE_ON) {
+        			keysOn.get(instrumentOnChannel[sm.getChannel()]).add(key);
+        		}
+        		if (sm.getCommand() == ShortMessage.NOTE_OFF) {
+        			keysOn.get(instrumentOnChannel[sm.getChannel()]).remove(key);
+        		}
+        	}
+        	for (int j = 0; j < instrumentOnChannel.length; j++) {
+        		onsetSimilarities[i][j] = keysOn.get(instrumentOnChannel[j]).isEmpty() ? 0 : 1;
+        	}
+        }
+        
+        // debug: output results
+        System.out.print("onset,");
+        for (i = 0; i < instrumentOnChannel.length; i++)
+        	System.out.print(instrumentOnChannel[i]+",");
+        System.out.println();
+        for (i = 0; i < onsetSimilarities.length; i++) {
+        	System.out.print(onsetTimes[i]+",");
+        	for (int j = 0; j < onsetSimilarities[i].length; j++) {
+        		System.out.print(onsetSimilarities[i][j]+",");
+        	}
+        	System.out.println();
+        }
     }
     
     public static void initTickToSecond(Sequence sequence) {
@@ -61,4 +147,9 @@ public class OnsetAnnotator {
             }
     	}
     }
+    
+    public static float tickToSecond(long tick) {
+    	return (float)(tick*60)/(tempo*resolution); // (tick / resolution) * (60 / tempo)
+    }
+    
 }
