@@ -180,7 +180,7 @@ public class ArtificialSongGenerator {
 				"--dir=<dir>            Specifies directory for output files " +
 					"(ATTENTION: fails if directory does not exist).\n" +
 				"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
-				"--config-dummy         Creates a config overview dummy file -- not implemented yet.\n");
+				"--config-dummy         Creates a config overview dummy file.\n");
 	}
 
 }
