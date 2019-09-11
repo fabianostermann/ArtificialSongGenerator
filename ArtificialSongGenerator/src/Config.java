@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.jfugue.theory.Key;
 
+import util.Random;
+
 
 public class Config {
 
@@ -250,12 +252,6 @@ public class Config {
 		"Trumpet", "Tenor_Sax", "Flute", "Violin"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
-	public int getMelodyChannel(String melodyInstrument) {
-		for (int i=0; i<MELODY_INSTRUMENTS.length; i++)
-			if (MELODY_INSTRUMENTS[i].equals(melodyInstrument))
-				return i;
-		return -1;
-	}
 	private final List<String> melodyInstList = new ArrayList<String>();
 	public String randomMelodyInstrument() {
 		if (!EXPLOIT_INSTRUMENTS)
@@ -270,12 +266,6 @@ public class Config {
 		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1"
 		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
-	public int getChordsChannel(String chordInstrument) {
-		for (int i=0; i<CHORD_INSTRUMENTS.length; i++)
-			if (CHORD_INSTRUMENTS[i].equals(chordInstrument))
-				return i+MELODY_INSTRUMENTS.length;
-		return -1;
-	}
 	private final List<String> chordInstList = new ArrayList<String>();
 	public String randomChordInstrument() {
 		if (!EXPLOIT_INSTRUMENTS)
@@ -284,11 +274,23 @@ public class Config {
 			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
 		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
 	}
+	
+	// make random choice on bass instrument
+	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
+		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Synth_Bass_2"
+	});
+	private final List<String> bassInstList = new ArrayList<String>();
+	public String randomBassInstrument() {
+		if (!EXPLOIT_INSTRUMENTS)
+			return BASS_INSTRUMENTS[Random.rangeInt(0, BASS_INSTRUMENTS.length)];
+		if (bassInstList.isEmpty())
+			bassInstList.addAll(Arrays.asList(BASS_INSTRUMENTS));
+		return bassInstList.remove(Random.rangeInt(0, bassInstList.size()));
+	}
 
 	public final boolean MELODY_ENABLED = getConfigBool("melody-enabled", true);
 	public final boolean CHORDS_ENABLED = getConfigBool("chords-enabled", true);
 	public final boolean DRUMS_ENABLED = getConfigBool("drums-enabled", true);
-	// TODO implement instrument types arpeggio and bass
-//	public final boolean ARPEGGIOS_ENABLED = getConfigBool("arpeggios-enabled", true);
-//	public final boolean BASS_ENABLED = getConfigBool("bass-enabled", true);
+	public final boolean ARPEGGIO_ENABLED = getConfigBool("arpeggio-enabled", true);
+	public final boolean BASS_ENABLED = getConfigBool("bass-enabled", true);
 }

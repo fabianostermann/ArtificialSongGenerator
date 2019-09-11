@@ -1,3 +1,6 @@
+package songpartElements;
+import util.Random;
+
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 

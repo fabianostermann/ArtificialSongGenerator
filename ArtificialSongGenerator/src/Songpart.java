@@ -4,17 +4,28 @@ import org.jfugue.rhythm.Rhythm;
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
+import songpartElements.ArpeggioSequence;
+import songpartElements.BassLine;
+import songpartElements.ChordSequence;
+import songpartElements.Drums;
+import songpartElements.Melody;
+
 
 public class Songpart implements PatternProducer {
 	
 	public String mark = null;
 	
 	public final Melody melody;
+	public final ChordProgression chordProgression; // used for chords, arpeggios and bass
 	public final ChordProgression chords;
+	public final ArpeggioSequence arpeggio;
+	public final BassLine bass;
 	public final Rhythm rhythm;
 	
 	public String melodyInstrument;
 	public String chordInstrument;
+	public String arpeggioInstrument;
+	public String bassInstrument;
 	
 	public final Key key;
 	public int tempo;
@@ -31,13 +42,22 @@ public class Songpart implements PatternProducer {
 		
 		melodyInstrument = Config.GET.randomMelodyInstrument();
 		chordInstrument = Config.GET.randomChordInstrument();
+		arpeggioInstrument = Config.GET.randomChordInstrument();
+		bassInstrument = Config.GET.randomBassInstrument();
 		
+		chordProgression = ChordSequence.newRandomChordProgression(key, length);
 		if (Config.GET.MELODY_ENABLED)
 			melody = Melody.newRandomMelody(key, length);
 		else melody = null;
 		if (Config.GET.CHORDS_ENABLED)
-			chords = ChordSequence.newRandomChordProgression(key, length);
+			chords = chordProgression;
 		else chords = null;
+		if (Config.GET.ARPEGGIO_ENABLED)
+			arpeggio = ArpeggioSequence.newRandomArpeggio(chordProgression);
+		else arpeggio = null;
+		if (Config.GET.BASS_ENABLED)
+			bass = BassLine.newRandomBassLine(chordProgression);
+		else bass = null;
 		if (Config.GET.DRUMS_ENABLED)
 			rhythm = Drums.newRandomRhythm(length);
 		else rhythm = null;
@@ -49,27 +69,18 @@ public class Songpart implements PatternProducer {
 	
 	@Override
 	public Pattern getPattern() {
-		int melodyChannel = Config.GET.getMelodyChannel(melodyInstrument);
-		int chordsChannel = Config.GET.getChordsChannel(chordInstrument);
-		int drumsChannel = 9;
-		System.out.print(melodyChannel+"-");
-		System.out.println(chordsChannel+"-"+drumsChannel);
-		
+
 		Pattern pattern = new Pattern();
 		if (melody != null)
-			pattern.add(melody.getPattern().setVoice(melodyChannel).setInstrument(melodyInstrument).setTempo(tempo));
+			pattern.add(melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo));
 		if (chords != null)
-			pattern.add(chords.getPattern().setVoice(chordsChannel).setInstrument(chordInstrument).setTempo(tempo));
+			pattern.add(chords.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo));
+		if (arpeggio != null)
+			pattern.add(arpeggio.getPattern().setVoice(2).setInstrument(arpeggioInstrument).setTempo(tempo));
+		if (bass != null)
+			pattern.add(bass.getPattern().setVoice(3).setInstrument(bassInstrument).setTempo(tempo));
 		if (rhythm != null)
 			pattern.add(rhythm.getPattern().setTempo(tempo));
-		
-		//TODO dirty way to silent unused voices, think about cleaner way of channel setting
-		String restVoice = "";
-		for (int i=0; i<length; i++)
-			restVoice += "Rw ";
-		for (int channel=0; channel<16; channel++)
-			if (channel != melodyChannel && channel != chordsChannel && channel != drumsChannel)
-				pattern.add(new Pattern(restVoice).setVoice(channel).setTempo(tempo));
 		
 		return pattern;
 	}

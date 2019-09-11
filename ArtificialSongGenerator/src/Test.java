@@ -1,5 +1,5 @@
 import org.jfugue.player.Player;
-import org.jfugue.rhythm.Rhythm;
+import org.jfugue.theory.ChordProgression;
 
 
 
@@ -35,16 +35,20 @@ public class Test {
 //    Player player = new Player();
 //    player.play(pattern);
 	  
-	        Rhythm rhythm = new Rhythm()
-	          .addLayer("O..oO...O..oOO..") // This is Layer 0
-	          .addLayer("..S...S...S...S.")
-	          .addLayer("````````````````")
-	          .addLayer("...............+") // This is Layer 3
-	          .addOneTimeAltLayer(3, 3, "...+...+...+...+") // Replace Layer 3 with this string on the 4th (count from 0) measure
-	          .setLength(4); // Set the length of the rhythm to 4 measures
-	        new Player().play(rhythm.getPattern().repeat(2)); // Play 2 instances of the 4-measure-long rhythm
+//	        Rhythm rhythm = new Rhythm()
+//	          .addLayer("O..oO...O..oOO..") // This is Layer 0
+//	          .addLayer("..S...S...S...S.")
+//	          .addLayer("````````````````")
+//	          .addLayer("...............+") // This is Layer 3
+//	          .addOneTimeAltLayer(3, 3, "...+...+...+...+") // Replace Layer 3 with this string on the 4th (count from 0) measure
+//	          .setLength(4); // Set the length of the rhythm to 4 measures
+//	        new Player().play(rhythm.getPattern().repeat(2)); // Play 2 instances of the 4-measure-long rhythm
 	    
-
+	        ChordProgression cp = new ChordProgression("I IV V");
+	        Player player = new Player();
+//	        player.play(cp.eachChordAs("$0q $1q $2q Rq"));
+//	        player.play(cp.allChordsAs("$0q $0q $0q $0q $1q $1q $2q $0q"));
+	        player.play(cp.allChordsAs("$0 $0 $0 $0 $1 $1 $2 $0").eachChordAs("$0h"));
   }
 }
 

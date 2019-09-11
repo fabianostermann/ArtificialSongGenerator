@@ -1,3 +1,6 @@
+package songpartElements;
+import util.Random;
+
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Key;
@@ -42,7 +45,9 @@ public class Melody implements PatternProducer {
 	public static final String NEXT = " ";
 	public static final String REST = "R";
 	
-	public static final String[] DIATONIC_SCALE = new String[] { "C", "D", "E", "F", "G", "A", "B" }; 
+	public static final String SET_VOLUME = " :CON(7, 120) ";
+	
+	public static final String[] DIATONIC_SCALE = new String[] { "C", "D", "E", "F", "G", "A" };//"B" }; 
 	private int currentNote = Random.rangeInt(0, DIATONIC_SCALE.length);
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
@@ -52,7 +57,7 @@ public class Melody implements PatternProducer {
 	private static float PROB_EigthNote = Random.rangeFloat(0.1f, 0.5f); // Prob. for an eigth note, else quarter note is set
 	
 	public String newRandomMelodyString() {
-		String melodyStr = "Key:"+key.getKeySignature();
+		String melodyStr = SET_VOLUME+"Key:"+key.getKeySignature();
 		
 		int lengthEighth = length*8;
 		int currLengthEighth = 0; // counter of 8th notes

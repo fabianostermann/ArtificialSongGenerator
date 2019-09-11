@@ -1,5 +1,7 @@
+package songpartElements;
 import java.util.HashMap;
 import java.util.Map;
+import util.Random;
 
 import org.jfugue.rhythm.Rhythm;
 

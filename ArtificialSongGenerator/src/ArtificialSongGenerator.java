@@ -6,6 +6,8 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
+import util.Random;
+
 
 public class ArtificialSongGenerator {
 	
@@ -125,7 +127,7 @@ public class ArtificialSongGenerator {
 		}
 
 		if (argscheck("--play")) {
-			System.out.print("Play.. ");
+			System.out.print("Playing.. ");
 			Player player = new Player();
 		    player.play(theSong);
 		    System.out.println("Thank you!");
