@@ -14,8 +14,13 @@
 
 ## Todo:
 
-* arpeggios implementieren
-* Bass noten implementieren
+[19/09/09]
+* add Bass/Arpeggios/Drums zur Annotation
+* auftauchen der Funktion mit Wahrscheinlichkeit (auch drums)
+* Funktionen pro Segment ausdünnen (Additive Verteilung)
+* memoize Instrument to Function
+* Polyphoniegrad der Instrumente annotieren
+
 
 ## Make Script erstellen
 1. JFugue herunterladen (keine Lib im eigenen Repo) [done]
