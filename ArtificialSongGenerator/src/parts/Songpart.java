@@ -1,14 +1,13 @@
+package parts;
+import main.Config;
+
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.rhythm.Rhythm;
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
-import songpartElements.ArpeggioSequence;
-import songpartElements.BassLine;
-import songpartElements.ChordSequence;
-import songpartElements.Drums;
-import songpartElements.Melody;
+import util.Random;
 
 
 public class Songpart implements PatternProducer {
@@ -20,7 +19,7 @@ public class Songpart implements PatternProducer {
 	public final ChordProgression chords;
 	public final ArpeggioSequence arpeggio;
 	public final BassLine bass;
-	public final Rhythm rhythm;
+	public final Rhythm drums;
 	
 	public String melodyInstrument;
 	public String chordInstrument;
@@ -46,21 +45,21 @@ public class Songpart implements PatternProducer {
 		bassInstrument = Config.GET.randomBassInstrument();
 		
 		chordProgression = ChordSequence.newRandomChordProgression(key, length);
-		if (Config.GET.MELODY_ENABLED)
+		if (Random.nextBoolean(Config.GET.MELODY_ENABLED))
 			melody = Melody.newRandomMelody(key, length);
 		else melody = null;
-		if (Config.GET.CHORDS_ENABLED)
+		if (Random.nextBoolean(Config.GET.CHORDS_ENABLED))
 			chords = chordProgression;
 		else chords = null;
-		if (Config.GET.ARPEGGIO_ENABLED)
+		if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
 			arpeggio = ArpeggioSequence.newRandomArpeggio(chordProgression);
 		else arpeggio = null;
-		if (Config.GET.BASS_ENABLED)
+		if (Random.nextBoolean(Config.GET.BASS_ENABLED))
 			bass = BassLine.newRandomBassLine(chordProgression);
 		else bass = null;
-		if (Config.GET.DRUMS_ENABLED)
-			rhythm = Drums.newRandomRhythm(length);
-		else rhythm = null;
+		if (Random.nextBoolean(Config.GET.DRUMS_ENABLED))
+			drums = Drums.newRandomRhythm(length);
+		else drums = null;
 	}
 	
 	public static Songpart newRandomSongpart() {
@@ -79,8 +78,8 @@ public class Songpart implements PatternProducer {
 			pattern.add(arpeggio.getPattern().setVoice(2).setInstrument(arpeggioInstrument).setTempo(tempo));
 		if (bass != null)
 			pattern.add(bass.getPattern().setVoice(3).setInstrument(bassInstrument).setTempo(tempo));
-		if (rhythm != null)
-			pattern.add(rhythm.getPattern().setTempo(tempo));
+		if (drums != null)
+			pattern.add(drums.getPattern().setTempo(tempo));
 		
 		return pattern;
 	}

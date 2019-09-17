@@ -1,3 +1,5 @@
+package main;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -159,7 +161,20 @@ public class Config {
 				configMap.get(key)[0]);
 	}
 	
-	// TODO implement float loader if needed
+	/**
+	 * Reads the desired config float from the config map.
+	 * @param key identificator
+	 * @param defaultValue desired fallback value (added to map)
+	 * @return The value that is found in or put into the map
+	 */
+	public static float getConfigFloat(String key, float defaultValue) {
+		if (!configMap.containsKey(key)) {
+			configMap.put(key, new String[]{Float.toString(defaultValue)});
+			return defaultValue;
+		}
+		return Float.parseFloat(
+				configMap.get(key)[0]);
+	}
 	
 	/**
 	 * Creates a dummy config file, that can be used as template.
@@ -288,9 +303,9 @@ public class Config {
 		return bassInstList.remove(Random.rangeInt(0, bassInstList.size()));
 	}
 
-	public final boolean MELODY_ENABLED = getConfigBool("melody-enabled", true);
-	public final boolean CHORDS_ENABLED = getConfigBool("chords-enabled", true);
-	public final boolean DRUMS_ENABLED = getConfigBool("drums-enabled", true);
-	public final boolean ARPEGGIO_ENABLED = getConfigBool("arpeggio-enabled", true);
-	public final boolean BASS_ENABLED = getConfigBool("bass-enabled", true);
+	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 1.0f);
+	public final float CHORDS_ENABLED = getConfigFloat("chords-enabled", 0.8f);
+	public final float DRUMS_ENABLED = getConfigFloat("drums-enabled", 0.8f);
+	public final float ARPEGGIO_ENABLED = getConfigFloat("arpeggio-enabled", 0.5f);
+	public final float BASS_ENABLED = getConfigFloat("bass-enabled", 0.9f);
 }

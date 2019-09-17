@@ -1,4 +1,4 @@
-package songpartElements;
+package parts;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;

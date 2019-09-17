@@ -1,3 +1,5 @@
+package main;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,6 +8,9 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
+import parts.Songpart;
+
+import util.ArffUtil;
 import util.Random;
 
 

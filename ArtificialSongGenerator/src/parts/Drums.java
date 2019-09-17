@@ -1,4 +1,4 @@
-package songpartElements;
+package parts;
 import java.util.HashMap;
 import java.util.Map;
 import util.Random;

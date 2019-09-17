@@ -1,4 +1,4 @@
-package songpartElements;
+package parts;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;
@@ -60,8 +60,6 @@ public class BassLine implements PatternProducer {
 			String bassNoteStr = notes[0].toString().replaceFirst(""+notes[0].getOctave(), OCTAVE);
 			bassLineStr += NEXT + bassNoteStr;
 		}
-		
-		System.out.println(bassLineStr);
 		
 		return bassLineStr;
 	}

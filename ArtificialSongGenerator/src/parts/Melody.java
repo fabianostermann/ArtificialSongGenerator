@@ -1,4 +1,4 @@
-package songpartElements;
+package parts;
 import util.Random;
 
 import org.jfugue.pattern.Pattern;

@@ -24,14 +24,17 @@ public class Random {
 		return (int)(random.nextInt(max-min)+min);
 	}
 	
+	/** range: 0 to (n-1) **/
 	public static int nextInt(int n) {
 		return random.nextInt(n);
 	}
 	
+	/** 50-50 **/
 	public static boolean nextBoolean() {
 		return nextBoolean(0.5f);
 	}
 	
+	/** true with possibility f **/
 	public static boolean nextBoolean(float f) {
 		if (random.nextFloat() < f)
 			return true;
