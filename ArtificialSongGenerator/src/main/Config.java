@@ -232,10 +232,10 @@ public class Config {
 	public final String[] KEYS = getConfigStrings("keys", new String[]
 			{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
 	/** If true, key is constant for full song after randomly drawn once. */
-	public final boolean MEM_KEY = getConfigBool("memoize-keys", false);
+	public final boolean MEMOIZE_KEY = getConfigBool("memoize-keys", false);
 	private int keyPos = -1;
 	public Key randomKey() {
-		if (keyPos == -1 || !MEM_KEY)
+		if (keyPos == -1 || !MEMOIZE_KEY)
 			keyPos = Random.rangeInt(0, KEYS.length);
 		return new Key(KEYS[keyPos]+"maj");
 	}
@@ -243,10 +243,10 @@ public class Config {
 	// make random choice on tempo (memoizable)
 	public final int[] TEMPO_RANGE = getConfigInts("tempo-range", new int[] { 60, 180 });
 	/** If true, tempo is constant for full song after randomly drawn once. */
-	public final boolean MEM_TEMPO = getConfigBool("memoize-tempo", true);
+	public final boolean MEMOIZE_TEMPO = getConfigBool("memoize-tempo", true);
 	private int tempo = -1;
 	public int randomTempo() {
-		if (tempo == -1 || !MEM_TEMPO)
+		if (tempo == -1 || !MEMOIZE_TEMPO)
 			tempo = Random.rangeInt(TEMPO_RANGE[0], TEMPO_RANGE[TEMPO_RANGE.length-1]);
 		return tempo;
 	}
@@ -258,17 +258,25 @@ public class Config {
 	}
 	
 	// INFO: For all possible instruments see org.jfugue.midi:MidiDictionary.java
-		
+	
 	/** If true, no instrument is occuring twice before all instruments were drawn once. */
-	public final boolean EXPLOIT_INSTRUMENTS = getConfigBool("exploit-instruments", true);
+	public final boolean EXPLOIT_INSTRUMENTS = getConfigBool("exploit-instruments", true);	
+	/** If true, the instruments for the different functions are memoized. */
+	public final boolean MEMOIZE_INSTRUMENTS = getConfigBool("memoize-instruments", true);
 	
 	// make random choice on melody instrument
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
 		"Trumpet", "Tenor_Sax", "Flute", "Violin"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
+	private int melodyPos = -1;
 	private final List<String> melodyInstList = new ArrayList<String>();
 	public String randomMelodyInstrument() {
+		if (MEMOIZE_INSTRUMENTS) {
+			if (melodyPos == -1)
+				melodyPos = Random.rangeInt(0, MELODY_INSTRUMENTS.length);
+			return MELODY_INSTRUMENTS[melodyPos];
+		}
 		if (!EXPLOIT_INSTRUMENTS)
 			return MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)];
 		if (melodyInstList.isEmpty())
@@ -281,8 +289,33 @@ public class Config {
 		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1"
 		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
+	private int chordPos = -1;
 	private final List<String> chordInstList = new ArrayList<String>();
 	public String randomChordInstrument() {
+		if (MEMOIZE_INSTRUMENTS) {
+			if (chordPos == -1)
+				chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
+			if (chordPos == arpeggioPos)
+				chordPos = (arpeggioPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
+			return CHORD_INSTRUMENTS[chordPos];
+		}
+		if (!EXPLOIT_INSTRUMENTS)
+			return CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)];
+		if (chordInstList.isEmpty())
+			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
+		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
+	}
+	
+	// make random choice on arpeggio instrument (depended to chord instrument)
+	private int arpeggioPos = -1;
+	public String randomArpeggioInstrument() {
+		if (MEMOIZE_INSTRUMENTS) {
+			if (arpeggioPos == -1)
+				arpeggioPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
+			if (arpeggioPos == chordPos)
+				arpeggioPos = (chordPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
+			return CHORD_INSTRUMENTS[arpeggioPos];
+		}
 		if (!EXPLOIT_INSTRUMENTS)
 			return CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)];
 		if (chordInstList.isEmpty())
@@ -294,8 +327,14 @@ public class Config {
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
 		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Synth_Bass_2"
 	});
+	private int bassPos = -1;
 	private final List<String> bassInstList = new ArrayList<String>();
 	public String randomBassInstrument() {
+		if (MEMOIZE_INSTRUMENTS) {
+			if (bassPos == -1)
+				bassPos = Random.rangeInt(0, BASS_INSTRUMENTS.length);
+			return BASS_INSTRUMENTS[bassPos];
+		}
 		if (!EXPLOIT_INSTRUMENTS)
 			return BASS_INSTRUMENTS[Random.rangeInt(0, BASS_INSTRUMENTS.length)];
 		if (bassInstList.isEmpty())

@@ -193,4 +193,16 @@ public class Drums {
         .addLayer(cymblAll);
 	}
 
+	public static Rhythm newSilentRhythm(int length) {
+		String restDrums = "";
+		for (int i=0; i<length; i++) {
+			restDrums += "........";
+		}
+		// must match the number of layers from newRandomRhythm()
+		return new Rhythm()
+        .addLayer(restDrums)
+        .addLayer(restDrums)
+        .addLayer(restDrums);
+	}
+
 }

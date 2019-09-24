@@ -41,7 +41,7 @@ public class Songpart implements PatternProducer {
 		
 		melodyInstrument = Config.GET.randomMelodyInstrument();
 		chordInstrument = Config.GET.randomChordInstrument();
-		arpeggioInstrument = Config.GET.randomChordInstrument();
+		arpeggioInstrument = Config.GET.randomArpeggioInstrument();
 		bassInstrument = Config.GET.randomBassInstrument();
 		
 		chordProgression = ChordSequence.newRandomChordProgression(key, length);
@@ -69,17 +69,36 @@ public class Songpart implements PatternProducer {
 	@Override
 	public Pattern getPattern() {
 
+		String restVoice = "";
+		for (int i=0; i<length; i++) {
+			restVoice += "Rw ";
+		}
+
 		Pattern pattern = new Pattern();
 		if (melody != null)
 			pattern.add(melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo));
+		else
+			pattern.add(new Pattern(restVoice).setVoice(0).setTempo(tempo));
+
 		if (chords != null)
 			pattern.add(chords.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo));
+		else
+			pattern.add(new Pattern(restVoice).setVoice(1).setTempo(tempo));
+
 		if (arpeggio != null)
 			pattern.add(arpeggio.getPattern().setVoice(2).setInstrument(arpeggioInstrument).setTempo(tempo));
+		else
+			pattern.add(new Pattern(restVoice).setVoice(2).setTempo(tempo));
+
 		if (bass != null)
 			pattern.add(bass.getPattern().setVoice(3).setInstrument(bassInstrument).setTempo(tempo));
+		else
+			pattern.add(new Pattern(restVoice).setVoice(3).setTempo(tempo));
+
 		if (drums != null)
 			pattern.add(drums.getPattern().setTempo(tempo));
+		else
+			pattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
 		
 		return pattern;
 	}

@@ -54,7 +54,7 @@ public class ArffUtil {
 				polyphony.add(1);
 			}
 			if (songStructure[i].drums != null) {
-				instruments.add("drums");
+				instruments.add("Drums");
 				polyphony.add(-1);
 			}
 			

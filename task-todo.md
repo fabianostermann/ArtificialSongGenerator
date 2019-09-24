@@ -11,15 +11,15 @@
 1. ) einfache drums backbeat grooves mit fills
 1. ) config file ist auslesbar
 1. ) unterschiedliche Instrumente pro Songpart (pro Buchstabe immer gleich)
+1. ) Bass/Arpeggios/Drums in Annotation
+1. ) Polyphoniegrad der Instrumente annotieren
 
 ## Todo:
 
 [19/09/09]
-* add Bass/Arpeggios/Drums zur Annotation
 * auftauchen der Funktion mit Wahrscheinlichkeit (auch drums)
 * Funktionen pro Segment ausdünnen (Additive Verteilung)
-* memoize Instrument to Function (zerstört 9.)
-* Polyphoniegrad der Instrumente annotieren
+* memoize Instrument to Function (zerstört 9.) (BUG!!)
 
 
 ## Make Script erstellen
