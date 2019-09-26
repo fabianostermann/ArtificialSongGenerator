@@ -16,7 +16,7 @@ touch $MANIFEST_FILE
 echo "Manifest-Version: 1.0" > $MANIFEST_FILE
 #echo "Rsrc-Class-Path: ." >> $MANIFEST_FILE
 echo "Class-Path: . ../ArtificialSongGenerator/lib/jfugue-5.0.9.jar" >> $MANIFEST_FILE
-echo "Main-Class: ArtificialSongGenerator" >> $MANIFEST_FILE
+echo "Main-Class: main.ArtificialSongGenerator" >> $MANIFEST_FILE
 
 #echo "TODO: pack jar file with manifest"
 

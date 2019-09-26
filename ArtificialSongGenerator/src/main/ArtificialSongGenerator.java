@@ -122,6 +122,7 @@ public class ArtificialSongGenerator {
 		String arffFileStr = Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX;
 		try {
 			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, new File(arffFileStr));
+			System.out.println("Created annotation file '" + arffFileStr + "'");
 		} catch (IOException e) {
 			System.out.println("There was a problem saving the file '"+arffFileStr+"': "+e.getMessage());
 		}
