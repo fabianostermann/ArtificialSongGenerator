@@ -263,6 +263,7 @@ public class Config {
 	public final boolean EXPLOIT_INSTRUMENTS = getConfigBool("exploit-instruments", true);	
 	/** If true, the instruments for the different functions are memoized. */
 	public final boolean MEMOIZE_INSTRUMENTS = getConfigBool("memoize-instruments", true);
+	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
 	// make random choice on melody instrument
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
@@ -272,7 +273,7 @@ public class Config {
 	private int melodyPos = -1;
 	private final List<String> melodyInstList = new ArrayList<String>();
 	public String randomMelodyInstrument() {
-		if (MEMOIZE_INSTRUMENTS) {
+		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (melodyPos == -1)
 				melodyPos = Random.rangeInt(0, MELODY_INSTRUMENTS.length);
 			return MELODY_INSTRUMENTS[melodyPos];
@@ -292,15 +293,16 @@ public class Config {
 	private int chordPos = -1;
 	private final List<String> chordInstList = new ArrayList<String>();
 	public String randomChordInstrument() {
-		if (MEMOIZE_INSTRUMENTS) {
+		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (chordPos == -1)
 				chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 			if (chordPos == arpeggioPos)
 				chordPos = (arpeggioPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
 			return CHORD_INSTRUMENTS[chordPos];
 		}
-		if (!EXPLOIT_INSTRUMENTS)
-			return CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)];
+		if (!EXPLOIT_INSTRUMENTS) {
+			chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
+		}
 		if (chordInstList.isEmpty())
 			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
 		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
@@ -309,7 +311,7 @@ public class Config {
 	// make random choice on arpeggio instrument (depended to chord instrument)
 	private int arpeggioPos = -1;
 	public String randomArpeggioInstrument() {
-		if (MEMOIZE_INSTRUMENTS) {
+		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (arpeggioPos == -1)
 				arpeggioPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 			if (arpeggioPos == chordPos)
@@ -330,7 +332,7 @@ public class Config {
 	private int bassPos = -1;
 	private final List<String> bassInstList = new ArrayList<String>();
 	public String randomBassInstrument() {
-		if (MEMOIZE_INSTRUMENTS) {
+		if (MEMOIZE_INSTRUMENTS) { // && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (bassPos == -1)
 				bassPos = Random.rangeInt(0, BASS_INSTRUMENTS.length);
 			return BASS_INSTRUMENTS[bassPos];

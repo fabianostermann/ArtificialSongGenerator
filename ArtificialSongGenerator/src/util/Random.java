@@ -36,10 +36,7 @@ public class Random {
 	
 	/** true with possibility f **/
 	public static boolean nextBoolean(float f) {
-		if (random.nextFloat() < f)
-			return true;
-		else
-			return false;
+		return (random.nextFloat() < f);
 	}
 
 	public static float nextFloat() {

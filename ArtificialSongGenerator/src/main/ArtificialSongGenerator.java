@@ -2,14 +2,12 @@ package main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
 import parts.Songpart;
-
 import util.ArffUtil;
 import util.Random;
 
@@ -17,7 +15,7 @@ import util.Random;
 public class ArtificialSongGenerator {
 	
 	/** last date this unit was changed: 'version no-yyyy/mm/dd' */
-	public static final String VERSION = "v0.0-2019/03/07";
+	public static final String VERSION = "v0.1-2019/09/26";
 	
 	public static Songpart[] songparts = null;
 	public static Songpart[] songStructure = null;
