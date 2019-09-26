@@ -1,0 +1,28 @@
+#!/bin/sh
+
+filename=ArtificialSongGenerator/src/main/Version.java
+version="0.1" # manuell
+datestr=`date +"%Y/%m/%d"` # automatic hooked
+
+echo "post-commit.. set version to v$version-$datestr"
+
+oldfilecontent=`cat $filename`
+newfilecontent=`echo "package main;
+
+public class Version {
+	
+	/** last date this unit was changed: 'version no-yyyy/mm/dd' */
+	public static final String VERSION = \"v$version-$datestr\";
+
+}"`
+
+if [ "$oldfilecontent" = "$newfilecontent" ]
+  then
+    echo "version file not updated"
+  else
+    #echo "is diff"
+    git add $filename
+    git commit --amend -C HEAD --no-verify
+fi
+
+exit 0
