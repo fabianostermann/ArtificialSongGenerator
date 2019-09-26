@@ -14,9 +14,6 @@ import util.Random;
 
 public class ArtificialSongGenerator {
 	
-	/** last date this unit was changed: 'version no-yyyy/mm/dd' */
-	public static final String VERSION = "v0.1-2019/09/26";
-	
 	public static Songpart[] songparts = null;
 	public static Songpart[] songStructure = null;
 	public static Pattern theSong;
@@ -41,7 +38,7 @@ public class ArtificialSongGenerator {
 		}
 		// state version
 		if (argscheck("--version") || argscheck("-v")) {
-			System.out.println(VERSION);
+			System.out.println(Version.VERSION);
 			System.exit(0);
 		}
 
