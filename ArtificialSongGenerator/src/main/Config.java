@@ -270,6 +270,12 @@ public class Config {
 		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Skakuhachi"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
+	public int getMelodyChannel(String melodyInstrument) {
+		for (int i=0; i<MELODY_INSTRUMENTS.length; i++)
+			if (MELODY_INSTRUMENTS[i].equals(melodyInstrument))
+				return (i<9) ? i : i+1;
+		return -1;
+	}
 	private int melodyPos = -1;
 	private final List<String> melodyInstList = new ArrayList<String>();
 	public String randomMelodyInstrument() {
@@ -290,6 +296,12 @@ public class Config {
 		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1", "Sitar"
 		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
+	public int getChordsChannel(String chordInstrument) {
+		for (int i=0; i<CHORD_INSTRUMENTS.length; i++)
+			if (CHORD_INSTRUMENTS[i].equals(chordInstrument))
+				return ((i<9) ? i : i+1)+MELODY_INSTRUMENTS.length;
+		return -1;
+	}
 	private int chordPos = -1;
 	private final List<String> chordInstList = new ArrayList<String>();
 	public String randomChordInstrument() {
@@ -329,6 +341,12 @@ public class Config {
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
 		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Contrabass" //"Synth_Bass_2"
 	});
+	public int getBassChannel(String bassInstrument) {
+		for (int i=0; i<BASS_INSTRUMENTS.length; i++)
+			if (BASS_INSTRUMENTS[i].equals(bassInstrument))
+				return ((i<9) ? i : i+1)+MELODY_INSTRUMENTS.length+CHORD_INSTRUMENTS.length;
+		return -1;
+	}
 	private int bassPos = -1;
 	private final List<String> bassInstList = new ArrayList<String>();
 	public String randomBassInstrument() {

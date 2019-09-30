@@ -75,30 +75,25 @@ public class Songpart implements PatternProducer {
 		}
 
 		Pattern pattern = new Pattern();
-		if (melody != null)
-			pattern.add(melody.getPattern().setVoice(0).setInstrument(melodyInstrument).setTempo(tempo));
-		else
-			pattern.add(new Pattern(restVoice).setVoice(0).setTempo(tempo));
-
-		if (chords != null)
-			pattern.add(chords.getPattern().setVoice(1).setInstrument(chordInstrument).setTempo(tempo));
-		else
-			pattern.add(new Pattern(restVoice).setVoice(1).setTempo(tempo));
-
-		if (arpeggio != null)
-			pattern.add(arpeggio.getPattern().setVoice(2).setInstrument(arpeggioInstrument).setTempo(tempo));
-		else
-			pattern.add(new Pattern(restVoice).setVoice(2).setTempo(tempo));
-
-		if (bass != null)
-			pattern.add(bass.getPattern().setVoice(3).setInstrument(bassInstrument).setTempo(tempo));
-		else
-			pattern.add(new Pattern(restVoice).setVoice(3).setTempo(tempo));
-
-		if (drums != null)
-			pattern.add(drums.getPattern().setTempo(tempo));
-		else
-			pattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
+		
+		// map instruments to midi channels
+		for (int ch=0; ch<16; ch++) {
+			if (ch == Config.GET.getMelodyChannel(melodyInstrument) && melody != null)
+				pattern.add(melody.getPattern().setVoice(ch).setInstrument(melodyInstrument).setTempo(tempo));
+			else if (ch == Config.GET.getChordsChannel(chordInstrument) && chords != null)
+				pattern.add(chords.getPattern().setVoice(ch).setInstrument(chordInstrument).setTempo(tempo));
+			else if (ch == Config.GET.getChordsChannel(arpeggioInstrument) && arpeggio != null)
+				pattern.add(arpeggio.getPattern().setVoice(ch).setInstrument(arpeggioInstrument).setTempo(tempo));
+			else if (ch == Config.GET.getBassChannel(bassInstrument) && bass != null)
+				pattern.add(bass.getPattern().setVoice(ch).setInstrument(bassInstrument).setTempo(tempo));
+			else if (ch == 9)
+				if (drums != null)
+					pattern.add(drums.getPattern().setTempo(tempo));
+				else
+					pattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
+			else
+				pattern.add(new Pattern(restVoice).setVoice(ch).setTempo(tempo));
+		}
 		
 		return pattern;
 	}
