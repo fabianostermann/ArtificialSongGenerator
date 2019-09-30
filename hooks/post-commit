@@ -2,7 +2,7 @@
 
 filename=ArtificialSongGenerator/src/main/Version.java
 version="0.1" # manuell
-datestr=`date +"%Y/%m/%d"` # automatic hooked
+datestr=`date +"%Y/%m/%d-%H:%M"` # automatic hooked
 
 versionstr="v$version-$datestr"
 
@@ -16,7 +16,7 @@ echo -e "new version file content:\n$newfilecontent"
 
 if [ "$oldfilecontent" = "$newfilecontent" ]
   then
-    echo "version file not updated"
+    echo "post-commit: done."
   else
 	echo $newfilecontent > $filename
     git add $filename
