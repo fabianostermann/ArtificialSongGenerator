@@ -60,6 +60,7 @@ public class OnsetAnnotator {
 		"Shakuhachi", "Sitar", "Tampura", "Tanbur", "Trombone", "Trumpet", "Tuba",
 		"TurkeySaz", "Ukulele", "Viola", "Violin"
 	};
+	public static final String OR = "---OR---";
 	public static HashMap<String, String> arffToMidiInstrumentMap = new HashMap<>();
 	static {
 		arffToMidiInstrumentMap.put("Trumpet", "Trumpet");
@@ -72,10 +73,8 @@ public class OnsetAnnotator {
 		arffToMidiInstrumentMap.put("Organ", "Rock_Organ");
 		arffToMidiInstrumentMap.put("Sitar", "Sitar");
 		arffToMidiInstrumentMap.put("Cello", "String_Ensemble_1");
-		arffToMidiInstrumentMap.put("Bass", "Acoustic_Bass");
-		arffToMidiInstrumentMap.put("ElectricBass", "Electric_Bass_Finger");
-		arffToMidiInstrumentMap.put("ElectricBass", "Slap_Bass_1");
-		arffToMidiInstrumentMap.put("Bass", "Contrabass");
+		arffToMidiInstrumentMap.put("Bass", "Acoustic_Bass"+OR+"Contrabass");
+		arffToMidiInstrumentMap.put("ElectricBass", "Electric_Bass_Finger"+OR+"Slap_Bass_1");
 		arffToMidiInstrumentMap.put("Drums", "Drums");
 	}
 
@@ -218,11 +217,12 @@ public class OnsetAnnotator {
         for (i = 0; i < onsetSimilarities.length; i++) {
         	writer.write(""+onsetTimes[i]);
         	for (int j = 0; j < arffInstrumentList.length; j++) {
-        		String midiInstrument= arffToMidiInstrumentMap.getOrDefault(arffInstrumentList[j], arffInstrumentList[j]);
+        		String midiInstruments= arffToMidiInstrumentMap.getOrDefault(arffInstrumentList[j], arffInstrumentList[j]);
         		int channel = -1;
         		for (int k = 0; k < instrumentOnChannel.length; k++)
-        			if (instrumentOnChannel[k].equals(midiInstrument))
-        	        		channel = k;
+        			for (String midiInstrument : midiInstruments.split(OR))
+        				if (instrumentOnChannel[k].equals(midiInstrument))
+        	        			channel = k;
         		if (channel == -1)
         			writer.write(",0");
         		else

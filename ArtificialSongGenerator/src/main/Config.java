@@ -299,7 +299,7 @@ public class Config {
 	public int getChordsChannel(String chordInstrument) {
 		for (int i=0; i<CHORD_INSTRUMENTS.length; i++)
 			if (CHORD_INSTRUMENTS[i].equals(chordInstrument))
-				return ((i<9) ? i : i+1)+MELODY_INSTRUMENTS.length;
+				return ((i+MELODY_INSTRUMENTS.length<9) ? i : i+1)+MELODY_INSTRUMENTS.length;
 		return -1;
 	}
 	private int chordPos = -1;
@@ -344,7 +344,7 @@ public class Config {
 	public int getBassChannel(String bassInstrument) {
 		for (int i=0; i<BASS_INSTRUMENTS.length; i++)
 			if (BASS_INSTRUMENTS[i].equals(bassInstrument))
-				return ((i<9) ? i : i+1)+MELODY_INSTRUMENTS.length+CHORD_INSTRUMENTS.length;
+				return ((i+MELODY_INSTRUMENTS.length+CHORD_INSTRUMENTS.length<9) ? i : i+1)+MELODY_INSTRUMENTS.length+CHORD_INSTRUMENTS.length;
 		return -1;
 	}
 	private int bassPos = -1;
