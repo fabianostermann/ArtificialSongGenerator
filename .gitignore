@@ -12,3 +12,4 @@
 *.conf
 *.conf.dummy
 JFugue-doc/*
+Sampling/Database-*
