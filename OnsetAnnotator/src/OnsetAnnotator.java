@@ -66,10 +66,16 @@ public class OnsetAnnotator {
 		arffToMidiInstrumentMap.put("Saxophone", "Tenor_Sax");
 		arffToMidiInstrumentMap.put("Flute", "Flute");
 		arffToMidiInstrumentMap.put("Violin", "Violin");
+		arffToMidiInstrumentMap.put("Skakuhachi", "Skakuhachi");
 		arffToMidiInstrumentMap.put("Piano", "Piano");
 		arffToMidiInstrumentMap.put("ElectricPiano", "Electric_Piano");
 		arffToMidiInstrumentMap.put("Organ", "Rock_Organ");
+		arffToMidiInstrumentMap.put("Sitar", "Sitar");
 		arffToMidiInstrumentMap.put("Cello", "String_Ensemble_1");
+		arffToMidiInstrumentMap.put("Bass", "Acoustic_Bass");
+		arffToMidiInstrumentMap.put("ElectricBass", "Electric_Bass_Finger");
+		arffToMidiInstrumentMap.put("ElectricBass", "Slap_Bass_1");
+		arffToMidiInstrumentMap.put("Bass", "Contrabass");
 		arffToMidiInstrumentMap.put("Drums", "Drums");
 	}
 

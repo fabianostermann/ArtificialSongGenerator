@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# author: Fabian Ostermann
+# 2019/09/30
+
+if [ "$1" == "" ]; then
+  echo "Specify a root directory as first argument."
+  exit 0
+fi
+
+find $1 -name "*.mid" -exec java -jar OnsetAnnotator.jar --midifile={} \;

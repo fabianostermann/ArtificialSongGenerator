@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# run java program OnsetAnnotator given the binary directory
+java -cp ./bin/:. OnsetAnnotator $@

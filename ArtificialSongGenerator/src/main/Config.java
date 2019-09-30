@@ -267,7 +267,7 @@ public class Config {
 	
 	// make random choice on melody instrument
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"Trumpet", "Tenor_Sax", "Flute", "Violin"
+		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Skakuhachi"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
 	private int melodyPos = -1;
@@ -287,7 +287,7 @@ public class Config {
 	
 	// make random choice on chord instrument
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
-		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1"
+		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1", "Sitar"
 		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
 	private int chordPos = -1;
@@ -327,7 +327,7 @@ public class Config {
 	
 	// make random choice on bass instrument
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
-		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Synth_Bass_2"
+		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Contrabass" //"Synth_Bass_2"
 	});
 	private int bassPos = -1;
 	private final List<String> bassInstList = new ArrayList<String>();
