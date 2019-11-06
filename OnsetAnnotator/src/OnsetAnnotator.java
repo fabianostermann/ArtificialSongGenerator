@@ -20,18 +20,20 @@ import javax.sound.midi.Track;
 /**
  * This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)
  * In this current version instrument changes are read only once on each track and tempo is read from track 0 tick 0.
- * @author Fabian Ostermann (Apr 23 '19)
+ * For each onset the midi key numbers are written to the arff file.
+ * @author Fabian Ostermann (Nov 6 '19)
  *
  */
 
 public class OnsetAnnotator {
 	
 	public static void printHelp() {
-		System.out.print("This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)\n" +
+		System.out.println("This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)\n" +
 							"In this current version instrument changes are read only once per track and tempo change is supposed on track 0 at tick 0.\n" +
+							"For each onset the midi key numbers are written to the arff file.\n" +
 							"\n" +
-							"Use --midifile to choose a specific file. Default filename is '"+fileName+".mid'" +
-							"Use -v or --verbose to get verbose output." +
+							"Use --midifile to choose a specific file. Default filename is '"+fileName+".mid'\n" +
+							"Use -v or --verbose to get verbose output.\n" +
 							"Use -h or --help to print this.");
 	}
 	
@@ -48,7 +50,7 @@ public class OnsetAnnotator {
 	public static HashMap<Long, List<ShortMessage>> messages = new HashMap<>(); // <tick, midiOn|midiOff>
 	
 	public static float[] onsetTimes; // onset times ordered
-	public static int[][] onsetSimilarities; // 1 if channel has onset, 0 else
+	public static String[][] onsetSimilarities; // a list of keys, e.g. [60,72,73], or [] if empty
 	
 	public static String[] arffInstrumentList = {
 		"AcousticGuitar", "Balalaika", "Bandura", "BanjoFramus", "Banjolin", "Bass", "Bassoon",
@@ -156,7 +158,7 @@ public class OnsetAnnotator {
         java.util.Collections.sort(sortedKeyList);
         
         // read onsets of instruments
-        onsetSimilarities = new int[sortedKeyList.size()][instrumentOnChannel.length];
+        onsetSimilarities = new String[sortedKeyList.size()][instrumentOnChannel.length];
         onsetTimes = new float[sortedKeyList.size()];
         for (String inst : instrumentOnChannel)
         	keysOn.put(inst, new ArrayList<Integer>());
@@ -174,7 +176,13 @@ public class OnsetAnnotator {
         		}
         	}
         	for (int j = 0; j < instrumentOnChannel.length; j++) {
-        		onsetSimilarities[i][j] = keysOn.get(instrumentOnChannel[j]).isEmpty() ? 0 : 1;
+        		String keysStr = "[";
+        		for (int keyInt : keysOn.get(instrumentOnChannel[j])) {
+        			keysStr += keyInt + ",";
+        		}
+        		keysStr += "]";
+        		keysStr = keysStr.replaceFirst(",]", "]");
+        		onsetSimilarities[i][j] = keysStr;
         	}
         }
         
@@ -224,7 +232,7 @@ public class OnsetAnnotator {
         				if (instrumentOnChannel[k].equals(midiInstrument))
         	        			channel = k;
         		if (channel == -1)
-        			writer.write(",0");
+        			writer.write(",[]");
         		else
         			writer.write(","+onsetSimilarities[i][channel]);
         	}
@@ -260,6 +268,23 @@ public class OnsetAnnotator {
     public static float tickToSecond(long tick) {
     	return (float)(tick*60)/(tempo*resolution); // (tick / resolution) * (60 / tempo)
     }
+    
+    static String[] noteNames = { "C", "Cis", "D", "Dis", "E", "F", "Fis", "G",
+			"Gis", "A", "Ais", "B" };
+    /**
+     * converts a midi key number to note string
+     * @param noteNumber midi key number
+     * @return the note string OR null if noteNumber<0
+     */
+	private static String generateNoteName(int noteNumber) {
+		if (noteNumber >= 0) {
+			int noteName = (noteNumber % 12);
+			int octave = (noteNumber / 12) - 1;
+			return noteNames[noteName] + octave;
+		}
+		return null;
+		// C2 36, C1 24, C0 12, C-1 0
+	}
     
     private static String[] args = null;
 	/**

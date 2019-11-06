@@ -19,11 +19,9 @@
 [19/09/09]
 * auftauchen der Funktion mit Wahrscheinlichkeit (auch drums)
 * Funktionen pro Segment ausdünnen (Additive Verteilung)
-* memoize Instrument to Function (zerstört 9.) (BUG!!)
+* memoize Instrument to Function (zerstört 9.)
 
 
 ## Make Script erstellen
-1. JFugue herunterladen (keine Lib im eigenen Repo) [done]
-2. jar file builden automatisch (Manifest-File)
 3. hinweis auf fluid-synth und vlc-nox (mit option das direkt zu laden)
 

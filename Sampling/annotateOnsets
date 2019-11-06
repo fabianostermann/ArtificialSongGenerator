@@ -3,8 +3,9 @@
 # author: Fabian Ostermann
 # 2019/09/30
 
-if [ "$1" == "" ]; then
+if [ "$1" == "" -o "$1" == "--help" ]; then
   echo "Specify a root directory as first argument."
+  echo "EXAMPLE USAGE: './annotateOnsets DatabaseName' OR './annotateOnsets .'"
   exit 0
 fi
 
