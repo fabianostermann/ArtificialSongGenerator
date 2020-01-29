@@ -48,12 +48,12 @@ public class BassLine implements PatternProducer {
 	public static final String OCTAVE_SUB_BASS = "2";
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
-	private static float PROB_SUBOCTAVE = Random.rangeFloat(0f, 0.3f); // Prob. for a sub-bass octave
+	//private static float PROB_SUBOCTAVE = Random.rangeFloat(0f, 0.3f); // Prob. for a sub-bass octave // REMOVED: suboctave not playable on normal e-bass
 	
 	public String newRandomBassLineString() {
 		String bassLineStr = "";
 		
-		String OCTAVE = Random.nextBoolean(PROB_SUBOCTAVE) ? OCTAVE_SUB_BASS : OCTAVE_BASS;
+		String OCTAVE = /*Random.nextBoolean(PROB_SUBOCTAVE) ? OCTAVE_SUB_BASS :*/ OCTAVE_BASS;
 		
 		for (String chordStr : chordProgression.toStringArray()) {
 			Note[] notes = new Chord(chordStr).getNotes();
