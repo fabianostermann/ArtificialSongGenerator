@@ -11,5 +11,8 @@
 *.flac
 *.conf
 *.conf.dummy
+*.jar
+*.png
+*.jpg
 JFugue-doc/*
 Sampling/Database-*
