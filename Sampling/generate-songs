@@ -5,6 +5,9 @@
 
 ### global variables ###
 
+# executables
+ArtificialSongGenerator_JAR=../ArtificialSongGenerator/ArtificialSongGenerator.jar
+
 # audio settings
 BITRATE=128
 CHANNELS=1
@@ -56,7 +59,7 @@ if [ "$1" == "-h" -o "$1" == "--help" ]; then
   exit
 fi
 
-if [ ! -f ./ArtificialSongGenerator.jar ]; then
+if [ ! -f $ArtificialSongGenerator_JAR ]; then
   echo "No jar file to execute found."
   echo "Run ./makejar first."
   exit
@@ -108,11 +111,13 @@ fi
 ### do actual calculations ###
 
 for ID in $@; do
+  ## info
+  echo "=== $ID ==="
   # generate midis and annotations
-  java -jar ArtificialSongGenerator.jar --title=$ID --dir=$DIR $CONFIG_COMMAND
+  java -jar $ArtificialSongGenerator_JAR --title=$ID --dir=$DIR $CONFIG_COMMAND
   # convert to mp3
-  if [ "$PROCESS_AUDIO" == "TRUE" ]; then
-  	cvlc --play-and-exit -vvv --sout "#transcode{$ACODEC,dst=$DIR/$ID$ASUFFIX}" $DIR/$ID.mid
+  if [ "$PROCESS_AUDIO" == "TRUE" ]; then # use -vvv for verbose output
+  	cvlc --play-and-exit --sout "#transcode{$ACODEC,dst=$DIR/$ID$ASUFFIX}" $DIR/$ID.mid
   fi
 done
 

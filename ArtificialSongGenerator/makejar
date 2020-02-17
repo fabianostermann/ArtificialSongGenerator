@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# author: Fabian Ostermann
+# 2019/02/28
+
+MANIFEST_FILE="manifest.mf"
+
+echo "NOTE: experimental script (using eclipse is safer)"
+
+## MAKE ArtificialSongGenerator ##
+./compile
+
+# META-INF/MANIFEST.MF:
+touch $MANIFEST_FILE
+echo "Manifest-Version: 1.0" > $MANIFEST_FILE
+#echo "Rsrc-Class-Path: ." >> $MANIFEST_FILE
+echo "Class-Path: . ./lib/jfugue-5.0.9.jar" >> $MANIFEST_FILE
+echo "Main-Class: main.ArtificialSongGenerator" >> $MANIFEST_FILE
+
+jar cfm ArtificialSongGenerator.jar $MANIFEST_FILE -C ./bin/ .
+
+rm $MANIFEST_FILE
+
+echo "NOTE: for now generated jar is operational inside this directory structure only (needs ./lib/jfugue-5.0.9.jar)"
+
+echo -n "created: "
+ls ArtificialSongGenerator.jar

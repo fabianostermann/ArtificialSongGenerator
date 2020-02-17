@@ -3,10 +3,13 @@
 # author: Fabian Ostermann
 # 2019/09/30
 
+# executables
+OnsetAnnotator_JAR=../OnsetAnnotator/OnsetAnnotator.jar
+
 if [ "$1" == "" -o "$1" == "--help" ]; then
   echo "Specify a root directory as first argument."
   echo "EXAMPLE USAGE: './annotateOnsets DatabaseName' OR './annotateOnsets .'"
   exit 0
 fi
 
-find $1 -name "*.mid" -exec java -jar OnsetAnnotator.jar --midifile={} \;
+find $1 -name "*.mid" -exec java -jar $OnsetAnnotator_JAR --midifile={} \;
