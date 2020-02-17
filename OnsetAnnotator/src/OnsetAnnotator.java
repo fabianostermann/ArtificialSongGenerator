@@ -43,10 +43,11 @@ public class OnsetAnnotator {
 
 	public static int resolution;
 	public static int tempo; // in BPM (beats per minute)
-	
+
 	public static String[] instrumentOnChannel;
-	
-	public static HashMap<String, List<Integer>> keysOn = new HashMap<>(); // <instrument name, keys pressed>
+
+	public static HashMap<String, List<Integer>> keysOn = new HashMap<>(); // <instrument name, keys pressed> // keys that are not off yet
+	public static HashMap<String, List<Integer>> newKeysOn = new HashMap<>(); // <instrument name, keys pressed> // keys just pressed
 	public static HashMap<Long, List<ShortMessage>> messages = new HashMap<>(); // <tick, midiOn|midiOff>
 	
 	public static float[] onsetTimes; // onset times ordered
@@ -160,8 +161,10 @@ public class OnsetAnnotator {
         // read onsets of instruments
         onsetSimilarities = new String[sortedKeyList.size()][instrumentOnChannel.length];
         onsetTimes = new float[sortedKeyList.size()];
-        for (String inst : instrumentOnChannel)
+        for (String inst : instrumentOnChannel) {
         	keysOn.put(inst, new ArrayList<Integer>());
+        	newKeysOn.put(inst, new ArrayList<Integer>());
+        }
         int i = -1;
         for (Long tick : sortedKeyList) {
         	i++;
@@ -170,6 +173,7 @@ public class OnsetAnnotator {
         		Integer key = new Integer(sm.getData1());
         		if (sm.getCommand() == ShortMessage.NOTE_ON) {
         			keysOn.get(instrumentOnChannel[sm.getChannel()]).add(key);
+        			newKeysOn.get(instrumentOnChannel[sm.getChannel()]).add(key);
         		}
         		if (sm.getCommand() == ShortMessage.NOTE_OFF) {
         			keysOn.get(instrumentOnChannel[sm.getChannel()]).remove(key);
@@ -178,12 +182,17 @@ public class OnsetAnnotator {
         	for (int j = 0; j < instrumentOnChannel.length; j++) {
         		String keysStr = "[";
         		for (int keyInt : keysOn.get(instrumentOnChannel[j])) {
+        			if (newKeysOn.get(instrumentOnChannel[j]).contains(keyInt))
+        				keysStr += "+";
         			keysStr += keyInt + ",";
         		}
         		keysStr += "]";
         		keysStr = keysStr.replaceFirst(",]", "]");
         		onsetSimilarities[i][j] = keysStr;
         	}
+        	for (String inst : instrumentOnChannel) {
+            	newKeysOn.get(inst).clear();
+            }
         }
         
         if (argscheck("--verbose") || argscheck("-v")) {
