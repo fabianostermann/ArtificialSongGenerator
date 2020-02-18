@@ -10,3 +10,7 @@ cd ../ArtificialSongGenerator/
 ## MAKE OnsetAnnotator ##
 cd ../OnsetAnnotator/
 ./makejar
+
+cd ../SamplingRoboter/
+./makejar
+
