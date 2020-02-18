@@ -1,16 +1,28 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.lang.ProcessBuilder.Redirect;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class LameWrapper {
 
-	private static final String PROCESS_INDICATOR = ">>> ";
+	private static final String PROCESS_INDICATOR = "lame>>> ";
 	
 	private static boolean removeWav = false;
 	private static int VBR = 2;
+
+	private static List<String> defaultArgs = Arrays.asList("-V", ""+VBR, "--disptime", "1");
 	
-	/** execute lame on file (linux only for now) */
-	public static void execute(File file) {
+	/**
+	 * Executes local or global installation of lame encoder on given wav file
+	 * @param file the file that is converted
+	 * @param optArgs an optional list of arguments
+	 * --- if given this will overwrite the default args
+	 * --- if NULL default args are used
+	 */
+	public static void execute(File file, List<String> optArgs) {
 	    Process p;
 	    try {
 	    	String lameProgram = "lame";
@@ -22,20 +34,39 @@ public class LameWrapper {
 	    		lameProgram = "./lame.exe";
 				System.out.println("Found windows like local program './lame.exe'.");
 			}
-	    	String execCommand = lameProgram+" -V "+VBR+" "+file.getAbsolutePath();
-	    	System.out.println("Start external process:");
-			System.out.println(PROCESS_INDICATOR+execCommand);
-	        p = Runtime.getRuntime().exec(execCommand);
-	        
-	        BufferedReader reader = 
-	                        new BufferedReader(new InputStreamReader(p.getInputStream()));
-	        String line = "";           
+			
+			List<String> pargs = new ArrayList<>();
+			pargs.add(lameProgram);
+			if (optArgs==null)
+				// default parameters
+				pargs.addAll(defaultArgs);
+			else
+				pargs.addAll(optArgs);
+			pargs.add("--nohist"); // never allow histogram view
+			pargs.add(file.getAbsolutePath());
+			ProcessBuilder pb = new ProcessBuilder(pargs);
+			pb.redirectErrorStream(true);
+			pb.redirectOutput(Redirect.PIPE); // INHERIT|PIPE
+			
+			// print full command
+			System.out.print(PROCESS_INDICATOR);
+			for (String arg : pargs)
+				System.out.print(arg+" ");
+			System.out.println();
+			
+			// run command
+			p = pb.start();
+	        			
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+	        String line = ""; 
 	        while ((line = reader.readLine())!= null) {
-	            System.out.println(PROCESS_INDICATOR+line);
+	        	System.out.println(PROCESS_INDICATOR+line);
 	        }
 	        
+	        // wait for termination
 	        p.waitFor();
-			if (p.exitValue() != 0)
+	        
+	        if (p.exitValue() != 0)
 				System.out.println("Something went wrong using '"+lameProgram+"'");
 
 			String fileStr = file.getName();
