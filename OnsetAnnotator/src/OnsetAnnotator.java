@@ -274,6 +274,8 @@ public class OnsetAnnotator {
     	}
     }
     
+    // TODO make tickToSecond() useful with multiple tempo change marks!
+    // see: https://stackoverflow.com/questions/23070510/how-to-get-exact-time-of-a-midi-event
     public static float tickToSecond(long tick) {
     	return (float)(tick*60)/(tempo*resolution); // (tick / resolution) * (60 / tempo)
     }
