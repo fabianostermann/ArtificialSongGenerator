@@ -12,6 +12,8 @@ import util.Random;
 
 public class Songpart implements PatternProducer {
 	
+	private int quarterNotesPerBar = 4; // TODO creating music in 3/4 time measure
+	
 	public String mark = null;
 	
 	public final Melody melody;
@@ -99,7 +101,7 @@ public class Songpart implements PatternProducer {
 	}
 	
 	public float getLengthInSeconds() {
-		return (float)length*4.f*60.f/(float)tempo;
+		return (float)length*quarterNotesPerBar*60.f/(float)tempo;
 	}
 
 	public static final char FIRST_CHAR = 'A';

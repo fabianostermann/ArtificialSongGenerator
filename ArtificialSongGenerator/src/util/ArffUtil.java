@@ -8,6 +8,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.jfugue.theory.Key;
+
 import parts.Songpart;
 
 
@@ -25,9 +27,10 @@ public class ArffUtil {
 		String[] attributes = new String[] { 
 			"start time in s' NUMERIC", 
 			"value' STRING", 
-			"tempo' NUMERIC", 
+			"tempo' NUMERIC",
+			"key' STRING",
 			"instruments' STRING",
-			"polyphony' STRING",
+			"polyphonic degree' STRING",
 		};
 		
 		printHeader(writer, id, attributes, songStructure.length+1); // plus one for 'end' value
@@ -62,6 +65,7 @@ public class ArffUtil {
 					secondCounter,
 					songStructure[i].mark,
 					songStructure[i].tempo,
+					songStructure[i].key,
 					instruments.toArray(new String[]{}),
 					polyphony.toArray(new Integer[]{})
 			);
@@ -71,6 +75,7 @@ public class ArffUtil {
 				secondCounter,
 				"end",
 				songStructure[songStructure.length-1].tempo,
+				songStructure[songStructure.length-1].key,
 				new String[] {"-"},
 				new Integer[] {}
 		);
@@ -79,12 +84,14 @@ public class ArffUtil {
 		writer.close();
 	}
 
-	private static void printDataEntry(BufferedWriter writer, float time, String value, int tempo, String[] instruments, Integer[] polyphony) throws IOException {
+	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments, Integer[] polyphony) throws IOException {
 		writer.write(""+time);
 		writer.write(NEXT);
-		writer.write("'"+value+"'");
+		writer.write("'"+mark+"'");
 		writer.write(NEXT);
 		writer.write(""+tempo);
+		writer.write(NEXT);
+		writer.write(""+key.getKeySignature());
 		writer.write(NEXT);
 		writer.write("'");
 		for (int i=0; i<instruments.length; i++) {

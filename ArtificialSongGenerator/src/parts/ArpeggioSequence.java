@@ -46,7 +46,7 @@ public class ArpeggioSequence implements PatternProducer {
 	
 	public static final String SET_VOLUME = " :CON(7, 75) ";
 	
-	/** Probabilities for random choices in melody generation (memoized for one complete song) */
+	///** Probabilities for random choices in melody generation (memoized for one complete song) */
 	//private static float PROB_Rest = Random.rangeFloat(0.1f, 0.4f); // Prob. for a rest
 	
 	public String newRandomArpeggioString() {
