@@ -1,3 +1,4 @@
+package asglib;
 /*
  * Borrowed from package org.jfugue.midi;
  * 

@@ -3,5 +3,5 @@
 # compile java given the jfugue library and source and binary directory
 mkdir -p ./bin
 echo "compiling SamplingRoboter to ./bin/"
-javac -source 1.8 -target 1.8 -s ./src/ -d ./bin/ ./src/*.java
+javac -source 1.8 -target 1.8 -d ./bin/ ./src/*/*.java ../ASGLib/src/*/*.java
 

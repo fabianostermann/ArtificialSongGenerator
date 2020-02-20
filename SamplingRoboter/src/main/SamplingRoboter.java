@@ -1,3 +1,4 @@
+package main;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -14,6 +15,11 @@ import javax.sound.midi.ShortMessage;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import asglib.ArgsUtil;
+import asglib.MidiDictionary;
+import info.Version;
+import record.AudioRecorder;
 
 public class SamplingRoboter {
 
@@ -44,6 +50,14 @@ public class SamplingRoboter {
 			System.out.println(deviceInfo);
 			System.exit(0);
 		}
+		// state version
+		if (argsUtil.check("--version") || argsUtil.check("-v")) {
+			System.out.println(Version.VERSION);
+			System.exit(0);
+		}
+		
+		System.out.println("### SamplingRoboter for ArtificialSongGenerator started ### ("+new Date()+")");
+		Locale.setDefault(Locale.US);
 
 		// enable debug gui
 		if (argsUtil.check("--debug-gui")) {
@@ -62,10 +76,7 @@ public class SamplingRoboter {
 			DELETE_RAW = true;
 		}
 		// choose midi device by number
-		String midiDevNo = argsUtil.get("--mididevice=");
-		if (midiDevNo != null) {
-			MIDI_DEVICE_NO = midiDevNo;
-		}
+		MIDI_DEVICE_NO = argsUtil.get("--mididevice=", MIDI_DEVICE_NO);
 		// choose midi device by number
 		String lameArgs = argsUtil.get("--lame-options=");
 		if (lameArgs != null) {
@@ -98,11 +109,10 @@ public class SamplingRoboter {
 					System.out.println("Directory '"+midiDir.getAbsolutePath()+"' does not exist or is not a directory. Exit.");
 					System.exit(1);
 				}
+				if (INPUT_FILES.isEmpty())
+					System.out.println("Directory "+midiDirStr+" is empty (No .mid/.midi file found).");
 			}
 		}
-		
-		System.out.println("### SamplingRoboter for ArtificialSongGenerator started ### ("+new Date()+")");
-		Locale.setDefault(Locale.US);
 		
 		// globals
 		Sequencer sequencer = null;

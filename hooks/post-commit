@@ -1,6 +1,6 @@
 #!/bin/sh
 
-filename=ArtificialSongGenerator/src/main/Version.java
+filename=ASGLib/src/info/Version.java
 version="0.1" # manuell
 datestr=`date +"%Y/%m/%d-%H:%M"` # automatic hooked
 
@@ -9,7 +9,7 @@ versionstr="v$version-$datestr"
 echo "post-commit: set version to $versionstr"
 
 oldfilecontent=`cat $filename`
-newfilecontent=`echo "package main; public class Version { public static final String VERSION = \"$versionstr\"; }"`
+newfilecontent=`echo "package info; public class Version { public static final String VERSION = \"$versionstr\"; }"`
 
 echo -e "old version file content:\n$oldfilecontent"
 echo -e "new version file content:\n$newfilecontent"

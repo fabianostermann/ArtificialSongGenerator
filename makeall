@@ -3,6 +3,10 @@
 # author: Fabian Ostermann
 # 2020/29/01
 
+## MAKE ASG Library ##
+cd ASGLib/
+#./?
+
 ## MAKE ArtificialSongGenerator ##
 cd ../ArtificialSongGenerator/
 ./makejar

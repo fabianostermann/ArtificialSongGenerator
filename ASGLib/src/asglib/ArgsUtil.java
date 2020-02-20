@@ -1,3 +1,4 @@
+package asglib;
 
 public class ArgsUtil {
 
@@ -32,5 +33,17 @@ public class ArgsUtil {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Oneliner for get(): Checks if any string from the arguments list starts with test string.
+	 * @param teststr The string to be tested
+	 * @return If a suiting argument is found, the remaining string is returned. Else default string is returned.
+	 */
+	public String get(String teststr, String defaultVal) {
+		String retVal = get(teststr);
+		if (retVal == null)
+			retVal = defaultVal;
+		return retVal; 
 	}
 }

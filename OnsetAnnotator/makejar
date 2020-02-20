@@ -15,7 +15,7 @@ touch $MANIFEST_FILE
 echo "Manifest-Version: 1.0" > $MANIFEST_FILE
 #echo "Rsrc-Class-Path: ." >> $MANIFEST_FILE
 echo "Class-Path: ." >> $MANIFEST_FILE
-echo "Main-Class: OnsetAnnotator" >> $MANIFEST_FILE
+echo "Main-Class: main.OnsetAnnotator" >> $MANIFEST_FILE
 
 jar cfm OnsetAnnotator.jar $MANIFEST_FILE -C ./bin/ .
 

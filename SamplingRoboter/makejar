@@ -15,7 +15,7 @@ touch $MANIFEST_FILE
 echo "Manifest-Version: 1.0" > $MANIFEST_FILE
 #echo "Rsrc-Class-Path: ." >> $MANIFEST_FILE
 echo "Class-Path: ." >> $MANIFEST_FILE
-echo "Main-Class: SamplingRoboter" >> $MANIFEST_FILE
+echo "Main-Class: main.SamplingRoboter" >> $MANIFEST_FILE
 
 jar cfm SamplingRoboter.jar $MANIFEST_FILE -C ./bin/ .
 

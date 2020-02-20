@@ -7,12 +7,16 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
+import asglib.ArgsUtil;
+import info.Version;
 import parts.Songpart;
 import util.ArffUtil;
 import util.Random;
 
 
 public class ArtificialSongGenerator {
+
+	public static ArgsUtil argsUtil = null;
 	
 	public static Songpart[] songparts = null;
 	public static Songpart[] songStructure = null;
@@ -26,29 +30,29 @@ public class ArtificialSongGenerator {
 	 * @param args Set '--help' to print full options list.
 	 */
 	public static void main(String[] args) {
-		ArtificialSongGenerator.args = args;
+		argsUtil = new ArgsUtil(args);
 
 		// ######################
 		// ### SYSTEM STARTUP ###
 		
 		// both help option installed for clueless users
-		if (argscheck("--help") || argscheck("-h")) {
+		if (argsUtil.check("--help") || argsUtil.check("-h")) {
 			printHelp();
 			System.exit(0);
 		}
 		// state version
-		if (argscheck("--version") || argscheck("-v")) {
+		if (argsUtil.check("--version") || argsUtil.check("-v")) {
 			System.out.println(Version.VERSION);
 			System.exit(0);
 		}
 
 		// choose config file
-		String configFilename = argsget("--config=");
+		String configFilename = argsUtil.get("--config=");
 		if (configFilename != null)
 			Config.CONFIG_FILENAME = configFilename;
 		
 		// load config (must load from file first, gets overwritten by loadDefaults)
-		if (argscheck("--config-dummy")) {
+		if (argsUtil.check("--config-dummy")) {
 			Config.loadDefaults();
 			try { Config.createDummyFile();
 			} catch (IOException e) {
@@ -66,11 +70,11 @@ public class ArtificialSongGenerator {
 		Config.loadDefaults();
 		
 		// change default midi file name
-		String title = argsget("--title=");
+		String title = argsUtil.get("--title=");
 		if (title != null)
 			Config.GET.THESONG_TITLE = title;
 		// change default output directory
-		String dir = argsget("--dir=");
+		String dir = argsUtil.get("--dir=");
 		if (dir != null)
 			Config.GET.OUTPUT_DIR = dir;
 		
@@ -95,7 +99,7 @@ public class ArtificialSongGenerator {
 			songStructure[i] = nextSongpart;
 			songStructureStr += nextSongpart.mark;
 		}
-		if (argscheck("--print-structure")) {
+		if (argsUtil.check("--print-structure")) {
 			System.out.println("Song structure: "+songStructureStr);
 		}
 		
@@ -104,7 +108,7 @@ public class ArtificialSongGenerator {
 		for (int i=0; i<songStructure.length; i++) {
 			theSong.add(songStructure[i]);
 		}
-		if (argscheck("--print-staccato")) {
+		if (argsUtil.check("--print-staccato")) {
 			// staccato code is formatted by line breaking on tempo marks (e.g. T85)
 			System.out.println("Staccato code:\n "+theSong.toString().replaceAll(" T", " \nT"));
 		}
@@ -127,41 +131,14 @@ public class ArtificialSongGenerator {
 			System.out.println("There was a problem saving the file '"+arffFileStr+"': "+e.getMessage());
 		}
 
-		if (argscheck("--play")) {
+		if (argsUtil.check("--play")) {
 			System.out.print("Playing.. ");
 			Player player = new Player();
 		    player.play(theSong);
 		    System.out.println("Thank you!");
 		}
 	}
-	
-	private static String[] args = null;
-	/**
-	 * Checks if the test string is in the arguments list
-	 * @param teststr The string to be tested
-	 * @return True if test string is found, False otherwise
-	 */
-	private static boolean argscheck(String teststr) {
-		for (int i=0; i<args.length; i++) {
-			if(args[i].equals(teststr))
-				return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Checks if any string from the arguments list starts with test string.
-	 * @param teststr The string to be tested
-	 * @return If a suiting argument is found, the remaining string is returned. Else null.
-	 */
-	private static String argsget(String teststr) {
-		for (int i=0; i<args.length; i++) {
-			if(args[i].startsWith(teststr)) {
-				return args[i].replaceFirst(teststr, "");
-			}
-		}
-		return null;
-	}
+
 
 	/**
 	 * Prints the help document to standard system stream

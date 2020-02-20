@@ -1,3 +1,4 @@
+package main;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,10 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+import asglib.ArgsUtil;
+import asglib.MidiDictionary;
+import info.Version;
+
 /**
  * This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)
  * In this current version instrument changes are read only once on each track and tempo is read from track 0 tick 0.
@@ -26,6 +31,8 @@ import javax.sound.midi.Track;
  */
 
 public class OnsetAnnotator {
+	
+	public static ArgsUtil argsUtil = null;
 	
 	public static void printHelp() {
 		System.out.println("This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)\n" +
@@ -84,14 +91,19 @@ public class OnsetAnnotator {
 	public static String fileName = "somesong";
 	
     public static void main(String[] args) throws IOException {
-    	OnsetAnnotator.args = args;
+    	argsUtil = new ArgsUtil(args);
     	
-    	if (argscheck("--help") || argscheck("-h")) {
+    	if (argsUtil.check("--help") || argsUtil.check("-h")) {
 			printHelp();
 			System.exit(0);
 		}
+    	// state version
+		if (argsUtil.check("--version") || argsUtil.check("-v")) {
+			System.out.println(Version.VERSION);
+			System.exit(0);
+		}
     	
-    	String argsFileName = argsget("--midifile=");
+    	String argsFileName = argsUtil.get("--midifile=");
 		if (argsFileName != null)
 			fileName = argsFileName.replaceAll(".mid", "");
     	
@@ -195,7 +207,7 @@ public class OnsetAnnotator {
             }
         }
         
-        if (argscheck("--verbose") || argscheck("-v")) {
+        if (argsUtil.check("--verbose") || argsUtil.check("-v")) {
 	        // debug: output results
 	        System.out.print("onset,");
 	        for (i = 0; i < instrumentOnChannel.length; i++)
@@ -296,32 +308,5 @@ public class OnsetAnnotator {
 		return null;
 		// C2 36, C1 24, C0 12, C-1 0
 	}
-    
-    private static String[] args = null;
-	/**
-	 * Checks if the test string is in the arguments list
-	 * @param teststr The string to be tested
-	 * @return True if test string is found, False otherwise
-	 */
-	private static boolean argscheck(String teststr) {
-		for (int i=0; i<args.length; i++) {
-			if(args[i].equals(teststr))
-				return true;
-		}
-		return false;
-	}
-	
-	/**
-	 * Checks if any string from the arguments list starts with test string.
-	 * @param teststr The string to be tested
-	 * @return If a suiting argument is found, the remaining string is returned. Else null.
-	 */
-	private static String argsget(String teststr) {
-		for (int i=0; i<args.length; i++) {
-			if(args[i].startsWith(teststr)) {
-				return args[i].replaceFirst(teststr, "");
-			}
-		}
-		return null;
-	}
+
 }
