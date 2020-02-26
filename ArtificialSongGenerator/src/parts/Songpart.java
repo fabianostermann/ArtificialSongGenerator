@@ -36,6 +36,9 @@ public class Songpart implements PatternProducer {
 	
 	private Songpart() {
 		
+		if (this.mark == null)
+			this.mark = Songpart.nextDefaultMark();
+		
 		key = Config.GET.randomKey();
 		tempo = Config.GET.randomTempo();
 		

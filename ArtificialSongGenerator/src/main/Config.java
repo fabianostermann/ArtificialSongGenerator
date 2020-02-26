@@ -226,7 +226,8 @@ public class Config {
 	public String OUTPUT_DIR = getConfigString("directory", ".");
 	
 	public final int Nof_DIFFERENT_SONGPARTS = getConfigInt("number-of-different-songparts", 3);
-	public final int Nof_SONGPARTS_IN_SONG = getConfigInt("number-of-songparts-in-song", 8);
+	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2);
+	public final float MAX_LENGTH_IN_SEC = getConfigInt("maximum-song-length-in-seconds", 60*3); // TODO make time of song between min and max random
 	
 	// make random choice on major keys (memoizable)
 	public final String[] KEYS = getConfigStrings("keys", new String[]

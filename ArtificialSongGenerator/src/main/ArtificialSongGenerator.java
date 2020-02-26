@@ -1,17 +1,19 @@
 package main;
 
+import info.Version;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
-import asglib.ArgsUtil;
-import info.Version;
 import parts.Songpart;
 import util.ArffUtil;
 import util.Random;
+import asglib.ArgsUtil;
 
 
 public class ArtificialSongGenerator {
@@ -21,6 +23,8 @@ public class ArtificialSongGenerator {
 	public static Songpart[] songparts = null;
 	public static Songpart[] songStructure = null;
 	public static Pattern theSong;
+	
+	public static boolean VERBOSE_MODE = false;
 	
 	/**
 	 * This unit creates pop music style midi files.
@@ -44,6 +48,9 @@ public class ArtificialSongGenerator {
 		if (argsUtil.check("--version") || argsUtil.check("-v")) {
 			System.out.println(Version.VERSION);
 			System.exit(0);
+		}
+		if (argsUtil.check("--verbose")) {
+			VERBOSE_MODE = true;
 		}
 
 		// choose config file
@@ -88,19 +95,21 @@ public class ArtificialSongGenerator {
 		}
 		
 		// random formation of songparts to a song
-		// NOTE: if EXPLOIT_INSTRUMENTS is true and Nof_DIFFERENT_SONGPARTS < number of instruments,
-		// then it is guaranteed, that each songpart has different instrumentation
-		String songStructureStr = "";
-		songStructure = new Songpart[Config.GET.Nof_SONGPARTS_IN_SONG];
-		for (int i=0; i<songStructure.length; i++) {
+		float songTime = 0;
+		ArrayList<Songpart> songStructureList = new ArrayList<>();
+		songStructureList.add(songparts[0]);
+		songTime += songparts[0].getLengthInSeconds();
+		while (songTime < Config.GET.MIN_LENGTH_IN_SEC) {
 			Songpart nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
-			if (nextSongpart.mark == null)
-				nextSongpart.mark = Songpart.nextDefaultMark();
-			songStructure[i] = nextSongpart;
-			songStructureStr += nextSongpart.mark;
+			songStructureList.add(nextSongpart);
+			songTime += nextSongpart.getLengthInSeconds();
 		}
-		if (argsUtil.check("--print-structure")) {
-			System.out.println("Song structure: "+songStructureStr);
+		songStructure = songStructureList.toArray(new Songpart[songStructureList.size()]);
+		if (VERBOSE_MODE) {
+			String songStructureStr = "";
+			for (Songpart part : songStructure)
+				songStructureStr += part.mark;
+				System.out.println("Song structure: "+songStructureStr + " ("+songTime+"s)");
 		}
 		
 		// build pattern from song structure
@@ -155,7 +164,7 @@ public class ArtificialSongGenerator {
 				"-v, --version          Prints version.\n" +
 				"--play                 Song is played back after generation.\n" +
 				"--print-staccato       Prints the Staccato code (JFugue's music syntax).\n" +
-				"--print-structure      Prints the structure of the song (e.g. AABACB).\n" +
+				"--verbose              Prints generation infos like the structure of the song (e.g. AABACB) and length in second.\n" +
 				"--title=<title>        Specifies the output title id.\n" +
 				"--dir=<dir>            Specifies directory for output files " +
 					"(ATTENTION: fails if directory does not exist).\n" +
