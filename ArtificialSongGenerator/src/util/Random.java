@@ -55,47 +55,47 @@ public class Random {
 	}
 	
 	/**
-	 * Gets an array of strings and an array of probabilitiy weights (must not be sum to 1) 
-	 * @param strings Array of strings
+	 * Gets an array of objects and an array of probabilitiy weights (must not be sum to 1) 
+	 * @param objects Array of generic typed objects
 	 * @param probs Array of probabilities
-	 * @return One of the strings from the array with given probability
+	 * @return One of the objects from the array with given probability
 	 */
-	public static String fromArray(String[] strings, float[] probs) {
+	public static <T> T fromArray(T[] objects, float[] probs) {
 		float sum = 0;
 		for (float f : probs)
 			sum += f;
 		float choice = rangeFloat(0, sum);
 		float probSum = 0;
-		for (int i=0; i<strings.length; i++) {
+		for (int i=0; i<objects.length; i++) {
 			probSum += probs[i];
 			if (probSum > choice)
-				return strings[i];
+				return objects[i];
 		}
-		return "error";
+		return null;
 	}
 	
 	/**
-	 * Gets an array of strings
-	 * @param strings Array of strings
+	 * Gets an array of objects
+	 * @param objects Array of generic typed objects
 	 * @return One of the strings with even probability
 	 */
-	public static String fromArray(String[] strings) {
-		float[] probs = new float[strings.length];
+	public static <T> T fromArray(T[] objects) {
+		float[] probs = new float[objects.length];
 		for (int i=0; i<probs.length; i++)
 			probs[i] = 1.f;
-		return fromArray(strings, probs);
+		return fromArray(objects, probs);
 	}
 	
 	/**
 	 * Same as fromArray put with a map as input
-	 * @param map Containing strings and probabilities as floats
-	 * @return One of the strings from the array with given probability
+	 * @param map Containing objects of generic type and probabilities as floats
+	 * @return One of the objects from the array with given probability
 	 */
-	public static String fromMap(Map<String, Float> map) {
-		String[] strings = map.keySet().toArray(new String[0]);
-		float[] probs = new float[strings.length];
-		for (int i=0; i<strings.length; i++)
-			probs[i] = map.get(strings[i]);
-		return fromArray(strings, probs);
+	public static <T> T fromMap(Map<T, Float> map) {
+		T[] objects = (T[]) map.keySet().toArray();
+		float[] probs = new float[objects.length];
+		for (int i=0; i<objects.length; i++)
+			probs[i] = map.get(objects[i]);
+		return fromArray(objects, probs);
 	}
 }
