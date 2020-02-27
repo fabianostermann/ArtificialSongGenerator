@@ -41,7 +41,8 @@ public class OnsetAnnotator {
 							"For each onset the midi key numbers are written to the arff file.\n" +
 							"\n" +
 							"Use --midifile to choose a specific file. Default filename is '"+fileName+".mid'\n" +
-							"Use -v or --verbose to get verbose output.\n" +
+							"Use --verbose to get verbose output.\n" +
+							"Use -v or --version to show version number.\n" +
 							"Use -h or --help to print this.");
 	}
 	
@@ -98,13 +99,13 @@ public class OnsetAnnotator {
 			printHelp();
 			System.exit(0);
 		}
+		System.out.println("### OnsetAnnotator for ArtificialSongGenerator started ### ("+new Date()+")");
     	// state version
 		if (argsUtil.check("--version") || argsUtil.check("-v")) {
 			System.out.println(Version.VERSION);
 			System.exit(0);
 		}
 		
-		System.out.println("### OnsetAnnotator for ArtificialSongGenerator started ### ("+new Date()+")");
     	
     	String argsFileName = argsUtil.get("--midifile=");
 		if (argsFileName != null)
@@ -210,7 +211,7 @@ public class OnsetAnnotator {
             }
         }
         
-        if (argsUtil.check("--verbose") || argsUtil.check("-v")) {
+        if (argsUtil.check("--verbose")) {
 	        // debug: output results
 	        System.out.print("onset,");
 	        for (i = 0; i < instrumentOnChannel.length; i++)

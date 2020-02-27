@@ -50,14 +50,13 @@ public class SamplingRoboter {
 			System.out.println(deviceInfo);
 			System.exit(0);
 		}
+		System.out.println("### SamplingRoboter for ArtificialSongGenerator started ### ("+new Date()+")");
+		Locale.setDefault(Locale.US);
 		// state version
 		if (argsUtil.check("--version") || argsUtil.check("-v")) {
 			System.out.println(Version.VERSION);
 			System.exit(0);
 		}
-		
-		System.out.println("### SamplingRoboter for ArtificialSongGenerator started ### ("+new Date()+")");
-		Locale.setDefault(Locale.US);
 
 		// enable debug gui
 		if (argsUtil.check("--debug-gui")) {
@@ -284,7 +283,7 @@ public class SamplingRoboter {
 				"--midifile=<file>      Convert this midifile to audio.\n" +
 				"--mididir=<dir>        Convert all midifiles in specified directory (will be ignored if --midifile is used).\n" +
 				"-h, --help             Prints help and infos about available MIDI devices.\n" +
-//				"-v, --version          Prints version.\n" +
+				"-v, --version          Prints version.\n" +
 				"--compress             Compress audio using lame (must be installed or locally executable).\n" +
 				"--delete-wav           Delete raw wavs after compression.\n" +
 				"--mididevice=<No>      The mididevice to use (default is 0).\n" +

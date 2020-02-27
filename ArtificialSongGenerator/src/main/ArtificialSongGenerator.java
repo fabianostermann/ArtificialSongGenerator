@@ -45,6 +45,7 @@ public class ArtificialSongGenerator {
 			printHelp();
 			System.exit(0);
 		}
+		System.out.println("### ArtificialSongGenerator started ### ("+new Date()+")");
 		// state version
 		if (argsUtil.check("--version") || argsUtil.check("-v")) {
 			System.out.println(Version.VERSION);
@@ -54,7 +55,6 @@ public class ArtificialSongGenerator {
 			VERBOSE_MODE = true;
 		}
 		
-		System.out.println("### ArtificialSongGenerator started ### ("+new Date()+")");
 
 		// choose config file
 		String configFilename = argsUtil.get("--config=");
