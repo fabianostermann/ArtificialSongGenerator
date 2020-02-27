@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -102,6 +103,8 @@ public class OnsetAnnotator {
 			System.out.println(Version.VERSION);
 			System.exit(0);
 		}
+		
+		System.out.println("### OnsetAnnotator for ArtificialSongGenerator started ### ("+new Date()+")");
     	
     	String argsFileName = argsUtil.get("--midifile=");
 		if (argsFileName != null)

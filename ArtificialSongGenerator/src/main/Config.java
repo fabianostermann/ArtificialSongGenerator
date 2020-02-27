@@ -229,31 +229,32 @@ public class Config {
 	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2);
 	public final float MAX_LENGTH_IN_SEC = getConfigInt("maximum-song-length-in-seconds", 60*3); // TODO make time of song between min and max random
 	
-	// make random choice on major keys (memoizable)
 	public final String[] KEYS = getConfigStrings("keys", new String[]
 			{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
-	/** If true, key is constant for full song after randomly drawn once. */
+	/** If true, key is the same for full song after randomly drawn once.
+	 * Else, the key is altered from original key with different possibilities for modulation step sizes */
 	public final boolean MEMOIZE_KEY = getConfigBool("memoize-keys", false);
 	private int keyPos = -1;
+	/** make random choice on major keys (memoizable) */
 	public Key randomKey() {
 		if (keyPos == -1 || !MEMOIZE_KEY)
 			keyPos = Random.rangeInt(0, KEYS.length);
 		return new Key(KEYS[keyPos]+"maj");
 	}
 
-	// make random choice on tempo (memoizable)
 	public final int[] TEMPO_RANGE = getConfigInts("tempo-range", new int[] { 60, 180 });
 	/** If true, tempo is constant for full song after randomly drawn once. */
 	public final boolean MEMOIZE_TEMPO = getConfigBool("memoize-tempo", true);
 	private int tempo = -1;
+	/** make random choice on tempo (memoizable) */
 	public int randomTempo() {
 		if (tempo == -1 || !MEMOIZE_TEMPO)
 			tempo = Random.rangeInt(TEMPO_RANGE[0], TEMPO_RANGE[TEMPO_RANGE.length-1]);
 		return tempo;
 	}
 	
-	// make random choice on songparts length
 	public final int[] SONGPARTS_LENGTH = getConfigInts("allowed-songpart-lengths", new int[] { 4, 6, 8 });
+	/** make random choice on songparts length */
 	public int randomSongpartLength() {
 		return SONGPARTS_LENGTH[Random.rangeInt(0, SONGPARTS_LENGTH.length)];
 	}
@@ -266,11 +267,11 @@ public class Config {
 	public final boolean MEMOIZE_INSTRUMENTS = getConfigBool("memoize-instruments", true);
 	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
-	// make random choice on melody instrument
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
 		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Skakuhachi"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
+	/** make random choice on melody instrument */
 	public int getMelodyChannel(String melodyInstrument) {
 		for (int i=0; i<MELODY_INSTRUMENTS.length; i++)
 			if (MELODY_INSTRUMENTS[i].equals(melodyInstrument))
@@ -292,11 +293,11 @@ public class Config {
 		return melodyInstList.remove(Random.rangeInt(0, melodyInstList.size()));
 	}
 	
-	// make random choice on chord instrument
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
-		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1", "Sitar"
+		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1", "Guitar", "Overdriven_Guitar", "Sitar"
 		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
+	/** make random choice on chord instrument */
 	public int getChordsChannel(String chordInstrument) {
 		for (int i=0; i<CHORD_INSTRUMENTS.length; i++)
 			if (CHORD_INSTRUMENTS[i].equals(chordInstrument))
@@ -321,8 +322,8 @@ public class Config {
 		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
 	}
 	
-	// make random choice on arpeggio instrument (depended to chord instrument)
 	private int arpeggioPos = -1;
+	/** make random choice on arpeggio instrument (depended to chord instrument) */
 	public String randomArpeggioInstrument() {
 		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (arpeggioPos == -1)
@@ -338,10 +339,10 @@ public class Config {
 		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
 	}
 	
-	// make random choice on bass instrument
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
 		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Contrabass" //"Synth_Bass_2"
 	});
+	/** make random choice on bass instrument */
 	public int getBassChannel(String bassInstrument) {
 		for (int i=0; i<BASS_INSTRUMENTS.length; i++)
 			if (BASS_INSTRUMENTS[i].equals(bassInstrument))

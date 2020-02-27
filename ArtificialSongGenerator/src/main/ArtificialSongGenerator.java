@@ -5,6 +5,7 @@ import info.Version;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
@@ -52,6 +53,8 @@ public class ArtificialSongGenerator {
 		if (argsUtil.check("--verbose")) {
 			VERBOSE_MODE = true;
 		}
+		
+		System.out.println("### ArtificialSongGenerator started ### ("+new Date()+")");
 
 		// choose config file
 		String configFilename = argsUtil.get("--config=");
