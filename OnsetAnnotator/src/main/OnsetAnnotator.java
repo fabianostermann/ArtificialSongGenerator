@@ -24,11 +24,11 @@ import asglib.MidiDictionary;
 import info.Version;
 
 /**
- * This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)
+ * This unit analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)
  * In this current version instrument changes are read only once on each track and tempo is read from track 0 tick 0.
  * For each onset the midi key numbers are written to the arff file.
- * @author Fabian Ostermann (Nov 6 '19)
- *
+ * 
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
  */
 
 public class OnsetAnnotator {

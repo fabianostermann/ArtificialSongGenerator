@@ -16,6 +16,14 @@ import util.ArffUtil;
 import util.Random;
 import asglib.ArgsUtil;
 
+/**
+ * This unit creates pop music style midi files.
+ * The artistic quality of the music is poor (speaking about v0.1-2020/02/27-14:39).
+ * It's based on simple guided random choices only. TODO will be improved soon, update info then
+ * A rich annotation file is produced as well.
+ * 
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+ */
 
 public class ArtificialSongGenerator {
 
@@ -28,10 +36,6 @@ public class ArtificialSongGenerator {
 	public static boolean VERBOSE_MODE = false;
 	
 	/**
-	 * This unit creates pop music style midi files.
-	 * The artistic quality of the music is poor.
-	 * It's based on simple guided random choices only.
-	 * A list of song segments is produced as well.
 	 * @param args Set '--help' to print full options list.
 	 */
 	public static void main(String[] args) {

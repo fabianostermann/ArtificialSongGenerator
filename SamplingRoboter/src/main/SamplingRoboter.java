@@ -1,5 +1,6 @@
 package main;
 import java.io.File;
+
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,14 @@ import asglib.ArgsUtil;
 import asglib.MidiDictionary;
 import info.Version;
 import record.AudioRecorder;
+
+/**
+ * This unit samples the artificial midi songs from ArtificialSongGenerator to audio.
+ * To do this, any synthesizer can be connected using a loopback cable on a connected ADC audio interface.
+ * E.g., the author used <i>Kontakt 5 Player</i> with the <i>Komplete 11 Ultimate</i> package from <i>Native Instruments</i> for realistic sampled instruments.
+ * 
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+ */
 
 public class SamplingRoboter {
 
