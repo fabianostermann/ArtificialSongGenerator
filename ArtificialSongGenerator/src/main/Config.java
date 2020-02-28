@@ -226,8 +226,8 @@ public class Config {
 	public String OUTPUT_DIR = getConfigString("directory", ".");
 	
 	public final int Nof_DIFFERENT_SONGPARTS = getConfigInt("number-of-different-songparts", 3);
-	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2);
-	public final float MAX_LENGTH_IN_SEC = getConfigInt("maximum-song-length-in-seconds", 60*3); // TODO make time of song between min and max random
+	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2+30); // guaranteed
+	public final float MAX_LENGTH_IN_SEC = getConfigInt("maximum-song-length-in-seconds", 60*3); // may be slightly more
 	
 	public final String[] KEYS = getConfigStrings("keys", new String[]
 			{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
@@ -268,20 +268,19 @@ public class Config {
 			return tempo;
 		}
 		HashMap<Float, Float> tempoMod = new HashMap<>();
-		tempoMod.put(1f, 0.5f); // keep tempo
-		tempoMod.put(0.5f, 0.2f); tempoMod.put(2f, 0.2f); // half / double time
-		tempoMod.put(2f/3f, 0.05f); tempoMod.put(4f/3f, 0.05f); // 2/3 / 4/3 time
+			tempoMod.put(1f, 0.5f); // keep tempo
+			tempoMod.put(0.5f, 0.2f); tempoMod.put(2f, 0.2f); // half / double time
+			tempoMod.put(2f/3f, 0.05f); tempoMod.put(4f/3f, 0.05f); // 2/3 / 4/3 time
 		float mod = -1; int tempoReq = -1; int breakCount = 10;
 		// ensure a tempo request suitable to desired tempo range
 		while (!(tempoReq>=TEMPO_RANGE[0] && tempoReq<=TEMPO_RANGE[TEMPO_RANGE.length-1])) {
 			mod = --breakCount > 0 ? Random.fromMap(tempoMod) : 1f; // TODO make deterministic
 			tempoReq = (int) ((float)tempo*mod);
 		}
-		System.out.println(mod);
 		return tempoReq;
 	}
 	
-	public final int[] SONGPARTS_LENGTH = getConfigInts("allowed-songpart-lengths", new int[] { 4, 6, 8 });
+	public final int[] SONGPARTS_LENGTH = getConfigInts("allowed-songpart-lengths", new int[] { 4, 6, 8, 12, 16 });
 	/** make random choice on songparts length */
 	public int randomSongpartLength() {
 		return SONGPARTS_LENGTH[Random.rangeInt(0, SONGPARTS_LENGTH.length)];

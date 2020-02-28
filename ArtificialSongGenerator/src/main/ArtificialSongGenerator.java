@@ -107,10 +107,20 @@ public class ArtificialSongGenerator {
 		ArrayList<Songpart> songStructureList = new ArrayList<>();
 		songStructureList.add(songparts[0]); // add first songpart at beginning
 		songTime += songparts[0].getLengthInSeconds();
+		Songpart nextSongpart;
+		// fill to minimum length
 		while (songTime < Config.GET.MIN_LENGTH_IN_SEC) {
-			Songpart nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
+			nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
 			songStructureList.add(nextSongpart);
 			songTime += nextSongpart.getLengthInSeconds();
+		}
+		nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
+		// add some more songparts, but at most to maximum length
+		while (songTime + nextSongpart.getLengthInSeconds() <= Config.GET.MAX_LENGTH_IN_SEC
+				&& Random.nextBoolean(0.75f)) {
+			songStructureList.add(nextSongpart);
+			songTime += nextSongpart.getLengthInSeconds();
+			nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
 		}
 		songStructure = songStructureList.toArray(new Songpart[songStructureList.size()]);
 		if (VERBOSE_MODE) {
