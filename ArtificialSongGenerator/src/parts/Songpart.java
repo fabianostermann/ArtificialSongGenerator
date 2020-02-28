@@ -41,7 +41,7 @@ public class Songpart implements PatternProducer {
 		
 		key = Config.GET.randomKey();
 		tempo = Config.GET.randomTempo();
-		
+
 		length = Config.GET.randomSongpartLength();
 		
 		melodyInstrument = Config.GET.randomMelodyInstrument();

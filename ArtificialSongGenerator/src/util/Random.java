@@ -64,6 +64,11 @@ public class Random {
 		float sum = 0;
 		for (float f : probs)
 			sum += f;
+		// warning that probs is no statistical array (sum=1)
+//		if (Math.abs(sum-1f) > 0.00001f) {
+//			System.out.println("warning: fromArray() - sum is not 1 (sum="+sum+")");
+//			//Thread.dumpStack();
+//		}
 		float choice = rangeFloat(0, sum);
 		float probSum = 0;
 		for (int i=0; i<objects.length; i++) {
@@ -81,8 +86,9 @@ public class Random {
 	 */
 	public static <T> T fromArray(T[] objects) {
 		float[] probs = new float[objects.length];
+		float length = (float) probs.length;
 		for (int i=0; i<probs.length; i++)
-			probs[i] = 1.f;
+			probs[i] = 1.f/length;
 		return fromArray(objects, probs);
 	}
 	

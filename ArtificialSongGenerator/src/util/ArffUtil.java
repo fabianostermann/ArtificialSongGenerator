@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.jfugue.theory.Key;
 
+import main.ArtificialSongGenerator;
 import parts.Songpart;
 
 
@@ -80,7 +81,7 @@ public class ArffUtil {
 				new Integer[] {}
 		);
 		
-		
+		writer.flush();
 		writer.close();
 	}
 

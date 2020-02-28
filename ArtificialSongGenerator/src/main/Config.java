@@ -24,7 +24,7 @@ public class Config {
 	 * Instance of Config parameters. 
 	 * Used to load default settings after loading config file.
 	 */
-	public static Config GET;
+	public static Config GET; // TODO split static methods to own class and inherit
 	
 	/**
 	 * Load every parameter as strings from this map.
@@ -237,9 +237,21 @@ public class Config {
 	private int keyPos = -1;
 	/** make random choice on major keys (memoizable) */
 	public Key randomKey() {
-		if (keyPos == -1 || !MEMOIZE_KEY)
+		if (keyPos == -1) {
 			keyPos = Random.rangeInt(0, KEYS.length);
-		return new Key(KEYS[keyPos]+"maj");
+			return new Key(KEYS[keyPos]+"maj");
+		}
+		if (MEMOIZE_KEY) {
+			return new Key(KEYS[keyPos]+"maj");
+		}
+		HashMap<Integer, Float> keyMod = new HashMap<>();
+			keyMod.put(0, 0.6f); // no modulation // TODO improve key modulation procedure and adapt to tempo!
+			keyMod.put(5, 0.1f); keyMod.put(7, 0.05f); // fourth and fifth
+			keyMod.put(4, 0.03f); keyMod.put(8, 0.02f); // major third up and down = minor sixth
+			keyMod.put(3, 0.03f); keyMod.put(9, 0.02f); // minor third up and down = major sixth
+			keyMod.put(2, 0.1f); keyMod.put(1, 0.05f); // whole tone up / half tone up
+    	int mod = Random.fromMap(keyMod);
+		return new Key(KEYS[(keyPos+mod)%KEYS.length]+"maj");
 	}
 
 	public final int[] TEMPO_RANGE = getConfigInts("tempo-range", new int[] { 60, 180 });

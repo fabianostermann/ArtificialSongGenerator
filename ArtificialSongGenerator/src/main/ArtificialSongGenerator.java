@@ -1,8 +1,8 @@
 package main;
 
-import info.Version;
-
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,10 +11,11 @@ import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
+import asglib.ArgsUtil;
+import info.Version;
 import parts.Songpart;
 import util.ArffUtil;
 import util.Random;
-import asglib.ArgsUtil;
 
 /**
  * This unit creates pop music style midi files.
@@ -104,7 +105,7 @@ public class ArtificialSongGenerator {
 		// random formation of songparts to a song
 		float songTime = 0;
 		ArrayList<Songpart> songStructureList = new ArrayList<>();
-		songStructureList.add(songparts[0]);
+		songStructureList.add(songparts[0]); // add first songpart at beginning
 		songTime += songparts[0].getLengthInSeconds();
 		while (songTime < Config.GET.MIN_LENGTH_IN_SEC) {
 			Songpart nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
@@ -143,6 +144,20 @@ public class ArtificialSongGenerator {
 		try {
 			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, new File(arffFileStr));
 			System.out.println("Created annotation file '" + arffFileStr + "'");
+			if (VERBOSE_MODE) // print arff annotation file to standard out
+				try (BufferedReader br = new BufferedReader(new FileReader(arffFileStr))) {
+					   String line;
+					   boolean started = false;
+					   while ((line = br.readLine()) != null) {
+						   if (line.startsWith("@DATA")) {
+							   started = true;
+							   System.out.println("[... skipping header ...]");
+						   }
+						   if (started)
+							   System.out.println(line);
+					   }
+					   System.out.println("EOF");
+					}
 		} catch (IOException e) {
 			System.out.println("There was a problem saving the file '"+arffFileStr+"': "+e.getMessage());
 		}
