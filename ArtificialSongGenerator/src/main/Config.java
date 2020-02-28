@@ -245,7 +245,7 @@ public class Config {
 			return new Key(KEYS[keyPos]+"maj");
 		}
 		HashMap<Integer, Float> keyMod = new HashMap<>();
-			keyMod.put(0, 0.6f); // no modulation // TODO improve key modulation procedure and adapt to tempo!
+			keyMod.put(0, 0.6f); // no modulation
 			keyMod.put(5, 0.1f); keyMod.put(7, 0.05f); // fourth and fifth
 			keyMod.put(4, 0.03f); keyMod.put(8, 0.02f); // major third up and down = minor sixth
 			keyMod.put(3, 0.03f); keyMod.put(9, 0.02f); // minor third up and down = major sixth
@@ -256,13 +256,29 @@ public class Config {
 
 	public final int[] TEMPO_RANGE = getConfigInts("tempo-range", new int[] { 60, 180 });
 	/** If true, tempo is constant for full song after randomly drawn once. */
-	public final boolean MEMOIZE_TEMPO = getConfigBool("memoize-tempo", true);
+	public final boolean MEMOIZE_TEMPO = getConfigBool("memoize-tempo", false); //TODO now need onset generator to be improved in tempo recognition
 	private int tempo = -1;
 	/** make random choice on tempo (memoizable) */
 	public int randomTempo() {
-		if (tempo == -1 || !MEMOIZE_TEMPO)
+		if (tempo == -1) {
 			tempo = Random.rangeInt(TEMPO_RANGE[0], TEMPO_RANGE[TEMPO_RANGE.length-1]);
-		return tempo;
+			return tempo;
+		}
+		if (MEMOIZE_TEMPO) {
+			return tempo;
+		}
+		HashMap<Float, Float> tempoMod = new HashMap<>();
+		tempoMod.put(1f, 0.5f); // keep tempo
+		tempoMod.put(0.5f, 0.2f); tempoMod.put(2f, 0.2f); // half / double time
+		tempoMod.put(2f/3f, 0.05f); tempoMod.put(4f/3f, 0.05f); // 2/3 / 4/3 time
+		float mod = -1; int tempoReq = -1; int breakCount = 10;
+		// ensure a tempo request suitable to desired tempo range
+		while (!(tempoReq>=TEMPO_RANGE[0] && tempoReq<=TEMPO_RANGE[TEMPO_RANGE.length-1])) {
+			mod = --breakCount > 0 ? Random.fromMap(tempoMod) : 1f; // TODO make deterministic
+			tempoReq = (int) ((float)tempo*mod);
+		}
+		System.out.println(mod);
+		return tempoReq;
 	}
 	
 	public final int[] SONGPARTS_LENGTH = getConfigInts("allowed-songpart-lengths", new int[] { 4, 6, 8 });
