@@ -6,9 +6,9 @@
 # Ebeling Besprechung 2020-02-18
 
 - **DONE** Tonart zur Annotation hinzufügen
+- **DONE** memoize-keys/tempo in relation (Abstufung Quinte-Quart-Terz-zufall, halbe-doppelt-triole-zufall)
 
 - *TODO* Zeitliche Länge maßgebend (anstatt Anzahl Formteile) -> alle Songs ca. 2:30--3:30min (**TODO** maximum)
-- *TODO* memoize-keys/tempo in relation (Abstufung Quinte-Quart-Terz-zufall, halbe-doppelt-triole-zufall)
 
 - *TODO* Schlusston Relation (eher Grundton, eher Halbtonannäherung, Intervalrahmen (Anfang-Ende))
 - *TODO* Harmoniefolge Muster einbeziehen (Tonart: letzter Akkord)
