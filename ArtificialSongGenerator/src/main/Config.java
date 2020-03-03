@@ -295,7 +295,7 @@ public class Config {
 	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Skakuhachi"
+		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
 	/** make random choice on melody instrument */
@@ -321,8 +321,8 @@ public class Config {
 	}
 	
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
-		"Piano", "Electric_Piano", "Rock_Organ", "String_Ensemble_1", "Guitar", "Overdriven_Guitar", "Sitar"
-		//No NativeInstrument available: "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
+		"Piano", "Electric_Piano", "Guitar", "Overdriven_Guitar", "Cello", "Sitar"
+		//"Rock_Organ", "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
 	/** make random choice on chord instrument */
 	public int getChordsChannel(String chordInstrument) {
@@ -367,7 +367,7 @@ public class Config {
 	}
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
-		"Acoustic_Bass", "Electric_Bass_Finger", "Slap_Bass_1", "Contrabass" //"Synth_Bass_2"
+		"Acoustic_Bass", "Electric_Bass_Finger", "Contrabass" //"Synth_Bass_2", "Slap_Bass_1",
 	});
 	/** make random choice on bass instrument */
 	public int getBassChannel(String bassInstrument) {
@@ -391,7 +391,7 @@ public class Config {
 		return bassInstList.remove(Random.rangeInt(0, bassInstList.size()));
 	}
 
-	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 1.0f);
+	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 0.9f);
 	public final float CHORDS_ENABLED = getConfigFloat("chords-enabled", 0.8f);
 	public final float DRUMS_ENABLED = getConfigFloat("drums-enabled", 0.8f);
 	public final float ARPEGGIO_ENABLED = getConfigFloat("arpeggio-enabled", 0.5f);

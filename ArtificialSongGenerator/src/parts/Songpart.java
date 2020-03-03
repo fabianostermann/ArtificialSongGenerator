@@ -1,12 +1,11 @@
 package parts;
-import main.Config;
-
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.rhythm.Rhythm;
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
+import main.Config;
 import util.Random;
 
 
@@ -51,7 +50,7 @@ public class Songpart implements PatternProducer {
 		
 		chordProgression = ChordSequence.newRandomChordProgression(key, length);
 		if (Random.nextBoolean(Config.GET.MELODY_ENABLED))
-			melody = Melody.newRandomMelody(key, length);
+			melody = new MelodyBow(key, length, chordProgression);
 		else melody = null;
 		if (Random.nextBoolean(Config.GET.CHORDS_ENABLED))
 			chords = chordProgression;

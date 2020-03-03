@@ -75,8 +75,8 @@ public class ArffUtil {
 		printDataEntry(writer,
 				secondCounter,
 				"end",
-				songStructure[songStructure.length-1].tempo,
-				songStructure[songStructure.length-1].key,
+				0,
+				null,
 				new String[] {"-"},
 				new Integer[] {}
 		);
@@ -92,7 +92,7 @@ public class ArffUtil {
 		writer.write(NEXT);
 		writer.write(""+tempo);
 		writer.write(NEXT);
-		writer.write(""+key.getKeySignature());
+		writer.write(""+(key!=null ? key.getKeySignature() : "-"));
 		writer.write(NEXT);
 		writer.write("'");
 		for (int i=0; i<instruments.length; i++) {

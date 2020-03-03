@@ -1,5 +1,14 @@
+package test;
+
+import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
+import org.jfugue.rhythm.Rhythm;
 import org.jfugue.theory.ChordProgression;
+import org.jfugue.theory.Key;
+
+import main.Config;
+import parts.ChordSequence;
+import parts.MelodyBow;
 
 
 
@@ -11,7 +20,6 @@ import org.jfugue.theory.ChordProgression;
  * And how a chord progression ("I IV V I") can be called back as whole notes ("$!w") simultaneously in Voice 1.
  * Melody is played by Flute, chords by Piano.
  * Player playback can easily be stored in a midi file (see MidiFileManagerDemo).
- * @author oyster
  *
  */
 
@@ -44,11 +52,26 @@ public class Test {
 //	          .setLength(4); // Set the length of the rhythm to 4 measures
 //	        new Player().play(rhythm.getPattern().repeat(2)); // Play 2 instances of the 4-measure-long rhythm
 	    
-	        ChordProgression cp = new ChordProgression("I IV V");
-	        Player player = new Player();
+//	        ChordProgression cp = new ChordProgression("I IV V");
+//	        Player player = new Player();
 //	        player.play(cp.eachChordAs("$0q $1q $2q Rq"));
 //	        player.play(cp.allChordsAs("$0q $0q $0q $0q $1q $1q $2q $0q"));
-	        player.play(cp.allChordsAs("$0 $0 $0 $0 $1 $1 $2 $0").eachChordAs("$0h"));
+//	        player.play(cp.allChordsAs("$0 $0 $0 $0 $1 $1 $2 $0").eachChordAs("$0h"));
+	  
+      Player player = new Player();
+      int length = 8;
+      Config.loadDefaults();
+      Key key = new Key("F#maj");//Config.GET.randomKey();
+      ChordProgression chords = ChordSequence.newRandomChordProgression(key, length);
+      Pattern melody = new MelodyBow(key, length, chords).getPattern();
+      Rhythm drums = new Rhythm("O...O...");
+      Pattern song = new Pattern();
+      song.add(melody.setInstrument("guitar").setVoice(0));
+      song.add(chords.getPattern().setInstrument("Electric_Piano").setVoice(1));
+      song.add(drums.getPattern().repeat(length));
+      System.out.println(melody);
+      System.out.println(chords);
+      player.play(song);
   }
 }
 
