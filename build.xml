@@ -1,0 +1,24 @@
+<?xml version = "1.0"?>
+<project name="OnsetAnnotator" default="compile-all" basedir=".">
+
+<property name="asglib" value="../ASGLib/src"/>
+
+	<target name="compile">
+		<ant dir="ArtificialSongGenerator" target="compile" antfile="build.xml"/>
+		<ant dir="OnsetAnnotator" target="compile" antfile="build.xml"/>
+		<ant dir="SamplingRoboter" target="compile" antfile="build.xml" />
+	</target>
+
+	<target name="pack">
+		<ant antfile="build.xml" target="pack" dir="ArtificialSongGenerator"/>
+		<ant antfile="build.xml" target="pack" dir="OnsetAnnotator"/>
+		<ant antfile="build.xml" target="pack" dir="SamplingRoboter"/>
+	</target>
+
+	<target name="clean">
+		<ant antfile="build.xml" target="clean" dir="ArtificialSongGenerator"/>
+		<ant antfile="build.xml" target="clean" dir="OnsetAnnotator"/>
+		<ant antfile="build.xml" target="clean" dir="SamplingRoboter"/>
+	</target>
+
+</project>

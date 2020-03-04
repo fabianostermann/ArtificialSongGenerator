@@ -1,0 +1,51 @@
+<?xml version = "1.0"?>
+<project name="ArtificialSongGenerator" default="compile" basedir=".">
+
+<property name="asglib" value="../ASGLib/src"/>
+<property name="src" value="src"/>
+<property name="bin" value="bin"/>
+<property name="lib" value="lib"/>
+<property name="jfuguesrc" value="http://www.jfugue.org/jfugue-5.0.9.jar"/>
+<property name="jfuguedest" value="lib/jfugue-5.0.9.jar"/>
+<property name="jardest" value="ArtificialSongGenerator.jar"/>
+
+	<target name="compile"
+		depends="prepare">
+		<javac includeantruntime="false"
+			destdir="${bin}"
+			source="1.8"
+			target="1.8">
+			<classpath>
+				<pathelement path="${jfuguedest}"/>
+			</classpath>
+			<src path="${src}"/>
+			<src path="${asglib}"/>
+		</javac>
+	</target>
+
+	<target name="pack"
+		depends="compile">
+		<jar destfile="${jardest}">
+			<fileset dir="${bin}"/>
+			<zipfileset includes="**/*.class" src="${jfuguedest}"/>
+			<manifest>
+				<attribute name="Main-Class"
+					value="main.ArtificialSongGenerator"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="prepare">
+		<mkdir dir="${bin}"/>
+		<mkdir dir="${lib}"/>
+		<get src="${jfuguesrc}"
+     		dest="${jfuguedest}"
+			skipexisting="true"
+     		verbose="true"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${bin}"/>
+	</target>
+
+</project>
