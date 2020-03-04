@@ -1,5 +1,5 @@
 <?xml version = "1.0"?>
-<project name="OnsetAnnotator" default="compile-all" basedir=".">
+<project name="OnsetAnnotator" default="compile" basedir=".">
 
 <property name="asglib" value="../ASGLib/src"/>
 
