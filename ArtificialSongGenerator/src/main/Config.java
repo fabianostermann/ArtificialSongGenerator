@@ -232,7 +232,7 @@ public class Config {
 	public final String[] KEYS = getConfigStrings("keys", new String[]
 			{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
 	public final String[] TONALITIES = getConfigStrings("tonalities", new String[]
-			{  "min" });
+			{  "maj", "min" });
 	/** If true, key is the same for full song after randomly drawn once.
 	 * Else, the key is altered from original key with different possibilities for modulation step sizes */
 	public final boolean MEMOIZE_KEY = getConfigBool("memoize-keys", false);
