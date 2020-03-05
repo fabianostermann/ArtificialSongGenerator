@@ -1,7 +1,8 @@
 package parts;
-import org.jfugue.theory.ChordProgression;
+import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 
+import util.JFugueExpansion;
 import util.Random;
 
 /**
@@ -31,13 +32,15 @@ public class MelodySimple extends Melody {
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
 	private static float PROB_Rest = Random.rangeFloat(0.1f, 0.4f); // Prob. for a rest
-	private static float PROB_HalfRest = Random.rangeFloat(0.1f, 0.2f); // Prob. for a half rest
-	private static float PROB_QuarterRest = Random.rangeFloat(0.4f, 0.6f); // Prob. for a quarter rest, depends on PROB_HalfRest
+	private static float PROB_HalfRest = Random.rangeFloat(0.4f, 0.6f); // Prob. for a half rest
+	private static float PROB_QuarterRest = Random.rangeFloat(0.7f, 0.9f); // Prob. for a quarter rest, depends on PROB_HalfRest
 	private static float PROB_EigthNote = Random.rangeFloat(0.1f, 0.5f); // Prob. for an eigth note, else quarter note is set
 	
 	@Override
 	protected String newRandomMelodyString() {
-		String melodyStr = SET_VOLUME+"Key:"+getKey().getKeySignature();
+		Key key = getKey();
+		key = JFugueExpansion.minToMajKey(key);
+		String melodyStr = SET_VOLUME+"Key:"+key.getKeySignature();
 		
 		int lengthEighth = getLength()*8;
 		int currLengthEighth = 0; // counter of 8th notes

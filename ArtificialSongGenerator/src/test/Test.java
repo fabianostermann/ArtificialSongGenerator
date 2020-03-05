@@ -1,13 +1,17 @@
 package test;
 
+import java.util.Arrays;
+
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 import org.jfugue.rhythm.Rhythm;
-import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
+import asglib.MidiDictionary;
 import main.Config;
-import parts.ChordSequence;
+import parts.ArpeggioSequence;
+import parts.BassLine;
+import parts.ChordSequenceRanged;
 import parts.MelodyBow;
 
 
@@ -59,19 +63,25 @@ public class Test {
 //	        player.play(cp.allChordsAs("$0 $0 $0 $0 $1 $1 $2 $0").eachChordAs("$0h"));
 	  
       Player player = new Player();
-      int length = 8;
+      int length = 4;
       Config.loadDefaults();
-      Key key = new Key("F#maj");//Config.GET.randomKey();
-      ChordProgression chords = ChordSequence.newRandomChordProgression(key, length);
-      Pattern melody = new MelodyBow(key, length, chords).getPattern();
+      Key key = Config.GET.randomKey();
+      int tempo = Config.GET.randomTempo();
+      System.out.println(key.getKeySignature()+", "+tempo+"bpm");
+      ChordSequenceRanged chords = new ChordSequenceRanged(key, length);
+      Pattern melody = new MelodyBow(key, length, chords.getChords()).getPattern();
       Rhythm drums = new Rhythm("O...O...");
+      BassLine bass = BassLine.newRandomBassLine(chords.getChords());
+      ArpeggioSequence arpSeq = ArpeggioSequence.newRandomArpeggio(chords.getChords());
       Pattern song = new Pattern();
-      song.add(melody.setInstrument("guitar").setVoice(0));
+      song.add(melody.setInstrument("Trumpet").setVoice(0));
       song.add(chords.getPattern().setInstrument("Electric_Piano").setVoice(1));
       song.add(drums.getPattern().repeat(length));
+      song.add(bass.getPattern().setInstrument("Electric_Bass_Finger").setVoice(2));
+      song.add(arpSeq.getPattern().setInstrument("Marimba").setVoice(3));
       System.out.println(melody);
-      System.out.println(chords);
-      player.play(song);
+      System.out.println(Arrays.toString(chords.getChords()));
+      player.play(song.setTempo(tempo));
   }
 }
 

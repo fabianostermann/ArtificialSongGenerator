@@ -31,6 +31,7 @@ public class ArffUtil {
 			"tempo' NUMERIC",
 			"key' STRING",
 			"instruments' STRING",
+			"functions' STRING",
 			"polyphonic degree' STRING",
 		};
 		
@@ -38,27 +39,33 @@ public class ArffUtil {
 		
 		float secondCounter = 0.f;
 		for (int i=0; i<songStructure.length; i++) {
-			
+
 			List<String> instruments = new LinkedList<>();
+			List<String> functions = new LinkedList<>();
 			List<Integer> polyphony = new LinkedList<>();
 			if (songStructure[i].melody != null) {
 				instruments.add(songStructure[i].melodyInstrument);
+				functions.add("melody");
 				polyphony.add(1);
 			}
 			if (songStructure[i].chords != null) {
 				instruments.add(songStructure[i].chordInstrument);
+				functions.add("chords");
 				polyphony.add(3);
 			}
 			if (songStructure[i].arpeggio != null) {
 				instruments.add(songStructure[i].arpeggioInstrument);
+				functions.add("arpeggios");
 				polyphony.add(1);
 			}
 			if (songStructure[i].bass != null) {
 				instruments.add(songStructure[i].bassInstrument);
+				functions.add("bass");
 				polyphony.add(1);
 			}
 			if (songStructure[i].drums != null) {
 				instruments.add("Drums");
+				functions.add("rhythm");
 				polyphony.add(-1);
 			}
 			
@@ -68,6 +75,7 @@ public class ArffUtil {
 					songStructure[i].tempo,
 					songStructure[i].key,
 					instruments.toArray(new String[]{}),
+					functions.toArray(new String[]{}),
 					polyphony.toArray(new Integer[]{})
 			);
 			secondCounter += songStructure[i].getLengthInSeconds();
@@ -78,6 +86,7 @@ public class ArffUtil {
 				0,
 				null,
 				new String[] {"-"},
+				new String[] {"-"},
 				new Integer[] {}
 		);
 		
@@ -85,7 +94,7 @@ public class ArffUtil {
 		writer.close();
 	}
 
-	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments, Integer[] polyphony) throws IOException {
+	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments, String[] functions, Integer[] polyphony) throws IOException {
 		writer.write(""+time);
 		writer.write(NEXT);
 		writer.write("'"+mark+"'");
@@ -98,6 +107,14 @@ public class ArffUtil {
 		for (int i=0; i<instruments.length; i++) {
 			writer.write(instruments[i]);
 			if (i<instruments.length-1)
+				writer.write(STR_DELIM);
+		}
+		writer.write("'");
+		writer.write(NEXT);
+		writer.write("'");
+		for (int i=0; i<functions.length; i++) {
+			writer.write(functions[i]);
+			if (i<functions.length-1)
 				writer.write(STR_DELIM);
 		}
 		writer.write("'");

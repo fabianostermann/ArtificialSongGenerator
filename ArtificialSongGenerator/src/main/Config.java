@@ -228,21 +228,25 @@ public class Config {
 	public final int Nof_DIFFERENT_SONGPARTS = getConfigInt("number-of-different-songparts", 3);
 	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2+30); // guaranteed
 	public final float MAX_LENGTH_IN_SEC = getConfigInt("maximum-song-length-in-seconds", 60*3); // may be slightly more
-	
+
 	public final String[] KEYS = getConfigStrings("keys", new String[]
 			{ "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" });
+	public final String[] TONALITIES = getConfigStrings("tonalities", new String[]
+			{  "min" });
 	/** If true, key is the same for full song after randomly drawn once.
 	 * Else, the key is altered from original key with different possibilities for modulation step sizes */
 	public final boolean MEMOIZE_KEY = getConfigBool("memoize-keys", false);
 	private int keyPos = -1;
+	private int tonalityPos = -1;
 	/** make random choice on major keys (memoizable) */
 	public Key randomKey() {
 		if (keyPos == -1) {
 			keyPos = Random.rangeInt(0, KEYS.length);
-			return new Key(KEYS[keyPos]+"maj");
+			tonalityPos = Random.rangeInt(0, TONALITIES.length);
+			return new Key(KEYS[keyPos]+TONALITIES[tonalityPos]);
 		}
 		if (MEMOIZE_KEY) {
-			return new Key(KEYS[keyPos]+"maj");
+			return new Key(KEYS[keyPos]+TONALITIES[tonalityPos]);
 		}
 		HashMap<Integer, Float> keyMod = new HashMap<>();
 			keyMod.put(0, 0.6f); // no modulation
@@ -251,7 +255,8 @@ public class Config {
 			keyMod.put(3, 0.03f); keyMod.put(9, 0.02f); // minor third up and down = major sixth
 			keyMod.put(2, 0.1f); keyMod.put(1, 0.05f); // whole tone up / half tone up
     	int mod = Random.fromMap(keyMod);
-		return new Key(KEYS[(keyPos+mod)%KEYS.length]+"maj");
+    	tonalityPos = Random.rangeInt(0, TONALITIES.length);
+		return new Key(KEYS[(keyPos+mod)%KEYS.length]+TONALITIES[tonalityPos]);
 	}
 
 	public final int[] TEMPO_RANGE = getConfigInts("tempo-range", new int[] { 60, 180 });

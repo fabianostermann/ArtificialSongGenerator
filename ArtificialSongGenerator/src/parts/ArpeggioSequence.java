@@ -10,11 +10,11 @@ import util.Random;
 
 public class ArpeggioSequence implements PatternProducer {
 
-	public final ChordProgression chordProgression;
+	public final Chord[] chordProgression;
 	
 	public String arpeggioString;
 	
-	private ArpeggioSequence(ChordProgression chordProgression) {
+	private ArpeggioSequence(Chord[] chordProgression) {
 		this.chordProgression = chordProgression;
 		
 		arpeggioString = newRandomArpeggioString();
@@ -25,7 +25,7 @@ public class ArpeggioSequence implements PatternProducer {
 	 * @param chordProgression the chord progression that defines the chords to appegiate and thus key and length
 	 * @return The random arpeggio sequence
 	 */
-	public static ArpeggioSequence newRandomArpeggio(ChordProgression chordProgression) {
+	public static ArpeggioSequence newRandomArpeggio(Chord[] chordProgression) {
 		return new ArpeggioSequence(chordProgression);
 	}
 	
@@ -44,7 +44,7 @@ public class ArpeggioSequence implements PatternProducer {
 	public static final String REST = "R";
 	public static final String NEXT = " ";
 	
-	public static final String SET_VOLUME = " :CON(7, 75) ";
+	public static final String SET_VOLUME = " :CON(7, 70) ";
 	
 	///** Probabilities for random choices in melody generation (memoized for one complete song) */
 	//private static float PROB_Rest = Random.rangeFloat(0.1f, 0.4f); // Prob. for a rest
@@ -60,7 +60,8 @@ public class ArpeggioSequence implements PatternProducer {
 		}
 		
 		// chords to arpeggios
-		for (String chordStr : chordProgression.toStringArray()) {
+		for (Chord chord : chordProgression) {
+			String chordStr = chord.toString();
 			Note[] notes = new Chord(chordStr).getNotes();
 			int chordDurationInEighths = (int)(notes[0].getDuration()*8);
 			

@@ -19,9 +19,9 @@ import util.Random;
 
 /**
  * This unit creates pop music style midi files.
- * The artistic quality of the music is poor (speaking about v0.1-2020/02/27-14:39).
- * It's based on simple guided random choices only. TODO will be improved soon, update info then
- * A rich annotation file is produced as well.
+ * The artistic quality of the music is improved in respect to the original random only concept.
+ * Especially the melody generator MelodyBow.java creates nice little and variation-full ideas.
+ * Also a rich annotation file (.arff) is produced.
  * 
  * @author Fabian Ostermann (fabian.ostermann@udo.edu)
  */

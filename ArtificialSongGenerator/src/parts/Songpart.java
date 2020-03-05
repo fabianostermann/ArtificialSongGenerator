@@ -2,7 +2,7 @@ package parts;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.rhythm.Rhythm;
-import org.jfugue.theory.ChordProgression;
+import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 
 import main.Config;
@@ -16,8 +16,8 @@ public class Songpart implements PatternProducer {
 	public String mark = null;
 	
 	public final Melody melody;
-	public final ChordProgression chordProgression; // used for chords, arpeggios and bass
-	public final ChordProgression chords;
+	public final Chord[] chordProgression; // used for chords, arpeggios and bass
+	public final ChordSequenceRanged chords;
 	public final ArpeggioSequence arpeggio;
 	public final BassLine bass;
 	public final Rhythm drums;
@@ -48,12 +48,13 @@ public class Songpart implements PatternProducer {
 		arpeggioInstrument = Config.GET.randomArpeggioInstrument();
 		bassInstrument = Config.GET.randomBassInstrument();
 		
-		chordProgression = ChordSequence.newRandomChordProgression(key, length);
+		ChordSequenceRanged chordSeq = new ChordSequenceRanged(key, length);
+		chordProgression = chordSeq.getChords();
 		if (Random.nextBoolean(Config.GET.MELODY_ENABLED))
 			melody = new MelodyBow(key, length, chordProgression);
 		else melody = null;
 		if (Random.nextBoolean(Config.GET.CHORDS_ENABLED))
-			chords = chordProgression;
+			chords = chordSeq;
 		else chords = null;
 		if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
 			arpeggio = ArpeggioSequence.newRandomArpeggio(chordProgression);

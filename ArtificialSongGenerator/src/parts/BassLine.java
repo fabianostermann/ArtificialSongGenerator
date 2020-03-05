@@ -10,11 +10,11 @@ import util.Random;
 
 public class BassLine implements PatternProducer {
 
-	public final ChordProgression chordProgression;
+	public final Chord[] chordProgression;
 	
 	public String bassLineString;
 	
-	private BassLine(ChordProgression chordProgression) {
+	private BassLine(Chord[] chordProgression) {
 		this.chordProgression = chordProgression;
 		
 		bassLineString = newRandomBassLineString();
@@ -25,7 +25,7 @@ public class BassLine implements PatternProducer {
 	 * @param chordProgression the chord progression that defines the chords the bass line will be based on
 	 * @return The random bass line
 	 */
-	public static BassLine newRandomBassLine(ChordProgression chordProgression) {
+	public static BassLine newRandomBassLine(Chord[] chordProgression) {
 		return new BassLine(chordProgression);
 	}
 	
@@ -55,8 +55,8 @@ public class BassLine implements PatternProducer {
 		
 		String OCTAVE = /*Random.nextBoolean(PROB_SUBOCTAVE) ? OCTAVE_SUB_BASS :*/ OCTAVE_BASS;
 		
-		for (String chordStr : chordProgression.toStringArray()) {
-			Note[] notes = new Chord(chordStr).getNotes();
+		for (Chord chord : chordProgression) {
+			Note[] notes = chord.getNotes();
 			String bassNoteStr = notes[0].toString().replaceFirst(""+notes[0].getOctave(), OCTAVE);
 			bassLineStr += NEXT + bassNoteStr;
 		}

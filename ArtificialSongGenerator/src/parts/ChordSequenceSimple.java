@@ -5,7 +5,7 @@ import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
 
-public class ChordSequence {
+public class ChordSequenceSimple {
 
 	/** Probabilities for random choices in chord generation (memoized for one complete song) */
 	private static float PROB_MultiChordBar = Random.rangeFloat(0.1f, 0.4f);
@@ -23,6 +23,9 @@ public class ChordSequence {
 	 */
 	public static ChordProgression newRandomChordProgression(Key key, int length) {
 		String randomSequence = "";
+		if (key.getKeySignature().endsWith("min")) {
+			System.err.println("MelodySimple fails on minor keys because of jfugue bugs");
+		}
 		
 		boolean multiChordBarAllowed = false;
 		for (int i=0; i<length; i++) {

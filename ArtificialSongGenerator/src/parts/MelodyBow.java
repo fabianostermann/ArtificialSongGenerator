@@ -3,21 +3,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jfugue.theory.Chord;
-import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
+import org.jfugue.theory.Note;
 
+import util.JFugueExpansion;
 import util.Random;
 
 /**
  * creates a melody fully driven by random decisions,
  * will not follow anything and lead nowhere
- * TODO a bug is known: for key F#maj the ending note is F
+ * TODO BUG: for key F#maj the ending note is F
  * T--- that's not the root but the maj7, but that's accepted for now
  */
 
 public class MelodyBow extends Melody {
 
-	public MelodyBow(Key key, int length, ChordProgression chords) {
+	public MelodyBow(Key key, int length, Chord[] chords) {
 		super(key, length, chords);
 	}
 
@@ -66,13 +67,16 @@ public class MelodyBow extends Melody {
 	public static final String SET_VOLUME = " :CON(7, 120) ";
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
+	private static float PROB_QuarterBind = Random.rangeFloat(0.1f, 0.9f); // Prob. for a rest
 	private static float PROB_Rest = Random.rangeFloat(0.1f, 0.4f); // Prob. for a rest
-	private static float PROB_QuarterNote = Random.rangeFloat(0.2f, 0.8f); // Prob. for an quarter note, else an eighth note is set
+	private static float PROB_QuarterNote = Random.rangeFloat(0.1f, 0.8f); // Prob. for an quarter note, else an eighth note is set
 	private static float PROB_HalfNote = PROB_QuarterNote + Random.rangeFloat(-0.2f, 0.2f); // Prob. for an quarter note, else an eighth note is set
 	
 	@Override
 	protected String newRandomMelodyString() {
-		String melodyStr = SET_VOLUME+"Key:"+getKey().getKeySignature();
+		Key key = getKey();
+		key = JFugueExpansion.minToMajKey(key);
+		String melodyStr = SET_VOLUME+"Key:"+key.getKeySignature();
 		
 		int lengthEighth = getLength()*8;
 		Integer[] melodyRaster = new Integer[lengthEighth];
@@ -80,15 +84,16 @@ public class MelodyBow extends Melody {
 		Chord[] chordRaster = new Chord[lengthEighth];
 		int cq = 0;
 		// fill chord raster
-		for (String chordStr : getChords().toStringArray()) {
-			if (chordStr.endsWith("w")) {
-				chordRaster[cq++] = new Chord(chordStr); chordRaster[cq++] = new Chord(chordStr);
-				chordRaster[cq++] = new Chord(chordStr); chordRaster[cq++] = new Chord(chordStr);
-				chordRaster[cq++] = new Chord(chordStr); chordRaster[cq++] = new Chord(chordStr);
-				chordRaster[cq++] = new Chord(chordStr); chordRaster[cq++] = new Chord(chordStr);
-			} else if (chordStr.endsWith("h")) {
-				chordRaster[cq++] = new Chord(chordStr); chordRaster[cq++] = new Chord(chordStr);
-				chordRaster[cq++] = new Chord(chordStr); chordRaster[cq++] = new Chord(chordStr);
+		for (Chord chord : getChords()) {
+			if (chord.getNotes()[0].getDecoratorString().endsWith("w")) {
+				chordRaster[cq++] = chord;
+				chordRaster[cq++] = chord;
+				chordRaster[cq++] = chord; chordRaster[cq++] = chord;
+				chordRaster[cq++] = chord; chordRaster[cq++] = chord;
+				chordRaster[cq++] = chord; chordRaster[cq++] = chord;
+			} else if (chord.getNotes()[0].getDecoratorString().endsWith("h")) {
+				chordRaster[cq++] = chord; chordRaster[cq++] = chord;
+				chordRaster[cq++] = chord; chordRaster[cq++] = chord;
 			}
 		}
 		
@@ -100,11 +105,12 @@ public class MelodyBow extends Melody {
 				melodyRaster[i] = null;
 			else
 				melodyRaster[i] = Random.rangeInt(-hullInterval+hullOffset, hullInterval+hullOffset);
-		System.out.println("hull interval="+hullInterval+", offset="+hullOffset);
 		
-		
-		// 3) smooth out melody curve
-		// [...]
+		// 3) smooth out melody (maybe curve model later)
+		for (int i=0; i<melodyRaster.length; i++)
+			// eventually kill off-notes
+			if (Random.nextBoolean(PROB_QuarterBind) && i%2==1)
+				melodyRaster[i] = null;
 		
 		// 4) copy beginning to somewhere else: sequencing/possibly transposed (e.g ABAC/AAB/ABCA)
 		int copyLength = Random.rangeInt(0, melodyRaster.length/4+2);
@@ -117,22 +123,23 @@ public class MelodyBow extends Melody {
 		}
 		
 		// 5) smooth out ending (end with 0)
-		int endNotePos = (getLength()-1)*8;
-		melodyRaster[endNotePos] = 0;
-		for (int i=endNotePos+1; i<melodyRaster.length; i++)
-			melodyRaster[i] = null;
+		if (getLength()>1) {
+			int endNotePos = (getLength()-1)*8;
+			melodyRaster[endNotePos] = 0;
+			for (int i=endNotePos+1; i<melodyRaster.length; i++)
+				melodyRaster[i] = null;
+		}
 		
 		// 6) translate to staccato and make quarter/half notes
 		// and transpose to 0=root of last chord
-		System.out.println("PROB_Rest="+PROB_Rest+", PROB_QuarterNote="+PROB_QuarterNote+", PROB_HalfNote="+PROB_HalfNote);
 		int referenceTone = DIATONIC_MAP.get(chordRaster[(getLength()-1)*8]
-				.getNotes()[0].getToneString().substring(0, 1));
+				.getNotes()[Random.nextBoolean(0.75f) ? 0 : 2].getToneString().substring(0, 1));
 		for (int i=0; i<melodyRaster.length; i++) {
-			System.out.print(melodyRaster[i]+" ");
 			melodyStr += NEXT;
 			if (melodyRaster[i] == null)
 				melodyStr += REST+EIGTH;
 			else {
+				// TODO 7) kill avoid notes (b2/b9 to any chord note)
 				melodyStr += getMelodyToneByRelation(
 						referenceTone, 5, melodyRaster[i]);
 				if (i % 2 == 0 // is downbeat
@@ -143,20 +150,17 @@ public class MelodyBow extends Melody {
 					&& Random.nextBoolean(PROB_HalfNote)) {
 						melodyStr += HALF;
 						i+=3;
-						System.out.print("~~~ ");
 				} else if (i % 2 == 0 // is downbeat
 					&& i+1 < melodyRaster.length // space available
 					&& melodyRaster[i+1] == null // rest is following
 					&& Random.nextBoolean(PROB_QuarterNote)) {
 						melodyStr += QUARTER;
 						i++;
-						System.out.print("~ ");
 				} else {
 					melodyStr += EIGTH;
 				}
 			}
-		}System.out.println();
-		// X) maybe: remove avoid tones
+		}
 		
 		return melodyStr;
 	}

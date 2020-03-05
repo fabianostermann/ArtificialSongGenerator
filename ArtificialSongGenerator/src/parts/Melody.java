@@ -2,6 +2,7 @@ package parts;
 
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
+import org.jfugue.theory.Chord;
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
 
@@ -9,9 +10,9 @@ public abstract class Melody implements PatternProducer {
 
 	private final Key key;
 	private final int length;
-	private final ChordProgression chords;
+	private final Chord[] chords;
 	
-	public String melodyString;
+	private String melodyString;
 	
 	/**
 	 * Constructs a random melody fragment in JFugue's Staccato String Syntax
@@ -19,7 +20,7 @@ public abstract class Melody implements PatternProducer {
 	 * @param length The number of bars the melody should have
 	 * @param chords The underlying chord progression
 	 */
-	public Melody(Key key, int length, ChordProgression chords) {
+	public Melody(Key key, int length, Chord[] chords) {
 		this.key = key;
 		this.length = length;
 		this.chords = chords;
@@ -46,7 +47,7 @@ public abstract class Melody implements PatternProducer {
 	}
 
 	/** @return The underlying chord progression */
-	public ChordProgression getChords() {
+	public Chord[] getChords() {
 		return chords;
 	}
 	
