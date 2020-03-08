@@ -1,24 +1,22 @@
 <?xml version = "1.0"?>
-<project name="OnsetAnnotator" default="compile" basedir=".">
-
-<property name="asglib" value="../ASGLib/src"/>
+<project name="ArtificialSongGenerator-all" default="compile" basedir=".">
 
 	<target name="compile">
-		<ant dir="ArtificialSongGenerator" target="compile" antfile="build.xml"/>
-		<ant dir="OnsetAnnotator" target="compile" antfile="build.xml"/>
-		<ant dir="SamplingRoboter" target="compile" antfile="build.xml" />
+		<ant target="compile" dir="ArtificialSongGenerator" antfile="build.xml"/>
+		<ant target="compile" dir="OnsetAnnotator" antfile="build.xml"/>
+		<ant target="compile" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
 	<target name="pack">
-		<ant antfile="build.xml" target="pack" dir="ArtificialSongGenerator"/>
-		<ant antfile="build.xml" target="pack" dir="OnsetAnnotator"/>
-		<ant antfile="build.xml" target="pack" dir="SamplingRoboter"/>
+		<ant target="pack" dir="ArtificialSongGenerator" antfile="build.xml"/>
+		<ant target="pack" dir="OnsetAnnotator" antfile="build.xml"/>
+		<ant target="pack" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
 	<target name="clean">
-		<ant antfile="build.xml" target="clean" dir="ArtificialSongGenerator"/>
-		<ant antfile="build.xml" target="clean" dir="OnsetAnnotator"/>
-		<ant antfile="build.xml" target="clean" dir="SamplingRoboter"/>
+		<ant target="clean" dir="ArtificialSongGenerator" antfile="build.xml"/>
+		<ant target="clean" dir="OnsetAnnotator" antfile="build.xml"/>
+		<ant target="clean" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
 </project>
