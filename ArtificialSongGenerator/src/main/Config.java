@@ -32,7 +32,7 @@ public class Config {
 	 * If a key is not read from file, a default string is put in using the getConfig*() functions.
 	 */
 	private static Map<String, String[]> configMap = new HashMap<String, String[]>();
-	public static String CONFIG_FILENAME = "thesong.conf";
+	public static String CONFIG_FILENAME = null;
 	public static final String DUMMY_SUFFIX = ".dummy";
 	
 	/**
@@ -71,6 +71,9 @@ public class Config {
 	 * @throws IOException If something goes wrong while reading
 	 */
 	public static void loadFromFile() throws IOException {
+		
+		if (CONFIG_FILENAME == null)
+			return;
 		
 		File file = new File(CONFIG_FILENAME);
 		if (!file.exists())
@@ -305,7 +308,7 @@ public class Config {
 	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi"
+		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi","Overdriven_Guitar"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
 	/** make random choice on melody instrument */
@@ -331,7 +334,7 @@ public class Config {
 	}
 	
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
-		"Piano", "Electric_Piano", "Guitar", "Overdriven_Guitar", "Cello", "Sitar"
+		"Piano", "Electric_Piano", "Guitar", "Cello", "Sitar"
 		//"Rock_Organ", "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
 	/** make random choice on chord instrument */

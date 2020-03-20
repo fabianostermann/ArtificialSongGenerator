@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
@@ -92,6 +94,21 @@ public class ArtificialSongGenerator {
 		String dir = argsUtil.get("--dir=");
 		if (dir != null)
 			Config.GET.OUTPUT_DIR = dir;
+		
+		// print instrument to channel map
+		if (argsUtil.check("--channel-map")) {
+			Map<Integer, String> channelMap = new HashMap<>();
+			for (String instrName : Config.GET.MELODY_INSTRUMENTS)
+				channelMap.put(Config.GET.getMelodyChannel(instrName), instrName);
+			for (String instrName : Config.GET.CHORD_INSTRUMENTS)
+				channelMap.put(Config.GET.getChordsChannel(instrName), instrName);
+			for (String instrName : Config.GET.BASS_INSTRUMENTS)
+				channelMap.put(Config.GET.getBassChannel(instrName), instrName);
+			channelMap.put(9, "Drums");
+			for (int ch : channelMap.keySet())
+				System.out.println(Config.COMMENT+" "+(ch+1)+" -> "+channelMap.get(ch));
+			System.exit(0);
+		}
 		
 		// #################################
 		// ### GENERATION PROCESS STARTS ###
@@ -201,7 +218,9 @@ public class ArtificialSongGenerator {
 				"--dir=<dir>            Specifies directory for output files " +
 					"(ATTENTION: fails if directory does not exist).\n" +
 				"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
-				"--config-dummy         Creates a config overview dummy file.\n");
+				"--config-dummy         Creates a config overview dummy file.\n" +
+				"--channel-map          Prints the current mapping of instruments to channels.\n"
+				);
 	}
 
 }

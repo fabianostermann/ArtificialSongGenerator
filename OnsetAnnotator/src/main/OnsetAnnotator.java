@@ -37,11 +37,13 @@ public class OnsetAnnotator {
 	public static ArgsUtil argsUtil = null;
 	
 	public static void printHelp() {
-		System.out.println("This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)\n" +
-							"In this current version instrument changes are read only once per track and tempo change is supposed on track 0 at tick 0.\n" +
+		System.out.println("USAGE java OnsetAnnotator --midifile=<file>\n" +
+							"\n" +
+							"This module analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)\n" +
+							"In this current version instrument change events are read only once per track.\n" +
 							"For each onset the midi key numbers are written to the arff file.\n" +
 							"\n" +
-							"Use --midifile to choose a specific file. Default filename is '"+fileName+".mid'\n" +
+							"Use --midifile  choose a file. \n" +
 							"Use --verbose to get verbose output.\n" +
 							"Use -v or --version to show version number.\n" +
 							"Use -h or --help to print this.");
@@ -90,12 +92,16 @@ public class OnsetAnnotator {
 		arffToMidiInstrumentMap.put("Drums", "Drums");
 	}
 
-	public static String fileName = "somesong";
+	public static String fileName = null;
 	
     public static void main(String[] args) throws IOException {
     	argsUtil = new ArgsUtil(args);
     	
-    	if (argsUtil.check("--help") || argsUtil.check("-h")) {
+    	String argsFileName = argsUtil.get("--midifile=");
+		if (argsFileName != null)
+			fileName = argsFileName.replaceAll(".mid", "");
+    	
+    	if (fileName == null || argsUtil.check("--help") || argsUtil.check("-h")) {
 			printHelp();
 			System.exit(0);
 		}
@@ -105,12 +111,6 @@ public class OnsetAnnotator {
 			System.out.println(Version.VERSION);
 			System.exit(0);
 		}
-		
-    	
-    	String argsFileName = argsUtil.get("--midifile=");
-		if (argsFileName != null)
-			fileName = argsFileName.replaceAll(".mid", "");
-    	
 		
         Sequence sequence = null;
 		try {
