@@ -1,6 +1,5 @@
 package main;
 import java.io.File;
-
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
@@ -83,6 +83,10 @@ public class SamplingRoboter {
 		if (argsUtil.check("--delete-wav")) {
 			DELETE_RAW = true;
 		}
+		// alter location of SoX executable
+		SoxWrapper.SOX_PROGRAM = argsUtil.get("--sox-path=", SoxWrapper.SOX_PROGRAM);
+		// alter location of Lame executable
+		LameWrapper.LAME_PROGRAM = argsUtil.get("--lame-path=", LameWrapper.LAME_PROGRAM);
 		// choose midi device by number
 		MIDI_DEVICE_NO = argsUtil.get("--mididevice=", MIDI_DEVICE_NO);
 		// choose midi device by number
@@ -126,9 +130,9 @@ public class SamplingRoboter {
 		Sequencer sequencer = null;
 		MidiDevice midiDevice = null;
 		int[] numOfMidiOn = null;
+		Long[] firstTick = null;
 		String[] firstInstrument = null;
 		try {
-			
 			// opening a file
 			if (DEBUG_GUI_ENABLED) {
 				JFileChooser chooser = new JFileChooser(new File("."));
@@ -183,24 +187,32 @@ public class SamplingRoboter {
 				// MIDI file info
 		        System.out.println("Analysing song..");
 		        numOfMidiOn = new int[seq.getTracks().length];
+		        firstTick = new Long[seq.getTracks().length];
 		        firstInstrument = new String[seq.getTracks().length];
 		        for (int track=0; track<seq.getTracks().length; track++) {
 		        	numOfMidiOn[track] = 0;
 		        	firstInstrument[track] = track==9 ? "Drums" : null;
 		        	for (int i=0; i<seq.getTracks()[track].size(); i++) {
-		        		MidiMessage msg = seq.getTracks()[track].get(i).getMessage();
+		        		MidiEvent event = seq.getTracks()[track].get(i);
+		        		MidiMessage msg = event.getMessage();
 		        		if (msg instanceof ShortMessage) {
 		                    ShortMessage sm = (ShortMessage) msg;
-		                    if (sm.getCommand() == ShortMessage.NOTE_ON)
+		                    if (sm.getCommand() == ShortMessage.NOTE_ON) {
+		                    	// collect note_on event
 		                    	numOfMidiOn[track] += 1;
-		                    else if (sm.getCommand() == ShortMessage.PROGRAM_CHANGE && firstInstrument[track] == null){
+		                    	if (firstTick[track] == null)
+		                    		firstTick[track] = event.getTick();
+		                    } else if (sm.getCommand() == ShortMessage.PROGRAM_CHANGE && firstInstrument[track] == null){
+		                    	// collect instrument changes
 		                    	firstInstrument[track] = MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)sm.getData1());
 		                	}
 		        		}	
 		        	}
 		        	if (numOfMidiOn[track] != 0)
-		        		System.out.println("track="+track+" \t"+"#midiOn="+numOfMidiOn[track]
-		        				+"\t"+"instr.name="+firstInstrument[track]);
+		        		System.out.println("track="+track
+		        				+", "+"#midiOn="+numOfMidiOn[track]
+			        			+", "+"instr.name="+firstInstrument[track]
+			        			+", "+"starts at tick="+firstTick[track]);
 		        }
 		        
 		        for (int track=0; track<seq.getTracks().length; track++) {
@@ -222,7 +234,7 @@ public class SamplingRoboter {
 						fileStr = fileStr.substring(0,i);
 					}
 					System.out.print("# Playback of '"+ firstInstrument[track] +"' starts..");
-					doRecording(midiFile.getParent(), fileStr+"-track"+track+"-"+firstInstrument[track], sequencer);
+					doRecording(midiFile.getParent(), fileStr+"-track"+track+"-"+firstInstrument[track], sequencer, firstTick[track]);
 					System.out.println("Creation of '"+ firstInstrument[track] +"' done.");
 					
 		        }
@@ -244,22 +256,41 @@ public class SamplingRoboter {
 		System.out.println("Exit.");
 	}
 	
-	public static void doRecording(String folder, String filename, Sequencer sequencer) {
+	public static void doRecording(String folder, String filename, Sequencer sequencer, long tickPos) {
 		
 		File wavfile = new File(folder+"/"+filename+".wav");
-		sequencer.setMicrosecondPosition(0);
+		sequencer.setTickPosition(tickPos);
 		
+		final long numOfProcessIndicators = 50;
+		final long lengthInMicros = sequencer.getMicrosecondLength();
+		final long startPosInMicros = sequencer.getMicrosecondPosition();
+		final float lengthInSecs = (float)(lengthInMicros)/1000000.f;
+		final float startPosInSecs = (float)(startPosInMicros)/1000000.f;
+		final float recordLengthInSecs = lengthInSecs - startPosInSecs;
+		long processIndicatorSleep =  (lengthInMicros-startPosInMicros) / 1000 / numOfProcessIndicators;
+		
+		System.out.println(" starts at "+ startPosInSecs+"secs");
+		System.out.print("[");
+		for (int i=0; i<numOfProcessIndicators; i++)
+			System.out.print("-");
+		System.out.print("] ");
+		System.out.println((int)(recordLengthInSecs/60)+":"
+							+(int)(recordLengthInSecs%60)+"min");
+		
+		// TODO works for now, should be replaced by SoX 
 		AudioRecorder.initFile(wavfile);
 		AudioRecorder.startRecording();
 		
-		sequencer.start(); // TODO: cut prerecording time somehow...
+		sequencer.start();
 		long startTime = System.currentTimeMillis();
-		while (sequencer.isRunning()) //// && System.currentTimeMillis() - startTime < 1000) // use for debug (only 1 seconds for each track)
-		{
-			System.out.print("."); sleep(1000);
-			if (DEBUG_RECORDINGS_ENABLED)
-				break;
-		}
+		
+		System.out.print("^"); sleep(2000);
+		// in DEBUG mode only record first second
+		if (!DEBUG_RECORDINGS_ENABLED)
+			while (sequencer.isRunning())
+			{
+				System.out.print("^"); sleep(processIndicatorSleep);
+			}
 		System.out.println();
 		sequencer.stop();
 		
@@ -269,9 +300,13 @@ public class SamplingRoboter {
 				+ (DEBUG_RECORDINGS_ENABLED ? " !DEBUG RECORDINGS ENABLED!" : ""));
 		sleep(1000);
 		
+		// do trimming (for perfect onset annotations)
+		SoxWrapper.trim(wavfile, startPosInSecs);
+		
+		// do compression
 		LameWrapper.removeWavAfter(DELETE_RAW);
 		if (COMPRESS)
-			LameWrapper.execute(wavfile, LAME_ARGS);
+			LameWrapper.compress(wavfile, LAME_ARGS);
 	}
 
 	/**
@@ -296,6 +331,8 @@ public class SamplingRoboter {
 				"--compress             Compress audio using lame (must be installed or locally executable).\n" +
 				"--delete-wav           Delete raw wavs after compression.\n" +
 				"--mididevice=<No>      The mididevice to use (default is 0).\n" +
+				"--sox-path=<path>      Explicit location of SoX executable.\n" +
+				"--lame-path=<path>     Explicit location of Lame executable.\n" +
 				"--lame-options=<list>  List of arguments passed to the lame encoder (overwrites defaults).\n"+
 				"--debug-gui            Using simple GUI for choosing file and MIDI device.\n" +
 				"--debug-recordings     Only recording first second of the tracks.\n"+

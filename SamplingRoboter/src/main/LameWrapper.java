@@ -3,12 +3,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.ProcessBuilder.Redirect;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class LameWrapper {
-
+	
+	public static String LAME_PROGRAM = "lame";
 	private static final String PROCESS_INDICATOR = "lame>>> ";
 	
 	private static boolean removeWav = false;
@@ -23,21 +25,11 @@ public class LameWrapper {
 	 * --- if given this will overwrite the default args
 	 * --- if NULL default args are used
 	 */
-	public static void execute(File file, List<String> optArgs) {
+	public static void compress(File file, List<String> optArgs) {
 	    Process p;
 	    try {
-	    	String lameProgram = "lame";
-	    	if ((new File("./lame")).exists()) {
-	    		lameProgram = "./lame";
-				System.out.println("Found linux like local program './lame'.");
-			}
-			if ((new File("./lame.exe")).exists()) {
-	    		lameProgram = "./lame.exe";
-				System.out.println("Found windows like local program './lame.exe'.");
-			}
-			
 			List<String> pargs = new ArrayList<>();
-			pargs.add(lameProgram);
+			pargs.add(LAME_PROGRAM);
 			if (optArgs==null)
 				// default parameters
 				pargs.addAll(defaultArgs);
@@ -50,7 +42,7 @@ public class LameWrapper {
 			pb.redirectOutput(Redirect.PIPE); // INHERIT|PIPE
 			
 			// print full command
-			System.out.print(PROCESS_INDICATOR);
+			System.out.print("EXEC: ");
 			for (String arg : pargs)
 				System.out.print(arg+" ");
 			System.out.println();
@@ -68,20 +60,23 @@ public class LameWrapper {
 	        p.waitFor();
 	        
 	        if (p.exitValue() != 0)
-				System.out.println("Something went wrong using '"+lameProgram+"'");
+				System.out.println("Something went wrong using '"+LAME_PROGRAM+"'");
 
 			String fileStr = file.getName();
 			int i = fileStr.lastIndexOf('.');
 			if (i > 0) {
 				fileStr = fileStr.substring(0,i);
 			}
-			if (removeWav && p.exitValue() == 0
-				&& (new File(file.getParent() +"//"+ fileStr+".mp3")).exists()) {
-				System.out.println("Deleting tmp wav file: "+file.getAbsolutePath());
-				file.delete();
+			if (p.exitValue() == 0
+				&& (new File(file.getParent() +"/"+ fileStr+".mp3")).exists()) {
+				System.out.println("mp3 succesfully generated.");
+				if (removeWav) {
+					System.out.println("Deleting tmp wav file: "+file.getAbsolutePath());
+					Files.deleteIfExists(file.toPath());
+				}
 			}
 			else
-				System.out.println("mp3 NOT created.");
+				System.out.println("Error: mp3 NOT created.");
 
 	    } catch (Exception e) {
 	        e.printStackTrace();
