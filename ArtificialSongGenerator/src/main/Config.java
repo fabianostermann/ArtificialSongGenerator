@@ -272,9 +272,14 @@ public class Config {
 		if (MEMOIZE_TEMPO) {
 			return tempo;
 		}
+		if (Random.nextBoolean(0.1f)) {
+			tempo = Random.rangeInt(TEMPO_RANGE[0], TEMPO_RANGE[TEMPO_RANGE.length-1]);
+			return tempo;
+		}
 		HashMap<Float, Float> tempoMod = new HashMap<>();
 			tempoMod.put(1f, 0.5f); // keep tempo
-			tempoMod.put(0.5f, 0.2f); tempoMod.put(2f, 0.2f); // half / double time
+			tempoMod.put(0.5f, 0.15f); tempoMod.put(2f, 0.15f); // half / double time
+			tempoMod.put(2f/3f, 0.05f); tempoMod.put(4f/3f, 0.05f); // 2/3 / 4/3 time
 			tempoMod.put(2f/3f, 0.05f); tempoMod.put(4f/3f, 0.05f); // 2/3 / 4/3 time
 		float mod = -1; int tempoReq = -1; int breakCount = 10;
 		// ensure a tempo request suitable to desired tempo range
