@@ -9,9 +9,8 @@
 - **DONE** Tonart zur Annotation hinzufügen
 - **DONE** memoize-keys/tempo in relation (Abstufung Quinte-Quart-Terz-zufall, halbe-doppelt-triole-zufall)
 - **DONE** Zeitliche Länge maßgebend (anstatt Anzahl Formteile) -> alle Songs 2:30--3:00min
-
-- *TODO* Schlusston Relation (eher Grundton, eher Halbtonannäherung, Intervalrahmen (Anfang-Ende))
-- *TODO* Harmoniefolge Muster einbeziehen (Tonart: letzter Akkord)
+- **DONE** Schlusston Relation (eher Grundton, eher Halbtonannäherung, Intervalrahmen (Anfang-Ende))
+- **DONE** *IMPROVABLE* Harmoniefolge Muster einbeziehen (Tonart: letzter Akkord)
 
 - **LATER** Formenlehre! (Modulations-Dominanten, ...)
 - **LATER** Segmentgrenzen: Melodie und Akkorde zusammen generieren
@@ -23,7 +22,7 @@
 
 # Onset Annotator
 
-- *TODO* handle tempo changes
+- **DONE** handle tempo changes
 
 
 # Sampling Roboter
