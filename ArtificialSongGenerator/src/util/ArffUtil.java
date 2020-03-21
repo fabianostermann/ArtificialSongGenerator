@@ -101,7 +101,7 @@ public class ArffUtil {
 		writer.write(NEXT);
 		writer.write(""+tempo);
 		writer.write(NEXT);
-		writer.write(""+(key!=null ? key.getKeySignature() : "-"));
+		writer.write("'"+(key!=null ? key.getKeySignature() : "-")+"'");
 		writer.write(NEXT);
 		writer.write("'");
 		for (int i=0; i<instruments.length; i++) {
@@ -131,8 +131,8 @@ public class ArffUtil {
 
 	private static void printHeader(BufferedWriter writer, String id, String[] attributes, int rows) throws IOException {
 		writer.write("@RELATION 'Annotation "+id+"'"); writer.newLine();
-		writer.write("%rows="+rows); writer.newLine();
 		writer.newLine();
+		writer.write("%rows="+rows); writer.newLine();
 		writer.write("%columns="+attributes.length); writer.newLine();
 		writer.newLine();
 		for (String attribute : attributes) {
