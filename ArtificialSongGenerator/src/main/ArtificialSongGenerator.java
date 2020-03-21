@@ -154,7 +154,7 @@ public class ArtificialSongGenerator {
 		}
 		if (argsUtil.check("--print-staccato")) {
 			// staccato code is formatted by line breaking on tempo marks (e.g. T85)
-			System.out.println("Staccato code:\n "+theSong.toString().replaceAll(" T", " \nT"));
+			System.out.println("Staccato code:\n "+theSong.toString().replaceAll(" V", " \nT"));
 		}
 		
 		// save song to file

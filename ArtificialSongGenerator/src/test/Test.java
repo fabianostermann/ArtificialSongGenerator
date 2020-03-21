@@ -62,26 +62,27 @@ public class Test {
 //	        player.play(cp.allChordsAs("$0q $0q $0q $0q $1q $1q $2q $0q"));
 //	        player.play(cp.allChordsAs("$0 $0 $0 $0 $1 $1 $2 $0").eachChordAs("$0h"));
 	  
-      Player player = new Player();
-      int length = 4;
-      Config.loadDefaults();
-      Key key = Config.GET.randomKey();
-      int tempo = Config.GET.randomTempo();
-      System.out.println(key.getKeySignature()+", "+tempo+"bpm");
-      ChordSequenceRanged chords = new ChordSequenceRanged(key, length);
-      Pattern melody = new MelodyBow(key, length, chords.getChords()).getPattern();
-      Rhythm drums = new Rhythm("O...O...");
-      BassLine bass = BassLine.newRandomBassLine(chords.getChords());
-      ArpeggioSequence arpSeq = ArpeggioSequence.newRandomArpeggio(chords.getChords());
-      Pattern song = new Pattern();
-      song.add(melody.setInstrument("Trumpet").setVoice(0));
-      song.add(chords.getPattern().setInstrument("Electric_Piano").setVoice(1));
-      song.add(drums.getPattern().repeat(length));
-      song.add(bass.getPattern().setInstrument("Electric_Bass_Finger").setVoice(2));
-      song.add(arpSeq.getPattern().setInstrument("Marimba").setVoice(3));
-      System.out.println(melody);
-      System.out.println(Arrays.toString(chords.getChords()));
-      player.play(song.setTempo(tempo));
+//      Player player = new Player();
+//      int length = 4;
+//      Config.loadDefaults();
+//      Key key = Config.GET.randomKey();
+//      int tempo = Config.GET.randomTempo();
+//      System.out.println(key.getKeySignature()+", "+tempo+"bpm");
+//      ChordSequenceRanged chords = new ChordSequenceRanged(key, length);
+//      Pattern melody = new MelodyBow(key, length, chords.getChords()).getPattern();
+//      Rhythm drums = new Rhythm("O...O...");
+//      BassLine bass = BassLine.newRandomBassLine(chords.getChords());
+//      ArpeggioSequence arpSeq = ArpeggioSequence.newRandomArpeggio(chords.getChords());
+//      Pattern song = new Pattern();
+//      song.add(melody.setInstrument("Trumpet").setVoice(0));
+//      song.add(chords.getPattern().setInstrument("Electric_Piano").setVoice(1));
+//      song.add(drums.getPattern().repeat(length));
+//      song.add(bass.getPattern().setInstrument("Electric_Bass_Finger").setVoice(2));
+//      song.add(arpSeq.getPattern().setInstrument("Marimba").setVoice(3));
+//      System.out.println(melody);
+//      System.out.println(Arrays.toString(chords.getChords()));
+//      player.play(song.setTempo(tempo));
+
   }
 }
 

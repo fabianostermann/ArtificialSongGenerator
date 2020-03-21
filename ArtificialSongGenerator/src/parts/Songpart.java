@@ -97,10 +97,12 @@ public class Songpart implements PatternProducer {
 				else
 					pattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
 			else
-				pattern.add(new Pattern(restVoice).setVoice(ch).setTempo(tempo));
+				pattern.add(new Pattern(restVoice).setTempo(tempo).setVoice(ch));
 		}
 		
-		return pattern;
+		// TODO BUG: repair jfugue bug, Tempo markers must be written after Voice markers, default is other way round 
+		Pattern tempoFixedPattern = new Pattern(pattern.toString().replaceAll("(T[0-9]+) (V[0-9]+)", "$2 $1"));
+		return tempoFixedPattern;
 	}
 	
 	public float getLengthInSeconds() {
