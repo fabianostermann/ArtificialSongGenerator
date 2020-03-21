@@ -1,5 +1,9 @@
+# short reminder
+
+- stop dropbox during roboted generation (100% cpu)
+
+
 ## Make Script erstellen
-- change to ANT
 - Hinweis auf fluid-synth und vlc-nox (mit option das direkt zu laden)
 
 # Artificial Song Generator
@@ -25,7 +29,7 @@
 - **DONE** handle tempo changes
 
 
-# Sampling Roboter
+# Sampling Roboter2
 
 - *TODO* cut silence offset at beginning
 
