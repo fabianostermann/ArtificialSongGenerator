@@ -25,7 +25,7 @@ public class MelodySimple extends Melody {
 	public static final String NEXT = " ";
 	public static final String REST = "R";
 	
-	public static final String SET_VOLUME = " :CON(7, 120) ";
+	//public static final String SET_VOLUME = " :CON(7, 120) ";
 	
 	public static final String[] DIATONIC_SCALE = new String[] { "C", "D", "E", "F", "G", "A" };//"B" }; 
 	private int currentNote = Random.rangeInt(0, DIATONIC_SCALE.length);
@@ -40,7 +40,7 @@ public class MelodySimple extends Melody {
 	protected String newRandomMelodyString() {
 		Key key = getKey();
 		key = JFugueExpansion.minToMajKey(key);
-		String melodyStr = SET_VOLUME+"Key:"+key.getKeySignature();
+		String melodyStr = "Key:"+key.getKeySignature();
 		
 		int lengthEighth = getLength()*8;
 		int currLengthEighth = 0; // counter of 8th notes

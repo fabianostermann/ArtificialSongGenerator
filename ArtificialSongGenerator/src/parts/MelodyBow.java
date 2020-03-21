@@ -64,7 +64,7 @@ public class MelodyBow extends Melody {
 		return DIATONIC_SCALE[tone]+octave;
 	}
 	
-	public static final String SET_VOLUME = " :CON(7, 120) ";
+	//public static final String SET_VOLUME = " :CON(7, 120) ";
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
 	private static float PROB_QuarterBind = Random.rangeFloat(0.1f, 0.9f); // Prob. for a rest
@@ -76,7 +76,7 @@ public class MelodyBow extends Melody {
 	protected String newRandomMelodyString() {
 		Key key = getKey();
 		key = JFugueExpansion.minToMajKey(key);
-		String melodyStr = SET_VOLUME+"Key:"+key.getKeySignature();
+		String melodyStr = "Key:"+key.getKeySignature();
 		
 		int lengthEighth = getLength()*8;
 		Integer[] melodyRaster = new Integer[lengthEighth];

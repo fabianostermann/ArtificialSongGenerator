@@ -33,7 +33,7 @@ public class Config {
 	 */
 	private static Map<String, String[]> configMap = new HashMap<String, String[]>();
 	public static String CONFIG_FILENAME = null;
-	public static final String DUMMY_SUFFIX = ".dummy";
+	public static final String DUMMY_FILENAME = "config.dummy";
 	
 	/**
 	 * Some char constants used when interpreting the config file
@@ -184,7 +184,7 @@ public class Config {
 	 * @throws IOException If something goes wrong writing.
 	 */
 	public static void createDummyFile() throws IOException {
-		File file = new File(CONFIG_FILENAME+DUMMY_SUFFIX);
+		File file = new File(DUMMY_FILENAME);
 		BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8,
 				StandardOpenOption.CREATE, // create if not exists
 				StandardOpenOption.TRUNCATE_EXISTING, // clear to zero length
@@ -193,8 +193,7 @@ public class Config {
 		// print config info header
 		writer.write(COMMENT+" This is a dummy config file. "+COMMENT); writer.newLine();
 		writer.newLine();
-		writer.write(COMMENT+" Remove the suffix '"+DUMMY_SUFFIX+"' to make it be used "); writer.newLine();
-		writer.write(COMMENT+"   or specify a name you like by using '--config=<configfile>'"); writer.newLine();
+		writer.write(COMMENT+" Specify a name you like and use '--config=<configfile>'"); writer.newLine();
 		writer.newLine();
 		writer.write(COMMENT+" Remove the comment char '"+COMMENT+"' from the lines you like to enable."); writer.newLine();
 		writer.write(COMMENT+" Settings syntax is: 'key = value' or 'key = value1, value2, value3, ...'"); writer.newLine();

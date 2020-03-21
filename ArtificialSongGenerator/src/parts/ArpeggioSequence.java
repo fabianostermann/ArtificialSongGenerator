@@ -44,13 +44,13 @@ public class ArpeggioSequence implements PatternProducer {
 	public static final String REST = "R";
 	public static final String NEXT = " ";
 	
-	public static final String SET_VOLUME = " :CON(7, 70) ";
+	//public static final String SET_VOLUME = " :CON(7, 70) ";
 	
 	///** Probabilities for random choices in melody generation (memoized for one complete song) */
 	//private static float PROB_Rest = Random.rangeFloat(0.1f, 0.4f); // Prob. for a rest
 	
 	public String newRandomArpeggioString() {
-		String arpeggioStr = SET_VOLUME;
+		String arpeggioStr = "";
 		
 		// random arpeggio style (example: { 0, 1, 0, 2, 1, 1, 2, 0})
 		int[] arpeggioStyle = new int[8];

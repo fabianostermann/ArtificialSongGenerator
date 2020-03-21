@@ -10,7 +10,7 @@
 *.mp3
 *.flac
 *.conf
-*.conf.dummy
+*.dummy
 *.jar
 *.png
 *.jpg

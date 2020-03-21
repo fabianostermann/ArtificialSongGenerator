@@ -74,7 +74,7 @@ public class ArtificialSongGenerator {
 			try { Config.createDummyFile();
 			} catch (IOException e) {
 				System.out.println("There was a problem saving the file " +
-						"'"+Config.CONFIG_FILENAME+Config.DUMMY_SUFFIX+"': "+e.getMessage());
+						"'"+Config.DUMMY_FILENAME+"': "+e.getMessage());
 			}
 			System.out.println("Created config dummy file.");
 			System.exit(0);
