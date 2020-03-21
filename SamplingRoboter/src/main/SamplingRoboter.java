@@ -42,6 +42,11 @@ public class SamplingRoboter {
 	public static boolean COMPRESS = false;
 	public static boolean DELETE_RAW = false;
 	
+	public static enum Mode {
+	    MIX, MULTI_TRACK, ALL
+	}
+	public static Mode MODE = Mode.MIX; 
+	
 	public static void main(String[] args) {
 		argsUtil = new ArgsUtil(args);
 		
@@ -67,6 +72,15 @@ public class SamplingRoboter {
 			System.exit(0);
 		}
 
+		// enable debug gui
+		String modeStr = argsUtil.get("--mode=");
+		if (modeStr != null) {
+			if (modeStr.equalsIgnoreCase("multitrack"))
+				MODE = Mode.MULTI_TRACK;
+			else if (modeStr.equalsIgnoreCase("all"))
+				MODE = Mode.ALL;
+			else MODE = Mode.MIX;
+		}
 		// enable debug gui
 		if (argsUtil.check("--debug-gui")) {
 			DEBUG_GUI_ENABLED = true;
@@ -215,28 +229,41 @@ public class SamplingRoboter {
 			        			+", "+"starts at tick="+firstTick[track]);
 		        }
 		        
-		        for (int track=0; track<seq.getTracks().length; track++) {
-		        	
-		        	if (numOfMidiOn[track] <= 0)
-		        		continue;
-		        	
-		        	// choose right track
-		        	for (int i=0; i<seq.getTracks().length; i++) {
-		        		sequencer.setTrackSolo(i, false);
-		        		sequencer.setTrackMute(i, false);
-		        	}
-			        sequencer.setTrackSolo(track, true);
-			        
-				    // #### Playback ####
+		        if (MODE == Mode.MIX || MODE == Mode.ALL) {
+		        	// #### Playback ####
 			        String fileStr = midiFile.getName();
 					int i = fileStr.lastIndexOf('.');
 					if (i > 0) {
 						fileStr = fileStr.substring(0,i);
 					}
-					System.out.print("# Playback of '"+ firstInstrument[track] +"' starts..");
-					doRecording(midiFile.getParent(), fileStr+"-track"+track+"-"+firstInstrument[track], sequencer, firstTick[track]);
-					System.out.println("Creation of '"+ firstInstrument[track] +"' done.");
+					System.out.println("# Playback full song starts..");
+					doRecording(midiFile.getParent(), fileStr+"-mix", sequencer, 0);
+					System.out.println("Recording finished.");
 					
+		        }
+		        if (MODE == Mode.MULTI_TRACK || MODE == Mode.ALL) {
+		        	for (int track=0; track<seq.getTracks().length; track++) {
+			        	
+			        	if (numOfMidiOn[track] <= 0)
+			        		continue;
+			        	
+			        	// choose right track
+			        	for (int i=0; i<seq.getTracks().length; i++) {
+			        		sequencer.setTrackSolo(i, false);
+			        		sequencer.setTrackMute(i, false);
+			        	}
+				        sequencer.setTrackSolo(track, true);
+				        
+					    // #### Playback ####
+				        String fileStr = midiFile.getName();
+						int i = fileStr.lastIndexOf('.');
+						if (i > 0) {
+							fileStr = fileStr.substring(0,i);
+						}
+						System.out.println("# Playback of '"+ firstInstrument[track] +"' starts..");
+						doRecording(midiFile.getParent(), fileStr+"-track"+(track+1)+"-"+firstInstrument[track], sequencer, firstTick[track]);
+						System.out.println("Recording of '"+ firstInstrument[track] +"' finished.");
+			        }
 		        }
 			    
 		        if (sequencer != null)
@@ -261,21 +288,14 @@ public class SamplingRoboter {
 		File wavfile = new File(folder+"/"+filename+".wav");
 		sequencer.setTickPosition(tickPos);
 		
-		final long numOfProcessIndicators = 50;
 		final long lengthInMicros = sequencer.getMicrosecondLength();
 		final long startPosInMicros = sequencer.getMicrosecondPosition();
 		final float lengthInSecs = (float)(lengthInMicros)/1000000.f;
 		final float startPosInSecs = (float)(startPosInMicros)/1000000.f;
-		final float recordLengthInSecs = lengthInSecs - startPosInSecs;
-		long processIndicatorSleep =  (lengthInMicros-startPosInMicros) / 1000 / numOfProcessIndicators;
 		
-		System.out.println(" starts at "+ startPosInSecs+"secs");
-		System.out.print("[");
-		for (int i=0; i<numOfProcessIndicators; i++)
-			System.out.print("-");
-		System.out.print("] ");
-		System.out.println((int)(recordLengthInSecs/60)+":"
-							+(int)(recordLengthInSecs%60)+"min");
+		ASCIIProgressBar progressBar = new ASCIIProgressBar(50, startPosInMicros/1000, lengthInMicros/1000, true);
+		progressBar.setPrintStream(System.out);
+		progressBar.init();
 		
 		// TODO works for now, should be replaced by SoX 
 		AudioRecorder.initFile(wavfile);
@@ -284,12 +304,13 @@ public class SamplingRoboter {
 		sequencer.start();
 		long startTime = System.currentTimeMillis();
 		
-		System.out.print("^"); sleep(2000);
-		// in DEBUG mode only record first second
+		sleep(1000);
+		// in DEBUG mode only record first two second
 		if (!DEBUG_RECORDINGS_ENABLED)
 			while (sequencer.isRunning())
 			{
-				System.out.print("^"); sleep(processIndicatorSleep);
+				progressBar.update(sequencer.getMicrosecondPosition()/1000);
+				sleep(1000);
 			}
 		System.out.println();
 		sequencer.stop();
@@ -328,12 +349,18 @@ public class SamplingRoboter {
 				"--mididir=<dir>        Convert all midifiles in specified directory (will be ignored if --midifile is used).\n" +
 				"-h, --help             Prints help and infos about available MIDI devices.\n" +
 				"-v, --version          Prints version.\n" +
-				"--compress             Compress audio using lame (must be installed or locally executable).\n" +
-				"--delete-wav           Delete raw wavs after compression.\n" +
+				"\n" +
+				"--mode=mix             Play back whole song and record once (default).\n" +
+				"--mode=multitrack      Play and record each track of the midi file separately.\n" +
+				"--mode=all             Executes mix and multitrack mode respectively.\n" +
+				"\n" +
 				"--mididevice=<No>      The mididevice to use (default is 0).\n" +
 				"--sox-path=<path>      Explicit location of SoX executable.\n" +
 				"--lame-path=<path>     Explicit location of Lame executable.\n" +
 				"--lame-options=<list>  List of arguments passed to the lame encoder (overwrites defaults).\n"+
+				"--compress             Compress audio using lame (must be installed or locally executable).\n" +
+				"--delete-wav           Delete raw wavs after compression.\n" +
+				"\n" +
 				"--debug-gui            Using simple GUI for choosing file and MIDI device.\n" +
 				"--debug-recordings     Only recording first second of the tracks.\n"+
 				"\n"+
