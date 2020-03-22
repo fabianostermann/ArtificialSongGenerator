@@ -84,10 +84,12 @@ public class SamplingRoboter {
 		// enable debug gui
 		if (argsUtil.check("--debug-gui")) {
 			DEBUG_GUI_ENABLED = true;
+			System.out.println("DEBUG: Enabled demo GUI, use only for testing reasons");
 		}
 		// enable debug recordings
 		if (argsUtil.check("--debug-recordings")) {
 			DEBUG_RECORDINGS_ENABLED = true;
+			System.out.println("DEBUG: Enabled short demo recordings");
 		}
 		// compression enabled
 		if (argsUtil.check("--compress")) {
@@ -229,15 +231,16 @@ public class SamplingRoboter {
 			        			+", "+"starts at tick="+firstTick[track]);
 		        }
 		        
+		        String fileStr = midiFile.getName();
+				int dotPos = fileStr.lastIndexOf('.');
+				if (dotPos > 0) {
+					fileStr = fileStr.substring(0,dotPos);
+				}
+				
 		        if (MODE == Mode.MIX || MODE == Mode.ALL) {
 		        	// #### Playback ####
-			        String fileStr = midiFile.getName();
-					int i = fileStr.lastIndexOf('.');
-					if (i > 0) {
-						fileStr = fileStr.substring(0,i);
-					}
 					System.out.println("# Playback full song starts..");
-					doRecording(midiFile.getParent(), fileStr+"-mix", sequencer, 0);
+					doRecording(midiFile.getParent(), fileStr+"-Mix", sequencer, 0);
 					System.out.println("Recording finished.");
 					
 		        }
@@ -255,13 +258,8 @@ public class SamplingRoboter {
 				        sequencer.setTrackSolo(track, true);
 				        
 					    // #### Playback ####
-				        String fileStr = midiFile.getName();
-						int i = fileStr.lastIndexOf('.');
-						if (i > 0) {
-							fileStr = fileStr.substring(0,i);
-						}
 						System.out.println("# Playback of '"+ firstInstrument[track] +"' starts..");
-						doRecording(midiFile.getParent(), fileStr+"-track"+(track+1)+"-"+firstInstrument[track], sequencer, firstTick[track]);
+						doRecording(midiFile.getParent(), fileStr+"-"+firstInstrument[track], sequencer, firstTick[track]);
 						System.out.println("Recording of '"+ firstInstrument[track] +"' finished.");
 			        }
 		        }
@@ -290,10 +288,9 @@ public class SamplingRoboter {
 		
 		final long lengthInMicros = sequencer.getMicrosecondLength();
 		final long startPosInMicros = sequencer.getMicrosecondPosition();
-		final float lengthInSecs = (float)(lengthInMicros)/1000000.f;
 		final float startPosInSecs = (float)(startPosInMicros)/1000000.f;
 		
-		ASCIIProgressBar progressBar = new ASCIIProgressBar(50, startPosInMicros/1000, lengthInMicros/1000, true);
+		ASCIIProgressBar progressBar = new ASCIIProgressBar(50, 0, lengthInMicros/1000, true);
 		progressBar.setPrintStream(System.out);
 		progressBar.init();
 		
@@ -304,6 +301,7 @@ public class SamplingRoboter {
 		sequencer.start();
 		long startTime = System.currentTimeMillis();
 		
+		progressBar.update(sequencer.getMicrosecondPosition()/1000);
 		sleep(1000);
 		// in DEBUG mode only record first two second
 		if (!DEBUG_RECORDINGS_ENABLED)
