@@ -230,11 +230,11 @@ public class OnsetAnnotator {
 			System.exit(1);
 		} // grant write access
         // writing header
-        writer.write("@RELATION 'Instrument similarities in "+fileName+".mid'"); writer.newLine();
+        writer.write("@RELATION 'Onset events in "+fileName+".mid'"); writer.newLine();
         writer.newLine();
-        writer.write("@ATTRIBUTE OnsetTime NUMERIC"); writer.newLine();
+        writer.write("@ATTRIBUTE 'Onset time in seconds' NUMERIC"); writer.newLine();
         for (String instrument : arffInstrumentList) {
-        	writer.write("@ATTRIBUTE 'Similarity to "+instrument+"' NUMERIC"); writer.newLine();
+        	writer.write("@ATTRIBUTE 'Onset events of "+instrument+"' STRING"); writer.newLine();
         } 
         writer.newLine();
         writer.write("@DATA"); writer.newLine();
@@ -248,9 +248,9 @@ public class OnsetAnnotator {
         				if (instrumentOnChannel[k].equals(midiInstrument))
         	        			channel = k;
         		if (channel == -1)
-        			writer.write(",[]");
+        			writer.write(",'[]'");
         		else
-        			writer.write(","+onsetSimilarities[i][channel]);
+        			writer.write(",'"+onsetSimilarities[i][channel]+"'");
         	}
         	writer.newLine();
         }

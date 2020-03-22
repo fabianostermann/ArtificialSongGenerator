@@ -17,7 +17,10 @@ import parts.Songpart;
 public class ArffUtil {
 
 	public static final String NEXT = ", ";
-	public static final String STR_DELIM = "|";
+	public static final String STR_SEP = ",";
+	public static final String STR_DELIM = "'";
+	public static final String STR_OPEN = "[";
+	public static final String STR_CLOSE = "]";
 	
 	public static void saveSongStructureToArff(String id, Songpart[] songStructure, File file) throws IOException {
 		BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8,
@@ -26,20 +29,20 @@ public class ArffUtil {
 				StandardOpenOption.WRITE); // grant write access
 		
 		String[] attributes = new String[] { 
-			"start time in s' NUMERIC", 
-			"value' STRING", 
-			"tempo' NUMERIC",
-			"key' STRING",
-			"instruments' STRING",
-			"functions' STRING",
-			"polyphonic degree' STRING",
+			"Start time in seconds", "NUMERIC", 
+			"Mark", "STRING", 
+			"Tempo", "NUMERIC",
+			"Key", "STRING",
+			"Instruments", "STRING",
+			"Functions", "STRING",
+			"Polyphonic degrees", "STRING",
 		};
 		
 		printHeader(writer, id, attributes, songStructure.length+1); // plus one for 'end' value
 		
 		float secondCounter = 0.f;
 		for (int i=0; i<songStructure.length; i++) {
-
+			
 			List<String> instruments = new LinkedList<>();
 			List<String> functions = new LinkedList<>();
 			List<Integer> polyphony = new LinkedList<>();
@@ -85,8 +88,8 @@ public class ArffUtil {
 				"end",
 				0,
 				null,
-				new String[] {"-"},
-				new String[] {"-"},
+				new String[] {},
+				new String[] {},
 				new Integer[] {}
 		);
 		
@@ -97,46 +100,46 @@ public class ArffUtil {
 	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments, String[] functions, Integer[] polyphony) throws IOException {
 		writer.write(""+time);
 		writer.write(NEXT);
-		writer.write("'"+mark+"'");
+		writer.write(STR_DELIM+mark+STR_DELIM);
 		writer.write(NEXT);
 		writer.write(""+tempo);
 		writer.write(NEXT);
-		writer.write("'"+(key!=null ? key.getKeySignature() : "-")+"'");
+		writer.write(STR_DELIM+(key!=null ? key.getKeySignature() : "")+STR_DELIM);
 		writer.write(NEXT);
-		writer.write("'");
+		writer.write(STR_DELIM+STR_OPEN);
 		for (int i=0; i<instruments.length; i++) {
 			writer.write(instruments[i]);
 			if (i<instruments.length-1)
-				writer.write(STR_DELIM);
+				writer.write(STR_SEP);
 		}
-		writer.write("'");
+		writer.write(STR_CLOSE+STR_DELIM);
 		writer.write(NEXT);
-		writer.write("'");
+		writer.write(STR_DELIM+STR_OPEN);
 		for (int i=0; i<functions.length; i++) {
 			writer.write(functions[i]);
 			if (i<functions.length-1)
-				writer.write(STR_DELIM);
+				writer.write(STR_SEP);
 		}
-		writer.write("'");
+		writer.write(STR_CLOSE+STR_DELIM);
 		writer.write(NEXT);
-		writer.write("'");
+		writer.write(STR_DELIM+STR_OPEN);
 		for (int i=0; i<polyphony.length; i++) {
 			writer.write(""+polyphony[i]);
 			if (i<polyphony.length-1)
-				writer.write(STR_DELIM);
+				writer.write(STR_SEP);
 		}
-		writer.write("'");
+		writer.write(STR_CLOSE+STR_DELIM);
 		writer.newLine();
 	}
 
 	private static void printHeader(BufferedWriter writer, String id, String[] attributes, int rows) throws IOException {
-		writer.write("@RELATION 'Annotation "+id+"'"); writer.newLine();
+		writer.write("@RELATION "+STR_DELIM+"Annotation "+id+STR_DELIM); writer.newLine();
 		writer.newLine();
 		writer.write("%rows="+rows); writer.newLine();
 		writer.write("%columns="+attributes.length); writer.newLine();
 		writer.newLine();
-		for (String attribute : attributes) {
-			writer.write("@ATTRIBUTE '"+id+": "+attribute); 
+		for (int i=0; i<attributes.length; i+=2) {
+			writer.write("@ATTRIBUTE "+STR_DELIM+attributes[i]+STR_DELIM+" "+attributes[i+1]); 
 			writer.newLine();
 		}
 		writer.newLine();
