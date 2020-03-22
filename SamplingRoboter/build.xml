@@ -40,4 +40,16 @@
 		<delete dir="${bin}"/>
 	</target>
 
+	<target name="run" depends="pack, input-runargs">
+		<java jar="SamplingRoboter.jar" fork="true">
+			<arg line="${args}"/>
+		</java>
+	
+	</target>
+	
+	<target name="input-runargs" unless="args">
+		<input addProperty="args" message="Type arguments:"/>
+	</target>
+
 </project>
+

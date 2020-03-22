@@ -19,4 +19,14 @@
 		<ant target="clean" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
+	<target name="run-generator">
+		<ant target="run" dir="ArtificialSongGenerator" antfile="build.xml"/>
+	</target>
+	<target name="run-annotator">
+		<ant target="run" dir="OnsetAnnotator" antfile="build.xml"/>
+	</target>
+	<target name="run-roboter">
+		<ant target="run" dir="SamplingRoboter" antfile="build.xml"/>
+	</target>
+
 </project>
