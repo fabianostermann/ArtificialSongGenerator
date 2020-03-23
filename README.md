@@ -2,19 +2,19 @@
 
 The project consists of three subprograms that allow generation of a artificial pop song database with realistic samples
 
-## (1) Artificial Song Generator
+### (1) Artificial Song Generator
 
 Creates music pieces (in midi file format) based on intelligent random choices and segmentation in different song parts with various characteristics.
 
-## (2) Onset Annotator
+### (2) Onset Annotator
 
 Annotates the midi note events of a generated artificial song (in midi file format).
 
-## (3) Sampling Roboter
+### (3) Sampling Roboter
 
 Playes back an artificial songs midifile trackwise to be able to record the different instrument parts via a loopback audiocable.
 
-# Compile (via Ant) and easy use (mainly bash-scripts)
+## Compile (via Ant) and easy use (mainly bash-scripts)
 
 The main directory holds an ant build file: Use *pack* to generate an executable jar (including downloading JFugue lib).
 The main build file will call the three build files of the subprojects 'ArtificialSongGenerator/', 'OnsetAnnotator/' and 'SamplingRoboter/'.
