@@ -1,7 +1,4 @@
-# short reminder
-
-- stop dropbox during roboted generation (100% cpu)
-
+# TODOs
 
 ## Make Script erstellen
 - Hinweis auf fluid-synth und vlc-nox (mit option das direkt zu laden)
@@ -23,13 +20,24 @@
 - **LATER** 7te Stufe fundiert ausschließen
 - **LATER** Variationen der Songparts (A', A'', B', ...)
 
-
 # Onset Annotator
 
-- **DONE** handle tempo changes
-
+-
 
 # Sampling Roboter2
 
-- *TODO* cut silence offset at beginning
+- overdriven guitar (mit SoX effect) ??
 
+# instrument rework
+
+- Instrumente.txt -> aufteilen in nehmen und nicht-nehmen, dann an Igor schicken
+
+- SongGenerator bekommt **Synthesizer-Instrument-Keywords** plus Demo-Anweisung (Midi-Instrument)
+- generiert für jedes Instrument einen Midifile (Omni-Kanal) plus Demo-File (mit Midi-Instrumenten)
+- eventuell muss die Range jetzt mit einbezogen werden! (Programmieraufwand)
+- OnsetAnnotator annotiert Events aller **Synthesizer-Instrument-Keywords**
+- Annotator und Generator fusionieren für einheitliche Arff-Files und Instrumenten-Pool
+
+- Sampling nutzt **Synthesizer-Instrument-Keywords** an Dateinamen um den korrekten Synthesizer zu nutzen\
+	1. Entweder mehrere MidiPorts an Kontakt-Player A1-16,B1-16,C1-16)\
+	2. Oder jedes Instrument einzeln (zu bevorzugen wegen Memory-CPU-Last)\

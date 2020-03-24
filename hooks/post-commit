@@ -1,8 +1,8 @@
 #!/bin/sh
 
-filename=ASGLib/src/info/Version.java
-version="0.1" # manuell
+version="0.2" # manuell
 datestr=`date +"%Y/%m/%d-%H:%M"` # automatic hooked
+filename=ASGLib/src/info/Version.java
 
 versionstr="v$version-$datestr"
 
@@ -11,14 +11,13 @@ echo "post-commit: set version to $versionstr"
 oldfilecontent=`cat $filename`
 newfilecontent=`echo "package info; public class Version { public static final String VERSION = \"$versionstr\"; }"`
 
-echo -e "old version file content:\n$oldfilecontent"
-echo -e "new version file content:\n$newfilecontent"
-
 if [ "$oldfilecontent" = "$newfilecontent" ]
   then
     echo "post-commit: done."
   else
-	echo $newfilecontent > $filename
+    echo -e "old version file content:\n$oldfilecontent"
+    echo -e "new version file content:\n$newfilecontent"		
+    echo $newfilecontent > $filename
     git add $filename
     git commit --amend -C HEAD --no-verify
     echo "version file updated"
