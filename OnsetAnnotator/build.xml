@@ -7,7 +7,7 @@
 <property name="jardest" value="OnsetAnnotator.jar"/>
 
 	<target name="compile"
-		depends="prepare">
+		depends="clean,prepare">
 		<javac includeantruntime="false"
 			destdir="${bin}"
 			source="1.8"
