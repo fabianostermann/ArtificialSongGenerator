@@ -15,8 +15,9 @@ import org.jfugue.player.Player;
 
 import asglib.ArgsUtil;
 import info.Version;
-import parts.Songpart;
+import parts.SongPart;
 import util.ArffUtil;
+import util.JFugueExpansion;
 import util.Random;
 
 /**
@@ -32,8 +33,8 @@ public class ArtificialSongGenerator {
 
 	public static ArgsUtil argsUtil = null;
 	
-	public static Songpart[] songparts = null;
-	public static Songpart[] songStructure = null;
+	public static SongPart[] songparts = null;
+	public static SongPart[] songStructure = null;
 	public static Pattern theSong;
 	
 	public static boolean VERBOSE_MODE = false;
@@ -95,36 +96,21 @@ public class ArtificialSongGenerator {
 		if (dir != null)
 			Config.GET.OUTPUT_DIR = dir;
 		
-		// print instrument to channel map
-		if (argsUtil.check("--channel-map")) {
-			Map<Integer, String> channelMap = new HashMap<>();
-			for (String instrName : Config.GET.MELODY_INSTRUMENTS)
-				channelMap.put(Config.GET.getMelodyChannel(instrName), instrName);
-			for (String instrName : Config.GET.CHORD_INSTRUMENTS)
-				channelMap.put(Config.GET.getChordsChannel(instrName), instrName);
-			for (String instrName : Config.GET.BASS_INSTRUMENTS)
-				channelMap.put(Config.GET.getBassChannel(instrName), instrName);
-			channelMap.put(9, "Drums");
-			for (int ch : channelMap.keySet())
-				System.out.println(Config.COMMENT+" "+(ch+1)+" -> "+channelMap.get(ch));
-			System.exit(0);
-		}
-		
 		// #################################
 		// ### GENERATION PROCESS STARTS ###
 		
 		// generate some songparts
-		songparts = new Songpart[Config.GET.Nof_DIFFERENT_SONGPARTS];
+		songparts = new SongPart[Config.GET.Nof_DIFFERENT_SONGPARTS];
 		for (int i = 0; i < songparts.length; i++) {
-			songparts[i] = Songpart.newRandomSongpart();
+			songparts[i] = new SongPart();
 		}
 		
 		// random formation of songparts to a song
 		float songTime = 0;
-		ArrayList<Songpart> songStructureList = new ArrayList<>();
+		ArrayList<SongPart> songStructureList = new ArrayList<>();
 		songStructureList.add(songparts[0]); // add first songpart at beginning
 		songTime += songparts[0].getLengthInSeconds();
-		Songpart nextSongpart;
+		SongPart nextSongpart;
 		// fill to minimum length
 		while (songTime < Config.GET.MIN_LENGTH_IN_SEC) {
 			nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
@@ -139,10 +125,10 @@ public class ArtificialSongGenerator {
 			songTime += nextSongpart.getLengthInSeconds();
 			nextSongpart = songparts[Random.rangeInt(0, songparts.length)];
 		}
-		songStructure = songStructureList.toArray(new Songpart[songStructureList.size()]);
+		songStructure = songStructureList.toArray(new SongPart[songStructureList.size()]);
 		if (VERBOSE_MODE) {
 			String songStructureStr = "";
-			for (Songpart part : songStructure)
+			for (SongPart part : songStructure)
 				songStructureStr += part.mark;
 				System.out.println("Song structure: "+songStructureStr + " ("+songTime+"s)");
 		}
@@ -152,9 +138,10 @@ public class ArtificialSongGenerator {
 		for (int i=0; i<songStructure.length; i++) {
 			theSong.add(songStructure[i]);
 		}
+		theSong = JFugueExpansion.repairTempoVoiceBug(theSong);
 		if (argsUtil.check("--print-staccato")) {
 			// staccato code is formatted by line breaking on tempo marks (e.g. T85)
-			System.out.println("Staccato code:\n "+theSong.toString().replaceAll(" V", " \nT"));
+			System.out.println("Staccato code:\n "+theSong.toString().replaceAll(" V", " \nV"));
 		}
 		
 		// save song to file
@@ -218,8 +205,7 @@ public class ArtificialSongGenerator {
 				"--dir=<dir>            Specifies directory for output files " +
 					"(ATTENTION: fails if directory does not exist).\n" +
 				"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
-				"--config-dummy         Creates a config overview dummy file.\n" +
-				"--channel-map          Prints the current mapping of instruments to channels.\n"
+				"--config-dummy         Creates a config overview dummy file.\n"
 				);
 	}
 

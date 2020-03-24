@@ -3,35 +3,21 @@ import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.ChordProgression;
+import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 
 import util.Random;
 
 
-public class BassLine implements PatternProducer {
-
-	public final Chord[] chordProgression;
-	
-	public String bassLineString;
-	
-	private BassLine(Chord[] chordProgression) {
-		this.chordProgression = chordProgression;
-		
-		bassLineString = newRandomBassLineString();
-	}
+public class BassLine extends SongPartElement {
 	
 	/**
 	 * Constructs a random bass line in JFugue's Staccato String Syntax
 	 * @param chordProgression the chord progression that defines the chords the bass line will be based on
 	 * @return The random bass line
 	 */
-	public static BassLine newRandomBassLine(Chord[] chordProgression) {
-		return new BassLine(chordProgression);
-	}
-	
-	@Override
-	public Pattern getPattern() {
-		return new Pattern(bassLineString);
+	public BassLine(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
+		super(instrument, tempo, length, key, chords);
 	}
 
 	// TODO put note length identifiers in map to match integer length and make calculations easier
@@ -50,12 +36,12 @@ public class BassLine implements PatternProducer {
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
 	//private static float PROB_SUBOCTAVE = Random.rangeFloat(0f, 0.3f); // Prob. for a sub-bass octave // REMOVED: suboctave not playable on normal e-bass
 	
-	public String newRandomBassLineString() {
+	public String makeMusic() {
 		String bassLineStr = "";
 		
 		String OCTAVE = /*Random.nextBoolean(PROB_SUBOCTAVE) ? OCTAVE_SUB_BASS :*/ OCTAVE_BASS;
 		
-		for (Chord chord : chordProgression) {
+		for (Chord chord : getChords()) {
 			Note[] notes = chord.getNotes();
 			String bassNoteStr = notes[0].toString().replaceFirst(""+notes[0].getOctave(), OCTAVE);
 			bassLineStr += NEXT + bassNoteStr;

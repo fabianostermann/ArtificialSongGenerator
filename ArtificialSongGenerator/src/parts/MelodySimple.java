@@ -10,10 +10,10 @@ import util.Random;
  * will not follow anything and lead nowhere
  */
 
-public class MelodySimple extends Melody {
+public class MelodySimple extends SongPartElement {
 
-	public MelodySimple(Key key, int length) {
-		super(key, length, null);
+	public MelodySimple(Instrument instrument, Key key, int tempo, int length) {
+		super(instrument, key, tempo, length);
 	}
 
 	public static final String SIXTEENTH = "s";

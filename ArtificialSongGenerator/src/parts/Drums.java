@@ -3,10 +3,16 @@ import java.util.HashMap;
 import java.util.Map;
 import util.Random;
 
+import org.jfugue.pattern.Pattern;
+import org.jfugue.pattern.PatternProducer;
 import org.jfugue.rhythm.Rhythm;
 
 
-public class Drums {
+public class Drums implements PatternProducer {
+	
+	private final Rhythm rhythm;
+	private final int tempo;
+	private final int length;
 	
 	/** Probabilities for random choices in chord generation (memoized for one complete song) */
 	private static float PROB_startWithCrash = 0.6f;
@@ -34,7 +40,7 @@ public class Drums {
      * Generates a drum kit with randomly different midi drum sounds
      * @return The drum kit
      */
-    public static Map<Character, String> newRandomRhythmKit() {
+    public Map<Character, String> newRandomRhythmKit() {
     	Map<Character, String> rk = new HashMap<Character, String>();
     	
     	// rests
@@ -53,9 +59,9 @@ public class Drums {
     	// snare variant
     	HashMap<String, Float> snares = new HashMap<>();
     	snares.put("ACOUSTIC_SNARE", 0.5f);
-    	snares.put("ELECTRIC_SNARE", 0.3f);
+    	snares.put("ELECTRIC_SNARE", 0.4f);
     	snares.put("SIDE_STICK",     0.1f);
-    	snares.put("HAND_CLAP",      0.1f);
+    	//snares.put("HAND_CLAP",      0.1f);
     	String snareVar = Random.fromMap(snares);
  
     	rk.put('S', "["+snareVar+"]i");
@@ -110,7 +116,9 @@ public class Drums {
 	 * Constructs a random rhythm played by drums in JFugue's Rhythm layers
 	 * @return The random rhythm
 	 */
-	public static Rhythm newRandomRhythm(int length) {
+	public Drums(int tempo, int length) {
+		this.tempo = tempo;
+		this.length = length;
 
 		String bdrumAll = "";
 		String snareAll = "";
@@ -187,7 +195,7 @@ public class Drums {
 			cymblAll = "C"+cymblAll.substring(1);
 		
 		
-		return new Rhythm(newRandomRhythmKit())
+		rhythm = new Rhythm(newRandomRhythmKit())
         .addLayer(bdrumAll)
         .addLayer(snareAll)
         .addLayer(cymblAll);
@@ -203,6 +211,11 @@ public class Drums {
         .addLayer(restDrums)
         .addLayer(restDrums)
         .addLayer(restDrums);
+	}
+	
+	@Override
+	public Pattern getPattern() {
+		return rhythm.getPattern().setTempo(tempo);
 	}
 
 }

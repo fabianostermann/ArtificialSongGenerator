@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.jfugue.theory.Key;
 
+import parts.Instrument;
 import util.Random;
 
 
@@ -311,25 +312,19 @@ public class Config {
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
 	/** make random choice on melody instrument */
-	public int getMelodyChannel(String melodyInstrument) {
-		for (int i=0; i<MELODY_INSTRUMENTS.length; i++)
-			if (MELODY_INSTRUMENTS[i].equals(melodyInstrument))
-				return (i<9) ? i : i+1;
-		return -1;
-	}
 	private int melodyPos = -1;
 	private final List<String> melodyInstList = new ArrayList<String>();
-	public String randomMelodyInstrument() {
+	public Instrument randomMelodyInstrument() {
 		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (melodyPos == -1)
 				melodyPos = Random.rangeInt(0, MELODY_INSTRUMENTS.length);
-			return MELODY_INSTRUMENTS[melodyPos];
+			return new Instrument(MELODY_INSTRUMENTS[melodyPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS)
-			return MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)];
+			return new Instrument(MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)]);
 		if (melodyInstList.isEmpty())
 			melodyInstList.addAll(Arrays.asList(MELODY_INSTRUMENTS));
-		return melodyInstList.remove(Random.rangeInt(0, melodyInstList.size()));
+		return new Instrument(melodyInstList.remove(Random.rangeInt(0, melodyInstList.size())));
 	}
 	
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
@@ -337,70 +332,58 @@ public class Config {
 		//"Rock_Organ", "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
 	});
 	/** make random choice on chord instrument */
-	public int getChordsChannel(String chordInstrument) {
-		for (int i=0; i<CHORD_INSTRUMENTS.length; i++)
-			if (CHORD_INSTRUMENTS[i].equals(chordInstrument))
-				return ((i+MELODY_INSTRUMENTS.length<9) ? i : i+1)+MELODY_INSTRUMENTS.length;
-		return -1;
-	}
 	private int chordPos = -1;
 	private final List<String> chordInstList = new ArrayList<String>();
-	public String randomChordInstrument() {
+	public Instrument randomChordInstrument() {
 		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (chordPos == -1)
 				chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 			if (chordPos == arpeggioPos)
 				chordPos = (arpeggioPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
-			return CHORD_INSTRUMENTS[chordPos];
+			return new Instrument(CHORD_INSTRUMENTS[chordPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS) {
 			chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 		}
 		if (chordInstList.isEmpty())
 			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
-		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
+		return new Instrument(chordInstList.remove(Random.rangeInt(0, chordInstList.size())));
 	}
 	
 	private int arpeggioPos = -1;
 	/** make random choice on arpeggio instrument (depended to chord instrument) */
-	public String randomArpeggioInstrument() {
+	public Instrument randomArpeggioInstrument() {
 		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (arpeggioPos == -1)
 				arpeggioPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 			if (arpeggioPos == chordPos)
 				arpeggioPos = (chordPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
-			return CHORD_INSTRUMENTS[arpeggioPos];
+			return new Instrument(CHORD_INSTRUMENTS[arpeggioPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS)
-			return CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)];
+			return new Instrument(CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)]);
 		if (chordInstList.isEmpty())
 			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
-		return chordInstList.remove(Random.rangeInt(0, chordInstList.size()));
+		return new Instrument(chordInstList.remove(Random.rangeInt(0, chordInstList.size())));
 	}
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
 		"Acoustic_Bass", "Electric_Bass_Finger", "Contrabass" //"Synth_Bass_2", "Slap_Bass_1",
 	});
 	/** make random choice on bass instrument */
-	public int getBassChannel(String bassInstrument) {
-		for (int i=0; i<BASS_INSTRUMENTS.length; i++)
-			if (BASS_INSTRUMENTS[i].equals(bassInstrument))
-				return ((i+MELODY_INSTRUMENTS.length+CHORD_INSTRUMENTS.length<9) ? i : i+1)+MELODY_INSTRUMENTS.length+CHORD_INSTRUMENTS.length;
-		return -1;
-	}
 	private int bassPos = -1;
 	private final List<String> bassInstList = new ArrayList<String>();
-	public String randomBassInstrument() {
+	public Instrument randomBassInstrument() {
 		if (MEMOIZE_INSTRUMENTS) { // && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (bassPos == -1)
 				bassPos = Random.rangeInt(0, BASS_INSTRUMENTS.length);
-			return BASS_INSTRUMENTS[bassPos];
+			return new Instrument(BASS_INSTRUMENTS[bassPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS)
-			return BASS_INSTRUMENTS[Random.rangeInt(0, BASS_INSTRUMENTS.length)];
+			return new Instrument(BASS_INSTRUMENTS[Random.rangeInt(0, BASS_INSTRUMENTS.length)]);
 		if (bassInstList.isEmpty())
 			bassInstList.addAll(Arrays.asList(BASS_INSTRUMENTS));
-		return bassInstList.remove(Random.rangeInt(0, bassInstList.size()));
+		return new Instrument(bassInstList.remove(Random.rangeInt(0, bassInstList.size())));
 	}
 
 	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 0.9f);

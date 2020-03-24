@@ -6,6 +6,7 @@ import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import util.JFugueExpansion;
 import util.Random;
 
@@ -16,10 +17,10 @@ import util.Random;
  * T--- that's not the root but the maj7, but that's accepted for now
  */
 
-public class MelodyBow extends Melody {
-
-	public MelodyBow(Key key, int length, Chord[] chords) {
-		super(key, length, chords);
+public class MelodyBow extends SongPartElement {
+	
+	public MelodyBow(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
+		super(instrument, tempo, length, key, chords);
 	}
 
 	public static final String SIXTEENTH = "s";
@@ -72,8 +73,7 @@ public class MelodyBow extends Melody {
 	private static float PROB_QuarterNote = Random.rangeFloat(0.1f, 0.8f); // Prob. for an quarter note, else an eighth note is set
 	private static float PROB_HalfNote = PROB_QuarterNote + Random.rangeFloat(-0.2f, 0.2f); // Prob. for an quarter note, else an eighth note is set
 	
-	@Override
-	protected String newRandomMelodyString() {
+	public String makeMusic() {
 		Key key = getKey();
 		key = JFugueExpansion.minToMajKey(key);
 		String melodyStr = "Key:"+key.getKeySignature();

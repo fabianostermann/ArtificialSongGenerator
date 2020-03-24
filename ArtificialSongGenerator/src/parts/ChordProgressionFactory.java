@@ -1,64 +1,16 @@
 package parts;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.jfugue.pattern.Pattern;
-import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.ChordProgression;
 import org.jfugue.theory.Key;
-import org.jfugue.theory.Note;
 
 import util.JFugueExpansion;
 import util.Random;
 
-
-public class ChordSequenceRanged implements PatternProducer {
-	
-	private final Key key;
-	private final int length;
-	
-	private Chord[] chordPool;
-	private Chord[] chords;
-	
-	/**
-	 * Constructs a random chord sequence in JFugue's Staccato String Syntax
-	 * @param key The key the melody should be in
-	 * @param length The number of bars the melody should have
-	 */
-	public ChordSequenceRanged(Key key, int length) {
-		this.key = key;
-		this.length = length;
-		
-		chords = newRandomChords(key, length);
-	}
-	
-	private Note LOWEST_NOTE = new Note(
-			Random.rangeInt(new Note("D4").getValue(),
-							new Note("A4").getValue()));
-	@Override
-	public Pattern getPattern() {
-		String musicStr = "";
-		for (Chord chord : chords) {
-			musicStr += NEXT;	
-			for (int i=0; i<chord.getNotes().length; i++) {
-				Note note = chord.getNotes()[i];
-				// restrict octave -- TODO BUG: jfugue.Note has a terrible bug when setting octaves..
-				while (note.getValue() < LOWEST_NOTE.getValue())
-					note.changeValue(12);
-				while (note.getValue() > LOWEST_NOTE.getValue()+12)
-					note.changeValue(-12);
-				note = new Note(note.getValue(), note.getDuration());
-				musicStr += (i>0 ? BIND : "") + note;
-			}
-		}
-		return new Pattern(musicStr);
-	}
-	
-	public Chord[] getChords() {
-		return chords;
-	}
+public class ChordProgressionFactory {
 	
 	/** Probabilities for random choices in chord generation (memoized for one complete song) */
 	private static float PROB_MultiChordBar = Random.rangeFloat(0.1f, 0.4f);
@@ -66,22 +18,22 @@ public class ChordSequenceRanged implements PatternProducer {
 	/** simplified version of major scale degrees
 	 *  - vii is omitted to simplify the creation of harmonic sequences */
 	public static final String DEGREES = "I ii iii IV V vi"; // TODO add secondary dominantes
-	public static final String NEXT = " ";
-	public static final String BIND = "+";
 	public static final String WHOLE = "w";
 	public static final String HALF = "h";
 
+	
+	
 	/**
 	 * Constructs a random chord sequence in JFugue's Staccato String Syntax
 	 * @return The random chord sequence as chord array
 	 */
-	private Chord[] newRandomChords(Key key, int length) {
+	public static Chord[] makeChords(int length, Key key) {
 		
 		int rootPos = 0;
 		if (key.getKeySignature().toLowerCase().endsWith("min"))
 			rootPos = 5;
 		key = JFugueExpansion.minToMajKey(key);
-		chordPool = new ChordProgression(DEGREES).setKey(key).getChords();
+		Chord[] chordPool = new ChordProgression(DEGREES).setKey(key).getChords();
 		
 		List<Chord> chords = new ArrayList<>();
 		List<String> chordLengths = new ArrayList<>();
@@ -114,5 +66,5 @@ public class ChordSequenceRanged implements PatternProducer {
 		
 		return chordProg;
 	}
-
+	
 }

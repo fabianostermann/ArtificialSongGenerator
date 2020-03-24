@@ -7,8 +7,7 @@ import org.jfugue.theory.Note;
 
 import util.Random;
 
-
-public class ArpeggioSequence implements PatternProducer {
+public class ArpeggioSequence extends SongPartElement {
 
 	public final Chord[] chordProgression;
 	

@@ -11,7 +11,8 @@ import java.util.List;
 import org.jfugue.theory.Key;
 
 import main.ArtificialSongGenerator;
-import parts.Songpart;
+import parts.SongPart;
+import parts.SongPartElement;
 
 
 public class ArffUtil {
@@ -22,7 +23,7 @@ public class ArffUtil {
 	public static final String STR_OPEN = "[";
 	public static final String STR_CLOSE = "]";
 	
-	public static void saveSongStructureToArff(String id, Songpart[] songStructure, File file) throws IOException {
+	public static void saveSongStructureToArff(String id, SongPart[] songStructure, File file) throws IOException {
 		BufferedWriter writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8,
 				StandardOpenOption.CREATE, // create if not exists
 				StandardOpenOption.TRUNCATE_EXISTING, // clear to zero length
@@ -34,8 +35,6 @@ public class ArffUtil {
 			"Tempo", "NUMERIC",
 			"Key", "STRING",
 			"Instruments", "STRING",
-			"Functions", "STRING",
-			"Polyphonic degrees", "STRING",
 		};
 		
 		printHeader(writer, id, attributes, songStructure.length+1); // plus one for 'end' value
@@ -44,32 +43,11 @@ public class ArffUtil {
 		for (int i=0; i<songStructure.length; i++) {
 			
 			List<String> instruments = new LinkedList<>();
-			List<String> functions = new LinkedList<>();
-			List<Integer> polyphony = new LinkedList<>();
-			if (songStructure[i].melody != null) {
-				instruments.add(songStructure[i].melodyInstrument);
-				functions.add("melody");
-				polyphony.add(1);
-			}
-			if (songStructure[i].chords != null) {
-				instruments.add(songStructure[i].chordInstrument);
-				functions.add("chords");
-				polyphony.add(3);
-			}
-			if (songStructure[i].arpeggio != null) {
-				instruments.add(songStructure[i].arpeggioInstrument);
-				functions.add("arpeggios");
-				polyphony.add(1);
-			}
-			if (songStructure[i].bass != null) {
-				instruments.add(songStructure[i].bassInstrument);
-				functions.add("bass");
-				polyphony.add(1);
+			for (SongPartElement element : songStructure[i].elements) {
+				instruments.add(element.getInstrument().getMidiString());
 			}
 			if (songStructure[i].drums != null) {
 				instruments.add("Drums");
-				functions.add("rhythm");
-				polyphony.add(-1);
 			}
 			
 			printDataEntry(writer,
@@ -77,9 +55,7 @@ public class ArffUtil {
 					songStructure[i].mark,
 					songStructure[i].tempo,
 					songStructure[i].key,
-					instruments.toArray(new String[]{}),
-					functions.toArray(new String[]{}),
-					polyphony.toArray(new Integer[]{})
+					instruments.toArray(new String[]{})
 			);
 			secondCounter += songStructure[i].getLengthInSeconds();
 		}
@@ -88,16 +64,14 @@ public class ArffUtil {
 				"end",
 				0,
 				null,
-				new String[] {},
-				new String[] {},
-				new Integer[] {}
+				new String[] {}
 		);
 		
 		writer.flush();
 		writer.close();
 	}
 
-	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments, String[] functions, Integer[] polyphony) throws IOException {
+	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments) throws IOException {
 		writer.write(""+time);
 		writer.write(NEXT);
 		writer.write(STR_DELIM+mark+STR_DELIM);
@@ -110,22 +84,6 @@ public class ArffUtil {
 		for (int i=0; i<instruments.length; i++) {
 			writer.write(instruments[i]);
 			if (i<instruments.length-1)
-				writer.write(STR_SEP);
-		}
-		writer.write(STR_CLOSE+STR_DELIM);
-		writer.write(NEXT);
-		writer.write(STR_DELIM+STR_OPEN);
-		for (int i=0; i<functions.length; i++) {
-			writer.write(functions[i]);
-			if (i<functions.length-1)
-				writer.write(STR_SEP);
-		}
-		writer.write(STR_CLOSE+STR_DELIM);
-		writer.write(NEXT);
-		writer.write(STR_DELIM+STR_OPEN);
-		for (int i=0; i<polyphony.length; i++) {
-			writer.write(""+polyphony[i]);
-			if (i<polyphony.length-1)
 				writer.write(STR_SEP);
 		}
 		writer.write(STR_CLOSE+STR_DELIM);
