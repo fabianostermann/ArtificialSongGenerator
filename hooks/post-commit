@@ -1,7 +1,8 @@
 #!/bin/sh
 
 version="0.2" # manuell
-datestr=`date +"%Y/%m/%d-%H:%M"` # automatic hooked
+# recently removed "-%H:%M" from version statement
+datestr=`date +"%Y/%m/%d"` # automatic hooked 
 filename=ASGLib/src/info/Version.java
 
 versionstr="v$version-$datestr"

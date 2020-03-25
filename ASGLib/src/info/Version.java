@@ -1,1 +1,1 @@
-package info; public class Version { public static final String VERSION = "v0.2-2020/03/25-12:34"; }
+package info; public class Version { public static final String VERSION = "v0.2-2020/03/25"; }
