@@ -1,23 +1,5 @@
 package test;
 
-import java.util.Arrays;
-
-import org.jfugue.pattern.Pattern;
-import org.jfugue.player.Player;
-import org.jfugue.rhythm.Rhythm;
-import org.jfugue.theory.Key;
-
-import asglib.MidiDictionary;
-import main.Config;
-import parts.ArpeggioSequence;
-import parts.BassLine;
-import parts.ChordSequenceRanged;
-import parts.MelodyBow;
-
-
-
-
-
 /**
  * DEMO
  * This file shows how a melody ("Eq Ch. | Eq Ch. | Dq Eq Dq Cq") can be created as Voice 0.

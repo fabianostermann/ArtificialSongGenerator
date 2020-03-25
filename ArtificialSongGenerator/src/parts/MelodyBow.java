@@ -4,9 +4,7 @@ import java.util.Map;
 
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
-import org.jfugue.theory.Note;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import util.JFugueExpansion;
 import util.Random;
 

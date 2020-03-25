@@ -24,8 +24,8 @@ public class ChordProgressionFactory {
 	
 	
 	/**
-	 * Constructs a random chord sequence in JFugue's Staccato String Syntax
-	 * @return The random chord sequence as chord array
+	 * Constructs a simple random but likable chord progression in JFugue's Staccato String Syntax
+	 * @return The created chord progression as array
 	 */
 	public static Chord[] makeChords(int length, Key key) {
 		

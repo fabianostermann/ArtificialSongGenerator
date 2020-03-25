@@ -35,6 +35,10 @@ public abstract class SongPartElement implements PatternProducer {
 		this.chords = chords;
 	}
 	
+	/**
+	 * The main function were the music is composed
+	 * @return The music as JFugue Staccato music string
+	 */
 	abstract public String makeMusic();
 
 	/**
@@ -50,6 +54,19 @@ public abstract class SongPartElement implements PatternProducer {
 		return (new Pattern(musicString))
 				.setInstrument(getInstrument().getMidiString())
 				.setTempo(getTempo());
+	}
+	
+//	/**
+//	 * For short descriptions of the implementing generators behavior
+//	 * @return the informative description
+//	 */
+//	abstract public String getDescription();
+	/**
+	 * The name of the generator class
+	 * @return
+	 */
+	public String getName() {
+		return this.getClass().getSimpleName();
 	}
 
 	/** @return The string representation of the desired 

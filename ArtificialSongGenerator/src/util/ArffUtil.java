@@ -35,16 +35,19 @@ public class ArffUtil {
 			"Tempo", "NUMERIC",
 			"Key", "STRING",
 			"Instruments", "STRING",
+			"Generator", "STRING",
 		};
 		
 		printHeader(writer, id, attributes, songStructure.length+1); // plus one for 'end' value
 		
 		float secondCounter = 0.f;
 		for (int i=0; i<songStructure.length; i++) {
-			
+
 			List<String> instruments = new LinkedList<>();
+			List<String> generators = new LinkedList<>();
 			for (SongPartElement element : songStructure[i].elements) {
-				instruments.add(element.getInstrument().getMidiString());
+				instruments.add(element.getInstrument().getName());
+				generators.add(element.getName());
 			}
 			if (songStructure[i].drums != null) {
 				instruments.add("Drums");
@@ -55,7 +58,8 @@ public class ArffUtil {
 					songStructure[i].mark,
 					songStructure[i].tempo,
 					songStructure[i].key,
-					instruments.toArray(new String[]{})
+					instruments.toArray(new String[]{}),
+					generators.toArray(new String[]{})
 			);
 			secondCounter += songStructure[i].getLengthInSeconds();
 		}
@@ -64,6 +68,7 @@ public class ArffUtil {
 				"end",
 				0,
 				null,
+				new String[] {},
 				new String[] {}
 		);
 		
@@ -71,7 +76,7 @@ public class ArffUtil {
 		writer.close();
 	}
 
-	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments) throws IOException {
+	private static void printDataEntry(BufferedWriter writer, float time, String mark, int tempo, Key key, String[] instruments, String[] generators) throws IOException {
 		writer.write(""+time);
 		writer.write(NEXT);
 		writer.write(STR_DELIM+mark+STR_DELIM);
@@ -84,6 +89,14 @@ public class ArffUtil {
 		for (int i=0; i<instruments.length; i++) {
 			writer.write(instruments[i]);
 			if (i<instruments.length-1)
+				writer.write(STR_SEP);
+		}
+		writer.write(STR_CLOSE+STR_DELIM);
+		writer.write(NEXT);
+		writer.write(STR_DELIM+STR_OPEN);
+		for (int i=0; i<generators.length; i++) {
+			writer.write(generators[i]);
+			if (i<generators.length-1)
 				writer.write(STR_SEP);
 		}
 		writer.write(STR_CLOSE+STR_DELIM);

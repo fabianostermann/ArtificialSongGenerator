@@ -44,10 +44,10 @@ public class SongPart implements PatternProducer {
 					Config.GET.randomChordInstrument(),
 					tempo, length, key, chordProgression));
 		
-//		if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
-//			elements.add(new ArpeggioSequence(
-//					Config.GET.randomArpeggioInstrument(),
-//					key, tempo, length, chordProgression));
+		if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
+			elements.add(new ChordArpeggios(
+					Config.GET.randomArpeggioInstrument(),
+					tempo, length, key, chordProgression));
 
 		if (Random.nextBoolean(Config.GET.BASS_ENABLED))
 			elements.add(new BassLine(
@@ -77,7 +77,7 @@ public class SongPart implements PatternProducer {
 		}
 		if (iterator.hasNext()) {
 			System.out.println("Warning: More than 16 SongPart elements (including drums)."
-					+ "Midi channels are full, so demo midi file is finished early.");
+					+ "Midi channels are full, so demo midi file is incomplete.");
 		}
 		
 		return pattern;

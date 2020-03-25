@@ -16,13 +16,12 @@ public class Instrument {
 	
 	public Instrument(String name) {
 		this.name = name;
-		// TODO remove name==midi in Instrument
-		this.midi = name;
 	}
 	
 	public Instrument(String name, String midi) {
 		this(name);
-		this.midi = midi;
+		if (midi != null)
+			this.midi = midi;
 	}
 	
 	public Instrument(String name, String midi, Note lowestNote, Note hightestNote) {

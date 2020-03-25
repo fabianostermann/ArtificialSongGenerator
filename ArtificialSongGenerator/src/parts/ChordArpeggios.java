@@ -3,37 +3,24 @@ import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.ChordProgression;
+import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 
 import util.Random;
 
-public class ArpeggioSequence extends SongPartElement {
-
-	public final Chord[] chordProgression;
-	
-	public String arpeggioString;
-	
-	private ArpeggioSequence(Chord[] chordProgression) {
-		this.chordProgression = chordProgression;
-		
-		arpeggioString = newRandomArpeggioString();
-	}
+public class ChordArpeggios extends SongPartElement {
 	
 	/**
-	 * Constructs a random arpeggio sequence in JFugue's Staccato String Syntax
-	 * @param chordProgression the chord progression that defines the chords to appegiate and thus key and length
-	 * @return The random arpeggio sequence
+	 * Creates a random arpeggio sequence
+	 * @param instrument The instrument representation
+	 * @param key The key the melody should be in
+	 * @param key The key the melody should be in
+	 * @param length The number of bars the melody should have
 	 */
-	public static ArpeggioSequence newRandomArpeggio(Chord[] chordProgression) {
-		return new ArpeggioSequence(chordProgression);
-	}
-	
-	@Override
-	public Pattern getPattern() {
-		return new Pattern(arpeggioString);
+	public ChordArpeggios(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
+		super(instrument, tempo, length, key, chords);
 	}
 
-	// TODO put note length identifiers in map to match integer length and make calculations easier
 	public static final String SIXTEENTH = "s";
 	public static final String EIGHTH = "i";
 	public static final String QUARTER = "q";
@@ -44,11 +31,12 @@ public class ArpeggioSequence extends SongPartElement {
 	public static final String NEXT = " ";
 	
 	//public static final String SET_VOLUME = " :CON(7, 70) ";
-	
-	///** Probabilities for random choices in melody generation (memoized for one complete song) */
-	//private static float PROB_Rest = Random.rangeFloat(0.1f, 0.4f); // Prob. for a rest
-	
-	public String newRandomArpeggioString() {
+
+	/**
+	 * Creates a random arpeggio sequence in JFugue's Staccato String Syntax
+	 * @return The random arpeggio sequence
+	 */
+	public String makeMusic() {
 		String arpeggioStr = "";
 		
 		// random arpeggio style (example: { 0, 1, 0, 2, 1, 1, 2, 0})
@@ -59,7 +47,7 @@ public class ArpeggioSequence extends SongPartElement {
 		}
 		
 		// chords to arpeggios
-		for (Chord chord : chordProgression) {
+		for (Chord chord : getChords()) {
 			String chordStr = chord.toString();
 			Note[] notes = new Chord(chordStr).getNotes();
 			int chordDurationInEighths = (int)(notes[0].getDuration()*8);

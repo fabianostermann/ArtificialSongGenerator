@@ -33,7 +33,9 @@ public class ChordPadsRanged extends SongPartElement {
 			Random.rangeInt(new Note("D4").getValue(),
 							new Note("A4").getValue()));
 
-	
+	/**
+	 * Creates a random chord sequence in JFugue's Staccato String Syntax
+	 */
 	@Override
 	public String makeMusic() {
 		String musicStr = "";

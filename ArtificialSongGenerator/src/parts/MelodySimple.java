@@ -12,8 +12,8 @@ import util.Random;
 
 public class MelodySimple extends SongPartElement {
 
-	public MelodySimple(Instrument instrument, Key key, int tempo, int length) {
-		super(instrument, key, tempo, length);
+	public MelodySimple(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
+		super(instrument, tempo, length, key, chords);
 	}
 
 	public static final String SIXTEENTH = "s";
@@ -37,7 +37,7 @@ public class MelodySimple extends SongPartElement {
 	private static float PROB_EigthNote = Random.rangeFloat(0.1f, 0.5f); // Prob. for an eigth note, else quarter note is set
 	
 	@Override
-	protected String newRandomMelodyString() {
+	public String makeMusic() {
 		Key key = getKey();
 		key = JFugueExpansion.minToMajKey(key);
 		String melodyStr = "Key:"+key.getKeySignature();
