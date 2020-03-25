@@ -41,3 +41,15 @@
 - Sampling nutzt **Synthesizer-Instrument-Keywords** an Dateinamen um den korrekten Synthesizer zu nutzen\
 	1. Entweder mehrere MidiPorts an Kontakt-Player A1-16,B1-16,C1-16)\
 	2. Oder jedes Instrument einzeln (zu bevorzugen wegen Memory-CPU-Last)\
+
+
+# future ideas to get greater variation in the generated music
+
+- write a bunch of music generators (SongPartElements) with different dependencies (one need chords, one need melody, one need both, one need none, etc.)
+- then generate music elements using random generator that suits the dependency tree of elements already created.
+- in that manor build multiple songparts
+- finally order the songparts by analysing the music of each
+ 
+
+
+
