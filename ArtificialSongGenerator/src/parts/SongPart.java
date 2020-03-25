@@ -9,6 +9,7 @@ import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 
 import main.Config;
+import util.JFugueExpansion;
 import util.Random;
 
 
@@ -61,17 +62,39 @@ public class SongPart implements PatternProducer {
 	
 	@Override
 	public Pattern getPattern() {
-
+		return getPattern(null);
+	}
+	
+	/**
+	 * 
+	 * Returns the music from the given instrument only or all music if instrument is null
+	 * @param instrument An instrument or null
+	 * @return a pattern containing all music played by the given instrument
+	 * 			or demo music with up to 16 instruments if parameter was null
+	 */
+	public Pattern getPattern(final Instrument instrument) {
 		Pattern pattern = new Pattern();
 		
 		Iterator<SongPartElement> iterator = elements.iterator();
 		for (int ch = 0; ch < 16; ch++) {
 			if (ch == 9) {
-				pattern.add(getDrumPattern());
+				if (instrument == null)
+					pattern.add(getDrumPattern());
+				else
+					pattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
 				ch++;
 			}
-			if (iterator.hasNext())
-				pattern.add(iterator.next().getPattern().setVoice(ch%16));
+			SongPartElement currElement = null;
+			while (iterator.hasNext()) {
+				SongPartElement compElement = iterator.next();
+				if (instrument == null || compElement.getInstrument().equals(instrument)) {
+					currElement = compElement;
+					break;
+				}
+			}
+			if (currElement != null) {
+				pattern.add(currElement.getPattern().setVoice(ch%16));
+			}
 			else
 				pattern.add(SongPartElement.newSilentElement(length).setVoice(ch));
 		}
@@ -80,22 +103,11 @@ public class SongPart implements PatternProducer {
 					+ "Midi channels are full, so demo midi file is incomplete.");
 		}
 		
-		return pattern;
+		return JFugueExpansion.repairTempoVoiceBug(pattern);
 	}
 	
 	/**
-	 * 
-	 * Returns the music from the given instrument only
-	 * @param instrument The instrument
-	 * @return TODO
-	 */
-	public Pattern getPattern(Instrument instrument) {
-		
-		return null;
-	}
-	
-	/**
-	 * @return The drum part
+	 * @return The drum part of this songpart
 	 */
 	public Pattern getDrumPattern() {
 		Pattern drumPattern = new Pattern();

@@ -15,9 +15,9 @@ import org.jfugue.player.Player;
 
 import asglib.ArgsUtil;
 import info.Version;
+import parts.Instrument;
 import parts.SongPart;
 import util.ArffUtil;
-import util.JFugueExpansion;
 import util.Random;
 
 /**
@@ -35,7 +35,8 @@ public class ArtificialSongGenerator {
 	
 	public static SongPart[] songparts = null;
 	public static SongPart[] songStructure = null;
-	public static Pattern theSong;
+	
+	public static final String FILE_DELIM = "_";
 	
 	public static boolean VERBOSE_MODE = false;
 	
@@ -133,24 +134,43 @@ public class ArtificialSongGenerator {
 				System.out.println("Song structure: "+songStructureStr + " ("+songTime+"s)");
 		}
 		
-		// build pattern from song structure
-		theSong = new Pattern();
+		// build patterns from song structure
+		Pattern demoSong = new Pattern();
+		Map<Instrument, Pattern> instrTracks = new HashMap<>();
+		Instrument[] instrPool = Instrument.getPool();
+		for (Instrument instrument : Instrument.getPool())
+			instrTracks.put(instrument, new Pattern());
 		for (int i=0; i<songStructure.length; i++) {
-			theSong.add(songStructure[i]);
+			demoSong.add(songStructure[i].getPattern());
+			for (Instrument instrument : instrTracks.keySet())
+				instrTracks.get(instrument).add(songStructure[i].getPattern(instrument));
 		}
-		theSong = JFugueExpansion.repairTempoVoiceBug(theSong);
 		if (argsUtil.check("--print-staccato")) {
 			// staccato code is formatted by line breaking on tempo marks (e.g. T85)
-			System.out.println("Staccato code:\n "+theSong.toString().replaceAll(" V", " \nV"));
+			System.out.println("Staccato code:\n "+demoSong.toString().replaceAll(" V", " \nV"));
 		}
 		
-		// save song to file
-		String midiFileStr = Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE+Config.GET.MIDI_SUFFIX;
+		// save demo song to file
+		File demoMidiFile = new File(Config.GET.OUTPUT_DIR
+				+File.separator+Config.GET.THESONG_TITLE
+				+FILE_DELIM+"demo"+Config.GET.MIDI_SUFFIX);
 		try {
-			MidiFileManager.savePatternToMidi(theSong, new File(midiFileStr));
-			System.out.println("Created song file '" + midiFileStr + "'");
+			MidiFileManager.savePatternToMidi(demoSong, demoMidiFile);
+			System.out.println("Created demo midi file '"+demoMidiFile.getName()+"'");
 		} catch (IOException e) {
-			System.out.println("There was a problem saving the file '"+midiFileStr+"': "+e.getMessage());
+			System.out.println("There was a problem saving the demo file '"+demoMidiFile.getName()+"': "+e.getMessage());
+		}
+		// save instrument tracks to files
+		for (Instrument instrument : instrTracks.keySet()) {
+			File instrTrackFile = new File(Config.GET.OUTPUT_DIR
+					+File.separator+Config.GET.THESONG_TITLE
+					+FILE_DELIM+instrument.getName()+Config.GET.MIDI_SUFFIX);
+			try {
+				MidiFileManager.savePatternToMidi(instrTracks.get(instrument), instrTrackFile);
+				System.out.println("Created midi file '"+instrTrackFile.getName()+"'");
+			} catch (IOException e) {
+				System.out.println("There was a problem saving the file '"+instrTrackFile.getName()+"': "+e.getMessage());
+			}
 		}
 		
 		// save .arff annotation file with segments to file
@@ -179,7 +199,7 @@ public class ArtificialSongGenerator {
 		if (argsUtil.check("--play")) {
 			System.out.print("Playing.. ");
 			Player player = new Player();
-		    player.play(theSong);
+		    player.play(demoSong);
 		    System.out.println("Thank you!");
 		}
 	}

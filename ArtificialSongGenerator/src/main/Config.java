@@ -35,7 +35,7 @@ public class Config {
 	 */
 	private static Map<String, String[]> configMap = new HashMap<String, String[]>();
 	public static String CONFIG_FILENAME = null;
-	public static final String DUMMY_FILENAME = "config.dummy";
+	public static final String DUMMY_FILENAME = "dummy.conf";
 	
 	/**
 	 * Some char constants used when interpreting the config file
@@ -229,7 +229,7 @@ public class Config {
 		instrStr = instrStr.replaceAll("\\s","");
 		String[] strParts = instrStr.split("\\"+ATTR_OPEN);
 		try {
-			instrument = Instrument.newInstrument(strParts[0]);
+			instrument = Instrument.findOrCreate(strParts[0]);
 			if (strParts.length > 1 && strParts[1].endsWith("]")) {
 				strParts[1] = strParts[1].substring(0, strParts[1].length()-1);
 				String[] attrParts = strParts[1].split(DELIM);
@@ -335,7 +335,7 @@ public class Config {
 	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"KompleteTrumpet [60,80,Trumpet]", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi","Overdriven_Guitar"
+		"NITrumpet [60,80,Trumpet]", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi","Overdriven_Guitar"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
 	/** make random choice on melody instrument */

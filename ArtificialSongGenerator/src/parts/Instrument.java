@@ -26,7 +26,7 @@ public class Instrument implements Comparable<Instrument> {
 	 * @param highestNote The highest note, that is possible to play on this instrument
 	 * @return
 	 */
-	public static Instrument newInstrument(String name) {
+	public static Instrument findOrCreate(String name) {
 		Instrument candidate = new Instrument(name);
 		int index = instrumentPool.indexOf(candidate);
 		if (index >= 0)
@@ -37,7 +37,10 @@ public class Instrument implements Comparable<Instrument> {
 		}
 	}
 	
-	public static Instrument[] getUsedInstruments() {
+	/**
+	 * @return An array containing all instruments created for the current song
+	 */
+	public static Instrument[] getPool() {
 		return instrumentPool.toArray(new Instrument[]{});
 	}
 	
