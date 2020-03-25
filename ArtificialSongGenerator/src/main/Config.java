@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jfugue.theory.Key;
+import org.jfugue.theory.Note;
 
 import parts.Instrument;
 import util.Random;
@@ -41,6 +42,8 @@ public class Config {
 	 */
 	public static final String ASSIGN = "=";
 	public static final String DELIM = ",";
+	public static final String ATTR_OPEN = "["; // used for regex string split
+	public static final String ATTR_CLOSE = "]";
 	public static final String COMMENT = "#";
 	
 	/**
@@ -221,6 +224,30 @@ public class Config {
 		Config.GET = new Config();
 	}
 	
+	public static Instrument parseInstrument(String instrStr) {
+		Instrument instrument = null;
+		instrStr = instrStr.replaceAll("\\s","");
+		String[] strParts = instrStr.split("\\"+ATTR_OPEN);
+		try {
+			instrument = Instrument.newInstrument(strParts[0]);
+			if (strParts.length > 1 && strParts[1].endsWith("]")) {
+				strParts[1] = strParts[1].substring(0, strParts[1].length()-1);
+				String[] attrParts = strParts[1].split(DELIM);
+				int attrCount = 0;
+				if (attrParts.length > attrCount)
+					instrument.setLowestNote(new Note(new Integer(attrParts[attrCount++])));
+				if (attrParts.length > attrCount)
+					instrument.setHighestNote(new Note(new Integer(attrParts[attrCount++])));
+				if (attrParts.length > attrCount)
+					instrument.setMidiString(attrParts[attrCount++]);
+			}
+		} catch (Exception e) {
+			System.out.println("Error while parsing instrument string '"+instrStr+"': "+e.getClass()+" "+e.getMessage());
+			System.exit(1);
+		}
+		return instrument;
+	}
+	
 	// ########## DEFAULT SETTINGS (non-static) ###############
 
 	public String THESONG_TITLE = getConfigString("title", "thesong");
@@ -308,7 +335,7 @@ public class Config {
 	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"Trumpet", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi","Overdriven_Guitar"
+		"KompleteTrumpet [60,80,Trumpet]", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi","Overdriven_Guitar"
 		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
 	});
 	/** make random choice on melody instrument */
@@ -318,13 +345,13 @@ public class Config {
 		if (MEMOIZE_INSTRUMENTS && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (melodyPos == -1)
 				melodyPos = Random.rangeInt(0, MELODY_INSTRUMENTS.length);
-			return new Instrument(MELODY_INSTRUMENTS[melodyPos]);
+			return parseInstrument(MELODY_INSTRUMENTS[melodyPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS)
-			return new Instrument(MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)]);
+			return parseInstrument(MELODY_INSTRUMENTS[Random.rangeInt(0, MELODY_INSTRUMENTS.length)]);
 		if (melodyInstList.isEmpty())
 			melodyInstList.addAll(Arrays.asList(MELODY_INSTRUMENTS));
-		return new Instrument(melodyInstList.remove(Random.rangeInt(0, melodyInstList.size())));
+		return parseInstrument(melodyInstList.remove(Random.rangeInt(0, melodyInstList.size())));
 	}
 	
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
@@ -340,14 +367,14 @@ public class Config {
 				chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 			if (chordPos == arpeggioPos)
 				chordPos = (arpeggioPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
-			return new Instrument(CHORD_INSTRUMENTS[chordPos]);
+			return parseInstrument(CHORD_INSTRUMENTS[chordPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS) {
 			chordPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 		}
 		if (chordInstList.isEmpty())
 			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
-		return new Instrument(chordInstList.remove(Random.rangeInt(0, chordInstList.size())));
+		return parseInstrument(chordInstList.remove(Random.rangeInt(0, chordInstList.size())));
 	}
 	
 	private int arpeggioPos = -1;
@@ -358,13 +385,13 @@ public class Config {
 				arpeggioPos = Random.rangeInt(0, CHORD_INSTRUMENTS.length);
 			if (arpeggioPos == chordPos)
 				arpeggioPos = (chordPos + Random.rangeInt(0, CHORD_INSTRUMENTS.length-1)) % CHORD_INSTRUMENTS.length;
-			return new Instrument(CHORD_INSTRUMENTS[arpeggioPos]);
+			return parseInstrument(CHORD_INSTRUMENTS[arpeggioPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS)
-			return new Instrument(CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)]);
+			return parseInstrument(CHORD_INSTRUMENTS[Random.rangeInt(0, CHORD_INSTRUMENTS.length)]);
 		if (chordInstList.isEmpty())
 			chordInstList.addAll(Arrays.asList(CHORD_INSTRUMENTS));
-		return new Instrument(chordInstList.remove(Random.rangeInt(0, chordInstList.size())));
+		return parseInstrument(chordInstList.remove(Random.rangeInt(0, chordInstList.size())));
 	}
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
@@ -377,13 +404,13 @@ public class Config {
 		if (MEMOIZE_INSTRUMENTS) { // && !Random.nextBoolean(MEMOIZE_INSTRUMENTS_FUZZINESS)) {
 			if (bassPos == -1)
 				bassPos = Random.rangeInt(0, BASS_INSTRUMENTS.length);
-			return new Instrument(BASS_INSTRUMENTS[bassPos]);
+			return parseInstrument(BASS_INSTRUMENTS[bassPos]);
 		}
 		if (!EXPLOIT_INSTRUMENTS)
-			return new Instrument(BASS_INSTRUMENTS[Random.rangeInt(0, BASS_INSTRUMENTS.length)]);
+			return parseInstrument(BASS_INSTRUMENTS[Random.rangeInt(0, BASS_INSTRUMENTS.length)]);
 		if (bassInstList.isEmpty())
 			bassInstList.addAll(Arrays.asList(BASS_INSTRUMENTS));
-		return new Instrument(bassInstList.remove(Random.rangeInt(0, bassInstList.size())));
+		return parseInstrument(bassInstList.remove(Random.rangeInt(0, bassInstList.size())));
 	}
 
 	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 0.9f);

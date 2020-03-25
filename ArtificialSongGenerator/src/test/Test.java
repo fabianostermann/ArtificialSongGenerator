@@ -1,5 +1,9 @@
 package test;
 
+import java.util.Arrays;
+
+import parts.Instrument;
+
 /**
  * DEMO
  * This file shows how a melody ("Eq Ch. | Eq Ch. | Dq Eq Dq Cq") can be created as Voice 0.

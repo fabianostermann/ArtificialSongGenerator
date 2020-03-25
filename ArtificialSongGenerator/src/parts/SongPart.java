@@ -90,6 +90,7 @@ public class SongPart implements PatternProducer {
 	 * @return TODO
 	 */
 	public Pattern getPattern(Instrument instrument) {
+		
 		return null;
 	}
 	
