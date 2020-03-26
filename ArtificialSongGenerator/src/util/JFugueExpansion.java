@@ -29,7 +29,7 @@ public class JFugueExpansion {
 		// check for notes
 		for (Token t : pattern.getTokens()) {
 			if (t.getType() == Token.TokenType.NOTE)
-				if (!(new Note(t.toString()).isRest()))
+				if (!t.toString().startsWith("R"))
 					// found a note token that is no rest
 					return false;
 		}

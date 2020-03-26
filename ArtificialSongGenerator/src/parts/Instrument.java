@@ -6,6 +6,7 @@ import java.util.List;
 import org.jfugue.theory.Note;
 
 import asglib.MidiDictionary;
+import main.Config;
 
 public class Instrument implements Comparable<Instrument> {
 
@@ -27,6 +28,8 @@ public class Instrument implements Comparable<Instrument> {
 	 * @return
 	 */
 	public static Instrument findOrCreate(String name) {
+		if (name == Config.DEMO_SUFFIX)
+			System.out.println("WARNING: Instrument called Demo will overwrite Demo midi file.");
 		Instrument candidate = new Instrument(name);
 		int index = instrumentPool.indexOf(candidate);
 		if (index >= 0)

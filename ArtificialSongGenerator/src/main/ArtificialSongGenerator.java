@@ -3,7 +3,9 @@ package main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,10 +13,7 @@ import java.util.Map;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
-import org.jfugue.pattern.Token;
 import org.jfugue.player.Player;
-import org.jfugue.theory.Note;
-import org.jfugue.tools.GetPatternStats;
 
 import asglib.ArgsUtil;
 import info.Version;
@@ -156,10 +155,28 @@ public class ArtificialSongGenerator {
 			System.out.println("Staccato code:\n "+demoSong.toString().replaceAll(" V", " \nV"));
 		}
 		
+		// delete all midi and arff files sharing the same title
+		if (argsUtil.check("--clean")) {
+			File[] cleanFiles = new File(Config.GET.OUTPUT_DIR)
+					.listFiles(new FilenameFilter() {
+			    public boolean accept(File dir, String name) {
+			        return name.startsWith(Config.GET.THESONG_TITLE)
+			        		&& (name.endsWith(Config.GET.MIDI_SUFFIX)
+			        			|| name.endsWith(Config.GET.ARFF_SUFFIX));
+			    }
+			});
+			for (File file : cleanFiles)
+				try {
+					Files.delete(file.toPath());
+					System.out.println("Deleted file '"+file.getName()+"'.");
+				} catch (IOException e) {
+					System.out.println("Unable to delete file '"+file.getName()+"': "+e.getMessage());
+				}
+		}
 		// save demo song to file
-		saveToMidi(demoSong, "demo");
+		saveToMidi(demoSong, Config.DEMO_SUFFIX);
 		// save drum track to file
-		saveToMidi(drumTrack, "Drums");
+		saveToMidi(drumTrack, Config.DRUMS_SUFFIX);
 		// save instrument tracks to files
 		for (Instrument instrument : instrTracks.keySet()) {
 			saveToMidi(instrTracks.get(instrument), instrument.getName());
@@ -220,23 +237,24 @@ public class ArtificialSongGenerator {
 	 */
 	private static void printHelp() {
 		System.out.println("Usage: java ArtificialSongGenerator [options]...\n" +
-				"\n"+
-				"This program generates a random midi song file\n" +
-				"containing random songparts with melody and chords.\n" +
-				"Additionally an arff file with annotated segment borders is produced.\n" +
-				"\n" +
-				"Options:\n" +
-				"-h, --help             Prints this.\n" +
-				"-v, --version          Prints version.\n" +
-				"--play                 Song is played back after generation.\n" +
-				"--print-staccato       Prints the Staccato code (JFugue's music syntax).\n" +
-				"--verbose              Prints generation infos like the structure of the song (e.g. AABACB) and length in second.\n" +
-				"--title=<title>        Specifies the output title id.\n" +
-				"--dir=<dir>            Specifies directory for output files " +
-					"(ATTENTION: fails if directory does not exist).\n" +
-				"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
-				"--config-dummy         Creates a config overview dummy file.\n"
-				);
+			"\n"+
+			"This program generates a random midi song file\n" +
+			"containing random songparts with melody and chords.\n" +
+			"Additionally an arff file with annotated segment borders is produced.\n" +
+			"\n" +
+			"Options:\n" +
+			"-h, --help             Prints this.\n" +
+			"-v, --version          Prints version.\n" +
+			"--play                 Song is played back after generation.\n" +
+			"--print-staccato       Prints the Staccato code (JFugue's music syntax).\n" +
+			"--verbose              Prints generation infos like the structure of the song (e.g. AABACB) and length in second.\n" +
+			"--title=<title>        Specifies the output title id.\n" +
+			"--clean                Deletes all midi and arff files that share the same title\n"+
+			"--dir=<dir>            Specifies directory for output files " +
+				"(ATTENTION: fails if directory does not exist).\n" +
+			"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
+			"--config-dummy         Creates a config overview dummy file.\n"
+		);
 	}
 
 }

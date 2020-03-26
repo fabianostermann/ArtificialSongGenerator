@@ -36,6 +36,8 @@ public class Config {
 	private static Map<String, String[]> configMap = new HashMap<String, String[]>();
 	public static String CONFIG_FILENAME = null;
 	public static final String DUMMY_FILENAME = "dummy.conf";
+	public static final String DEMO_SUFFIX = "Demo";
+	public static final String DRUMS_SUFFIX = "Drums";
 	
 	/**
 	 * Some char constants used when interpreting the config file
@@ -415,7 +417,7 @@ public class Config {
 
 	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 0.9f);
 	public final float CHORDS_ENABLED = getConfigFloat("chords-enabled", 0.8f);
-	public final float DRUMS_ENABLED = getConfigFloat("drums-enabled", 0);//0.8f);
+	public final float DRUMS_ENABLED = getConfigFloat("drums-enabled", 0.8f);
 	public final float ARPEGGIO_ENABLED = getConfigFloat("arpeggio-enabled", 0.5f);
 	public final float BASS_ENABLED = getConfigFloat("bass-enabled", 0.9f);
 }
