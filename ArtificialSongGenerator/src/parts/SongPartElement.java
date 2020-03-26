@@ -100,6 +100,6 @@ public abstract class SongPartElement implements PatternProducer {
 		for (int i=0; i<length; i++) {
 			restVoice += "Rw ";
 		}
-		return new Pattern(restVoice);
+		return new Pattern();
 	}
 }

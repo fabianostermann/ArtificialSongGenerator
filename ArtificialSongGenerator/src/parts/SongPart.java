@@ -103,7 +103,7 @@ public class SongPart implements PatternProducer {
 					+ "Midi channels are full, so demo midi file is incomplete.");
 		}
 		
-		return JFugueExpansion.repairTempoVoiceBug(pattern);
+		return JFugueExpansion.repairMusicString(pattern);
 	}
 	
 	/**

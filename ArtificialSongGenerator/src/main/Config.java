@@ -415,7 +415,7 @@ public class Config {
 
 	public final float MELODY_ENABLED = getConfigFloat("melody-enabled", 0.9f);
 	public final float CHORDS_ENABLED = getConfigFloat("chords-enabled", 0.8f);
-	public final float DRUMS_ENABLED = getConfigFloat("drums-enabled", 0.8f);
+	public final float DRUMS_ENABLED = getConfigFloat("drums-enabled", 0);//0.8f);
 	public final float ARPEGGIO_ENABLED = getConfigFloat("arpeggio-enabled", 0.5f);
 	public final float BASS_ENABLED = getConfigFloat("bass-enabled", 0.9f);
 }

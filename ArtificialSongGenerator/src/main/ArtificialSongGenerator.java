@@ -11,13 +11,17 @@ import java.util.Map;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
+import org.jfugue.pattern.Token;
 import org.jfugue.player.Player;
+import org.jfugue.theory.Note;
+import org.jfugue.tools.GetPatternStats;
 
 import asglib.ArgsUtil;
 import info.Version;
 import parts.Instrument;
 import parts.SongPart;
 import util.ArffUtil;
+import util.JFugueExpansion;
 import util.Random;
 
 /**
@@ -136,12 +140,14 @@ public class ArtificialSongGenerator {
 		
 		// build patterns from song structure
 		Pattern demoSong = new Pattern();
+		Pattern drumTrack = new Pattern();
 		Map<Instrument, Pattern> instrTracks = new HashMap<>();
 		Instrument[] instrPool = Instrument.getPool();
 		for (Instrument instrument : Instrument.getPool())
 			instrTracks.put(instrument, new Pattern());
 		for (int i=0; i<songStructure.length; i++) {
 			demoSong.add(songStructure[i].getPattern());
+			drumTrack.add(songStructure[i].getDrumPattern());
 			for (Instrument instrument : instrTracks.keySet())
 				instrTracks.get(instrument).add(songStructure[i].getPattern(instrument));
 		}
@@ -151,26 +157,12 @@ public class ArtificialSongGenerator {
 		}
 		
 		// save demo song to file
-		File demoMidiFile = new File(Config.GET.OUTPUT_DIR
-				+File.separator+Config.GET.THESONG_TITLE
-				+FILE_DELIM+"demo"+Config.GET.MIDI_SUFFIX);
-		try {
-			MidiFileManager.savePatternToMidi(demoSong, demoMidiFile);
-			System.out.println("Created demo midi file '"+demoMidiFile.getName()+"'");
-		} catch (IOException e) {
-			System.out.println("There was a problem saving the demo file '"+demoMidiFile.getName()+"': "+e.getMessage());
-		}
+		saveToMidi(demoSong, "demo");
+		// save drum track to file
+		saveToMidi(drumTrack, "Drums");
 		// save instrument tracks to files
 		for (Instrument instrument : instrTracks.keySet()) {
-			File instrTrackFile = new File(Config.GET.OUTPUT_DIR
-					+File.separator+Config.GET.THESONG_TITLE
-					+FILE_DELIM+instrument.getName()+Config.GET.MIDI_SUFFIX);
-			try {
-				MidiFileManager.savePatternToMidi(instrTracks.get(instrument), instrTrackFile);
-				System.out.println("Created midi file '"+instrTrackFile.getName()+"'");
-			} catch (IOException e) {
-				System.out.println("There was a problem saving the file '"+instrTrackFile.getName()+"': "+e.getMessage());
-			}
+			saveToMidi(instrTracks.get(instrument), instrument.getName());
 		}
 		
 		// save .arff annotation file with segments to file
@@ -201,6 +193,24 @@ public class ArtificialSongGenerator {
 			Player player = new Player();
 		    player.play(demoSong);
 		    System.out.println("Thank you!");
+		}
+	}
+	
+	public static void saveToMidi(Pattern pattern, String suffix) {
+
+		if (JFugueExpansion.checkIfEmpty(pattern)) { // JFugue always counts 1 if no notes (possible for no null division)
+			if (VERBOSE_MODE) System.out.println("'"+suffix+"' is not used for song.");
+			return;
+		}
+			
+		File midiFile = new File(Config.GET.OUTPUT_DIR
+				+File.separator+Config.GET.THESONG_TITLE
+				+FILE_DELIM+suffix+Config.GET.MIDI_SUFFIX);
+		try {
+			MidiFileManager.savePatternToMidi(pattern, midiFile);
+			System.out.println("Created midi file '"+midiFile.getName()+"'");
+		} catch (IOException e) {
+			System.out.println("Error while saving file '"+midiFile.getName()+"': "+e.getMessage());
 		}
 	}
 
