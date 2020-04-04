@@ -104,10 +104,10 @@ public class ArffUtil {
 	}
 
 	private static void printHeader(BufferedWriter writer, String id, String[] attributes, int rows) throws IOException {
-		writer.write("@RELATION "+STR_DELIM+"Annotation "+id+STR_DELIM); writer.newLine();
-		writer.newLine();
-		writer.write("%rows="+rows); writer.newLine();
-		writer.write("%columns="+attributes.length); writer.newLine();
+		writer.write("@RELATION "+STR_DELIM+"Segment information of "+id+STR_DELIM); writer.newLine();
+//		writer.newLine();
+//		writer.write("%rows="+rows); writer.newLine();
+//		writer.write("%columns="+attributes.length); writer.newLine();
 		writer.newLine();
 		for (int i=0; i<attributes.length; i+=2) {
 			writer.write("@ATTRIBUTE "+STR_DELIM+attributes[i]+STR_DELIM+" "+attributes[i+1]); 

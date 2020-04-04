@@ -1,6 +1,6 @@
 # ArtificialSongGenerator Project
 
-The project consists of three subprograms that allow generation of a artificial pop song database with realistic samples
+The project consists of two subprograms that allow generation of a artificial pop song database with realistic samples
 
 ### Artificial Song Generator
 

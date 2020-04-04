@@ -149,7 +149,7 @@ public class OnsetAnnotator {
 			java.util.Collections.sort(eventSecs);
 		
 	        // writing header
-	        writer.write("@RELATION 'Onset events in '"+Config.GET.THESONG_TITLE+"'"); writer.newLine();
+	        writer.write("@RELATION 'Onset events in "+Config.GET.THESONG_TITLE+"'"); writer.newLine();
 	        writer.newLine();
 	        writer.write("@ATTRIBUTE 'Onset time in seconds' NUMERIC"); writer.newLine();
 	        for (String instrument : allConfigInstruments) {
