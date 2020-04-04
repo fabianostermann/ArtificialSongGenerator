@@ -3,27 +3,21 @@
 
 	<target name="compile">
 		<ant target="compile" dir="ArtificialSongGenerator" antfile="build.xml"/>
-		<ant target="compile" dir="OnsetAnnotator" antfile="build.xml"/>
 		<ant target="compile" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
 	<target name="pack">
 		<ant target="pack" dir="ArtificialSongGenerator" antfile="build.xml"/>
-		<ant target="pack" dir="OnsetAnnotator" antfile="build.xml"/>
 		<ant target="pack" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
 	<target name="clean">
 		<ant target="clean" dir="ArtificialSongGenerator" antfile="build.xml"/>
-		<ant target="clean" dir="OnsetAnnotator" antfile="build.xml"/>
 		<ant target="clean" dir="SamplingRoboter" antfile="build.xml"/>
 	</target>
 
 	<target name="run-generator">
 		<ant target="run" dir="ArtificialSongGenerator" antfile="build.xml"/>
-	</target>
-	<target name="run-annotator">
-		<ant target="run" dir="OnsetAnnotator" antfile="build.xml"/>
 	</target>
 	<target name="run-roboter">
 		<ant target="run" dir="SamplingRoboter" antfile="build.xml"/>
