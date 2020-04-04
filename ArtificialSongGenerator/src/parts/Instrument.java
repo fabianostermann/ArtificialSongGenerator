@@ -40,6 +40,13 @@ public class Instrument implements Comparable<Instrument> {
 		}
 	}
 	
+	public static boolean exists(String name) {
+		for (Instrument instrument : instrumentPool)
+			if (instrument.getName().equals(name))
+				return true;
+		return false;
+	}
+	
 	/**
 	 * @return An array containing all instruments created for the current song
 	 */

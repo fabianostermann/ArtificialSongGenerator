@@ -38,15 +38,20 @@ public class Config {
 	public static final String DUMMY_FILENAME = "dummy.conf";
 	public static final String DEMO_SUFFIX = "Demo";
 	public static final String DRUMS_SUFFIX = "Drums";
+	public static final String ONSET_SUFFIX = "onsets";
 	
 	/**
-	 * Some char constants used when interpreting the config file
+	 * Some char constants for interpreting the config file
 	 */
 	public static final String ASSIGN = "=";
 	public static final String DELIM = ",";
 	public static final String ATTR_OPEN = "["; // used for regex string split
 	public static final String ATTR_CLOSE = "]";
 	public static final String COMMENT = "#";
+	/**
+	 * Some char constants for output files
+	 */
+	public static final String FILE_DELIM = "_";
 	
 	/**
 	 * Parses on line from the config file and stores it in the config map.
@@ -226,6 +231,11 @@ public class Config {
 		Config.GET = new Config();
 	}
 	
+	/**
+	 * Parses a config string into a instrument object.
+	 * @param instrStr the string to parse
+	 * @return the instrument with desired attributes
+	 */
 	public static Instrument parseInstrument(String instrStr) {
 		Instrument instrument = null;
 		instrStr = instrStr.replaceAll("\\s","");
@@ -248,6 +258,17 @@ public class Config {
 			System.exit(1);
 		}
 		return instrument;
+	}
+	
+	/**
+	 * Parses a config string into a instrument object.
+	 * @param instrStr the string to parse
+	 * @return the instrument with desired attributes
+	 */
+	public static String parseInstrumentName(String instrStr) {
+		instrStr = instrStr.replaceAll("\\s","");
+		String[] strParts = instrStr.split("\\"+ATTR_OPEN);
+		return strParts[0];
 	}
 	
 	// ########## DEFAULT SETTINGS (non-static) ###############

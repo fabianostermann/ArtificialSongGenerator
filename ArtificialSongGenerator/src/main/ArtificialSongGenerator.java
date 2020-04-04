@@ -21,6 +21,7 @@ import parts.Instrument;
 import parts.SongPart;
 import util.ArffUtil;
 import util.JFugueExpansion;
+import util.OnsetAnnotator;
 import util.Random;
 
 /**
@@ -39,7 +40,7 @@ public class ArtificialSongGenerator {
 	public static SongPart[] songparts = null;
 	public static SongPart[] songStructure = null;
 	
-	public static final String FILE_DELIM = "_";
+	public static Map<String, File> createdMidiFiles = new HashMap<>();
 	
 	public static boolean VERBOSE_MODE = false;
 	
@@ -183,12 +184,13 @@ public class ArtificialSongGenerator {
 		}
 		
 		// save .arff annotation file with segments to file
-		String arffFileStr = Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX;
+		File infoFile = new File(Config.GET.OUTPUT_DIR
+				+File.separator+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX);
 		try {
-			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, new File(arffFileStr));
-			System.out.println("Created annotation file '" + arffFileStr + "'");
+			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, infoFile);
+			System.out.println("Created annotation file '" + infoFile.getName() + "'");
 			if (VERBOSE_MODE) // print arff annotation file to standard out
-				try (BufferedReader br = new BufferedReader(new FileReader(arffFileStr))) {
+				try (BufferedReader br = new BufferedReader(new FileReader(infoFile))) {
 					   String line;
 					   boolean started = false;
 					   while ((line = br.readLine()) != null) {
@@ -202,12 +204,21 @@ public class ArtificialSongGenerator {
 					   System.out.println("EOF");
 					}
 		} catch (IOException e) {
-			System.out.println("There was a problem saving the file '"+arffFileStr+"': "+e.getMessage());
+			System.out.println("There was a problem saving the file '"+infoFile.getName()+"': "+e.getMessage());
 		}
+		
+		// make onset annotation file
+		OnsetAnnotator onsetAnnotator = new OnsetAnnotator();
+		for (Map.Entry<String, File> entry : createdMidiFiles.entrySet())
+			onsetAnnotator.parse(entry.getKey(), entry.getValue());
+		onsetAnnotator.write(new File(Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE
+				+Config.FILE_DELIM+Config.ONSET_SUFFIX+Config.GET.ARFF_SUFFIX));
 
+		// play the demo song
 		if (argsUtil.check("--play")) {
 			System.out.print("Playing.. ");
 			Player player = new Player();
+			// execute last because blocks
 		    player.play(demoSong);
 		    System.out.println("Thank you!");
 		}
@@ -222,10 +233,11 @@ public class ArtificialSongGenerator {
 			
 		File midiFile = new File(Config.GET.OUTPUT_DIR
 				+File.separator+Config.GET.THESONG_TITLE
-				+FILE_DELIM+suffix+Config.GET.MIDI_SUFFIX);
+				+Config.FILE_DELIM+suffix+Config.GET.MIDI_SUFFIX);
 		try {
 			MidiFileManager.savePatternToMidi(pattern, midiFile);
-			System.out.println("Created midi file '"+midiFile.getName()+"'");
+			createdMidiFiles.put(suffix, midiFile);
+			System.out.println("Created midi file '"+midiFile.getName()+"'.");
 		} catch (IOException e) {
 			System.out.println("Error while saving file '"+midiFile.getName()+"': "+e.getMessage());
 		}

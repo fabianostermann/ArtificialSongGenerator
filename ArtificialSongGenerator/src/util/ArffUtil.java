@@ -17,7 +17,7 @@ import parts.SongPartElement;
 
 public class ArffUtil {
 
-	public static final String NEXT = ", ";
+	public static final String NEXT = ",";
 	public static final String STR_SEP = ",";
 	public static final String STR_DELIM = "'";
 	public static final String STR_OPEN = "[";
