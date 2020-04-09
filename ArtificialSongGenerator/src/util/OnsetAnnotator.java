@@ -23,6 +23,7 @@ import javax.sound.midi.Track;
 
 import org.jfugue.theory.Note;
 
+import main.ArtificialSongGenerator;
 import main.Config;
 import parts.Instrument;
 import sun.nio.cs.ext.ISCII91;
@@ -75,11 +76,12 @@ public class OnsetAnnotator {
     		allConfigInstruments.add(Config.DRUMS_SUFFIX);
     		// alphabetical order
     		java.util.Collections.sort(allConfigInstruments);
-    		System.out.println("Full instrument list from config: " + allConfigInstruments);
+    		if (ArtificialSongGenerator.VERBOSE_MODE)
+    			System.out.println("Full instrument list from config: " + allConfigInstruments);
     	}
     	
-    	
-    	if (!Instrument.exists(instrumentName) && instrumentName != Config.DRUMS_SUFFIX) {
+    	Instrument instrument = Instrument.find(instrumentName);
+    	if (instrument==null && instrumentName != Config.DRUMS_SUFFIX) {
     		System.out.println("Instrument '"+instrumentName+"' was not used in music");
     		return;
     	}
@@ -121,6 +123,8 @@ public class OnsetAnnotator {
         		}
         	}
         }
+        
+        
         // add messages to global message store
         for (Long tick : messages.keySet()) {
         	float sec = tickToSecond(tick);
@@ -170,6 +174,7 @@ public class OnsetAnnotator {
 	        	for (String instrName : allConfigInstruments) {
 	        		// get current array (must be pushed back later)
 	        		int[] noteOnMessages = noteOn.get(instrName);
+	        		Instrument instrument = Instrument.find(instrName);
 	        		
 	        		for (int i = 0; i < noteOnMessages.length; i++)
 	        			noteOnMessages[i] = noteOnMessages[i]==0 ? 0 : noteOnMessages[i]+1;
@@ -177,8 +182,15 @@ public class OnsetAnnotator {
 	        			int key = sm.getData1();
 	        			if (sm.getCommand() == ShortMessage.NOTE_OFF)
 	        				noteOnMessages[key] = 0;
-	        			else if (sm.getCommand() == ShortMessage.NOTE_ON)
+	        			else if (sm.getCommand() == ShortMessage.NOTE_ON) {
 	        				noteOnMessages[key] = 1;
+	                        // check for notes that are out of the specific instrument range
+	                        // this is an error and should be prevented by element creators
+	                        if (instrument != null)
+	                        	if (key < instrument.getLowestNote().getValue()
+	                        			|| key > instrument.getHighestNote().getValue())
+	                        		System.out.println("WARNING: Unplayable pitch.. "+instrument+" cannot play midi note "+key);
+	        			}
 	        		}
 	        		// write instrument annotation entry
 	        		writer.write(ArffUtil.NEXT);

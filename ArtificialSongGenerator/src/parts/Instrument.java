@@ -10,8 +10,9 @@ import main.Config;
 
 public class Instrument implements Comparable<Instrument> {
 
-	private String name = "Default_Piano";
-	private String midi = MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)0);
+	private String name;
+	private String sampler;
+	private String midi;
 	
 	private Note lowestNote = new Note(0);
 	private Note highestNote = new Note(127);
@@ -29,7 +30,7 @@ public class Instrument implements Comparable<Instrument> {
 	 */
 	public static Instrument findOrCreate(String name) {
 		if (name == Config.DEMO_SUFFIX)
-			System.out.println("WARNING: Instrument called Demo will overwrite Demo midi file.");
+			System.out.println("WARNING: Instrument called '"+Config.DEMO_SUFFIX+"' will overwrite Demo midi file.");
 		Instrument candidate = new Instrument(name);
 		int index = instrumentPool.indexOf(candidate);
 		if (index >= 0)
@@ -40,11 +41,11 @@ public class Instrument implements Comparable<Instrument> {
 		}
 	}
 	
-	public static boolean exists(String name) {
+	public static Instrument find(String name) {
 		for (Instrument instrument : instrumentPool)
 			if (instrument.getName().equals(name))
-				return true;
-		return false;
+				return instrument;
+		return null;
 	}
 	
 	/**
@@ -58,6 +59,8 @@ public class Instrument implements Comparable<Instrument> {
 		if (name == null)
 			throw new NullPointerException("no name given for instrument");
 		this.name = name;
+		setSampler(name);
+		setMidiString(name);
 	}
 	
 	@Override
@@ -77,6 +80,10 @@ public class Instrument implements Comparable<Instrument> {
 	}
 
 	/** Getter & Setter */
+	public void setSampler(String sampler) {
+		if (sampler != null) this.sampler = sampler; }
+	public String getSampler() { return sampler; }
+	
 	public void setMidiString(String midi) {
 		if (midi != null) this.midi = midi; }
 	public String getMidiString() { return midi; }

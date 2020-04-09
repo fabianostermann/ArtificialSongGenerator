@@ -38,7 +38,8 @@ public class Config {
 	public static final String DUMMY_FILENAME = "dummy.conf";
 	public static final String DEMO_SUFFIX = "Demo";
 	public static final String DRUMS_SUFFIX = "Drums";
-	public static final String ONSET_SUFFIX = "onsets";
+	public static final String SEGMENTS_SUFFIX = "segments";
+	public static final String ONSETS_SUFFIX = "onsets";
 	
 	/**
 	 * Some char constants for interpreting the config file
@@ -251,6 +252,8 @@ public class Config {
 				if (attrParts.length > attrCount)
 					instrument.setHighestNote(new Note(new Integer(attrParts[attrCount++])));
 				if (attrParts.length > attrCount)
+					instrument.setSampler(attrParts[attrCount++]);
+				if (attrParts.length > attrCount)
 					instrument.setMidiString(attrParts[attrCount++]);
 			}
 		} catch (Exception e) {
@@ -358,8 +361,21 @@ public class Config {
 	public final float MEMOIZE_INSTRUMENTS_FUZZINESS = getConfigFloat("memoize-instruments-fuzziness", 0.33f);
 	
 	public final String[] MELODY_INSTRUMENTS = getConfigStrings("melody-instruments", new String[] {
-		"NITrumpet [60,80,Trumpet]", "Tenor_Sax", "Flute", "Violin", "Viola", "Skakuhachi","Overdriven_Guitar"
-		//No NativeInstrument available: "Vibraphone", "Distortion_Guitar", "Synth_Voice"
+		"Violin [55,96,Violins_SessionStringsPro]",
+		"Viola [48,84,Violas_SessionStringsPro]",
+		"Erhu [57,84,EthnoWorld_Erhu,Fiddle]",
+
+		"Trumpet [52,89,Trumpet1_SessionHornsPro]",
+		"Flugelhorn [52,83,Flugelhorn_SessionHornsPro,Trombone]",
+		"Trombone [40,72,TenorTrombone_SessionHornsPro]",
+
+		"Clarinet [50,87,Clarinet_Essential]",
+		"AltoSax [49,81,AltoSax_SessionHornsPro,Alto_Sax]",
+		"TenorSax [44,76,TenorSax_SessionHornsPro,Tenor_Sax]",
+
+		"Flute [60,96,Flute_Essential]",
+		"Shakuhachi [57,88,EthnoWorld_Shakuhachi,Skakuhachi]",
+		"Fujara [36,96,EthnoWorld_Fujara,Blown_Bottle]",
 	});
 	/** make random choice on melody instrument */
 	private int melodyPos = -1;
@@ -378,8 +394,17 @@ public class Config {
 	}
 	
 	public final String[] CHORD_INSTRUMENTS = getConfigStrings("chord-instruments", new String[] {
-		"Piano", "Electric_Piano", "Guitar", "Cello", "Sitar"
-		//"Rock_Organ", "Poly_Synth", "Electric_Jazz_Guitar", "Overdriven_Guitar", "Guitar", "Vibraphone",
+		"Cello [36,72,Cellos_SessionStringsPro]",
+
+		"Piano [21,108,The_Giant_soft]",
+		"BrightPiano [21,108,Alicias_Keys,Bright_Acoustic]",
+		"ElectricPiano [24,96,Scarbee_A200_DI,Electric_Piano]",
+
+		"AcousticGuitar [40,76,ChrisHein????AccGuitar,Guitar]",
+		"ElectricGuitarClean [40,76,ChrisHein????CleanGuitar,Electric_Clean_Guitar]",
+		"ElectricGuitarDistort [40,76,ChrisHein????CleanGuitar+VSTAmp,Overdriven_Guitar]",
+		"Ukulele [57,83,EthnoWorld_Ukulele,Guitar]",
+		"Sitar [48,79,EthnoWorld_Sitar]",
 	});
 	/** make random choice on chord instrument */
 	private int chordPos = -1;
@@ -418,7 +443,9 @@ public class Config {
 	}
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
-		"Acoustic_Bass", "Electric_Bass_Finger", "Contrabass" //"Synth_Bass_2", "Slap_Bass_1",
+		"ElectricBass [35,76,Scarbee_JayBass_Neck,Electric_Bass_Finger]",
+		"DoubleBassPizz [24,65,Basses_SessionStringsPro,Acoustic_Bass]",
+		"DoubleBassArco [24,65,Basses_SessionStringsPro,Contrabass]",
 	});
 	/** make random choice on bass instrument */
 	private int bassPos = -1;

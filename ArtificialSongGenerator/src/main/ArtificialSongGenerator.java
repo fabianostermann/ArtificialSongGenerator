@@ -185,7 +185,7 @@ public class ArtificialSongGenerator {
 		
 		// save .arff annotation file with segments to file
 		File infoFile = new File(Config.GET.OUTPUT_DIR
-				+File.separator+Config.GET.THESONG_TITLE+Config.GET.ARFF_SUFFIX);
+				+File.separator+Config.GET.THESONG_TITLE+Config.FILE_DELIM+Config.GET.SEGMENTS_SUFFIX+Config.GET.ARFF_SUFFIX);
 		try {
 			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, infoFile);
 			System.out.println("Created annotation file '" + infoFile.getName() + "'");
@@ -212,7 +212,7 @@ public class ArtificialSongGenerator {
 		for (Map.Entry<String, File> entry : createdMidiFiles.entrySet())
 			onsetAnnotator.parse(entry.getKey(), entry.getValue());
 		onsetAnnotator.write(new File(Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE
-				+Config.FILE_DELIM+Config.ONSET_SUFFIX+Config.GET.ARFF_SUFFIX));
+				+Config.FILE_DELIM+Config.ONSETS_SUFFIX+Config.GET.ARFF_SUFFIX));
 
 		// play the demo song
 		if (argsUtil.check("--play")) {
