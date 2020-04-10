@@ -10,6 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
@@ -34,6 +38,8 @@ import util.Random;
  */
 
 public class ArtificialSongGenerator {
+	
+	public final static Logger LOGGER = Logger.getLogger(ArtificialSongGenerator.class.getName());
 
 	public static ArgsUtil argsUtil = null;
 	
@@ -50,15 +56,22 @@ public class ArtificialSongGenerator {
 	public static void main(String[] args) {
 		argsUtil = new ArgsUtil(args);
 
+		try {
+//			LOGGER.addHandler(new ConsoleHandler());
+			LOGGER.addHandler(new FileHandler("log.txt", true));
+		} catch (SecurityException | IOException e1) {
+			e1.printStackTrace();
+		}
+		
 		// ######################
-		// ### SYSTEM STARTUP ###
+		// ### SYSTEM STARTUP ###q
 		
 		// both help option installed for clueless users
 		if (argsUtil.check("--help") || argsUtil.check("-h")) {
 			printHelp();
 			System.exit(0);
 		}
-		System.out.println("### ArtificialSongGenerator started ### ("+new Date()+")");
+		LOGGER.log(Level.INFO, "### ArtificialSongGenerator started ### ("+new Date()+")");
 		// state version
 		if (argsUtil.check("--version") || argsUtil.check("-v")) {
 			System.out.println(Version.VERSION);
@@ -105,6 +118,7 @@ public class ArtificialSongGenerator {
 		// ### GENERATION PROCESS STARTS ###
 		
 		// generate some songparts
+		System.out.println("Making music..");
 		songparts = new SongPart[Config.GET.Nof_DIFFERENT_SONGPARTS];
 		for (int i = 0; i < songparts.length; i++) {
 			songparts[i] = new SongPart();
@@ -185,7 +199,7 @@ public class ArtificialSongGenerator {
 		
 		// save .arff annotation file with segments to file
 		File infoFile = new File(Config.GET.OUTPUT_DIR
-				+File.separator+Config.GET.THESONG_TITLE+Config.FILE_DELIM+Config.GET.SEGMENTS_SUFFIX+Config.GET.ARFF_SUFFIX);
+				+File.separator+Config.GET.THESONG_TITLE+Config.FILE_DELIM+Config.SEGMENTS_SUFFIX+Config.GET.ARFF_SUFFIX);
 		try {
 			ArffUtil.saveSongStructureToArff(Config.GET.THESONG_TITLE, songStructure, infoFile);
 			System.out.println("Created annotation file '" + infoFile.getName() + "'");
@@ -211,7 +225,7 @@ public class ArtificialSongGenerator {
 		OnsetAnnotator onsetAnnotator = new OnsetAnnotator();
 		for (Map.Entry<String, File> entry : createdMidiFiles.entrySet())
 			onsetAnnotator.parse(entry.getKey(), entry.getValue());
-		onsetAnnotator.write(new File(Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE
+		onsetAnnotator.write(new File(Config.GET.OUTPUT_DIR+File.separator+Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE
 				+Config.FILE_DELIM+Config.ONSETS_SUFFIX+Config.GET.ARFF_SUFFIX));
 
 		// play the demo song
@@ -225,7 +239,7 @@ public class ArtificialSongGenerator {
 	}
 	
 	public static void saveToMidi(Pattern pattern, String suffix) {
-
+		
 		if (JFugueExpansion.checkIfEmpty(pattern)) { // JFugue always counts 1 if no notes (possible for no null division)
 			if (VERBOSE_MODE) System.out.println("'"+suffix+"' is not used for song.");
 			return;

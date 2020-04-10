@@ -30,8 +30,7 @@ public class BassLine extends SongPartElement {
 	public static final String REST = "R";
 	public static final String NEXT = " ";
 
-	public static final String OCTAVE_BASS = "3";
-	public static final String OCTAVE_SUB_BASS = "2";
+	public static final String BASS_OCTAVE = "3";
 	
 	/** Probabilities for random choices in melody generation (memoized for one complete song) */
 	//private static float PROB_SUBOCTAVE = Random.rangeFloat(0f, 0.3f); // Prob. for a sub-bass octave // REMOVED: suboctave not playable on normal e-bass
@@ -39,11 +38,9 @@ public class BassLine extends SongPartElement {
 	public String makeMusic() {
 		String bassLineStr = "";
 		
-		String OCTAVE = /*Random.nextBoolean(PROB_SUBOCTAVE) ? OCTAVE_SUB_BASS :*/ OCTAVE_BASS;
-		
 		for (Chord chord : getChords()) {
 			Note[] notes = chord.getNotes();
-			String bassNoteStr = notes[0].toString().replaceFirst(""+notes[0].getOctave(), OCTAVE);
+			String bassNoteStr = notes[0].toString().replaceFirst(""+notes[0].getOctave(), BASS_OCTAVE);
 			bassLineStr += NEXT + bassNoteStr;
 		}
 		

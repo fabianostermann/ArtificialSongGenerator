@@ -28,7 +28,7 @@ public class SongPart implements PatternProducer {
 	/**  used for chords, arpeggios and bass */
 	private final Chord[] chordProgression;
 	public final List<SongPartElement> elements = new ArrayList<>();
-	public final Drums drums;
+	public final RhythmSimpleGrooves drums;
 	
 	public SongPart() {
 		
@@ -56,7 +56,7 @@ public class SongPart implements PatternProducer {
 					tempo, length, key, chordProgression));
 
 		if (Random.nextBoolean(Config.GET.DRUMS_ENABLED))
-			drums = new Drums(tempo, length);
+			drums = new RhythmSimpleGrooves(tempo, length);
 		else drums = null;
 	}
 	
@@ -81,7 +81,7 @@ public class SongPart implements PatternProducer {
 				if (instrument == null)
 					pattern.add(getDrumPattern());
 				else
-					pattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
+					pattern.add(RhythmSimpleGrooves.newSilentRhythm(length).getPattern().setTempo(tempo));
 				ch++;
 			}
 			SongPartElement currElement = null;
@@ -114,7 +114,7 @@ public class SongPart implements PatternProducer {
 		if (drums != null)
 			drumPattern.add(drums.getPattern());
 		else
-			drumPattern.add(Drums.newSilentRhythm(length).getPattern().setTempo(tempo));
+			drumPattern.add(RhythmSimpleGrooves.newSilentRhythm(length).getPattern().setTempo(tempo));
 		
 		return drumPattern;
 	}

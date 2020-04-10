@@ -400,9 +400,9 @@ public class Config {
 		"BrightPiano [21,108,Alicias_Keys,Bright_Acoustic]",
 		"ElectricPiano [24,96,Scarbee_A200_DI,Electric_Piano]",
 
-		"AcousticGuitar [40,76,ChrisHein????AccGuitar,Guitar]",
-		"ElectricGuitarClean [40,76,ChrisHein????CleanGuitar,Electric_Clean_Guitar]",
-		"ElectricGuitarDistort [40,76,ChrisHein????CleanGuitar+VSTAmp,Overdriven_Guitar]",
+		"AcousticGuitar [40,79,ChrisHein????AccGuitar,Guitar]",
+		"ElectricGuitarClean [40,79,ChrisHein????CleanGuitar,Electric_Clean_Guitar]",
+		"ElectricGuitarDistort [40,79,ChrisHein????CleanGuitar+VSTAmp,Overdriven_Guitar]",
 		"Ukulele [57,83,EthnoWorld_Ukulele,Guitar]",
 		"Sitar [48,79,EthnoWorld_Sitar]",
 	});
@@ -443,7 +443,7 @@ public class Config {
 	}
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
-		"ElectricBass [35,76,Scarbee_JayBass_Neck,Electric_Bass_Finger]",
+		"ElectricBass [28,55,Scarbee_JayBass_Neck,Electric_Bass_Finger]",
 		"DoubleBassPizz [24,65,Basses_SessionStringsPro,Acoustic_Bass]",
 		"DoubleBassArco [24,65,Basses_SessionStringsPro,Contrabass]",
 	});

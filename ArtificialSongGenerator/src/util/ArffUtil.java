@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.jfugue.theory.Key;
 
-import main.ArtificialSongGenerator;
+import parts.RhythmSimpleGrooves;
 import parts.SongPart;
 import parts.SongPartElement;
 
@@ -51,6 +51,7 @@ public class ArffUtil {
 			}
 			if (songStructure[i].drums != null) {
 				instruments.add("Drums");
+				generators.add(RhythmSimpleGrooves.class.getSimpleName());
 			}
 			
 			printDataEntry(writer,

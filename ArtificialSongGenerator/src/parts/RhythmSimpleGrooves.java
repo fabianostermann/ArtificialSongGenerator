@@ -8,7 +8,7 @@ import org.jfugue.pattern.PatternProducer;
 import org.jfugue.rhythm.Rhythm;
 
 
-public class Drums implements PatternProducer {
+public class RhythmSimpleGrooves implements PatternProducer {
 	
 	private final Rhythm rhythm;
 	private final int tempo;
@@ -116,7 +116,7 @@ public class Drums implements PatternProducer {
 	 * Constructs a random rhythm played by drums in JFugue's Rhythm layers
 	 * @return The random rhythm
 	 */
-	public Drums(int tempo, int length) {
+	public RhythmSimpleGrooves(int tempo, int length) {
 		this.tempo = tempo;
 		this.length = length;
 

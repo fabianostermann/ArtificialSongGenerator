@@ -24,14 +24,22 @@ public class ChordPadsRanged extends SongPartElement {
 	 */
 	public ChordPadsRanged(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
 		super(instrument, tempo, length, key, chords);
+		
+		Note lowestNote = new Note(
+				Random.rangeInt(new Note("D4").getValue(),
+								new Note("G4").getValue()));
+		// respect instrument range
+		while (lowestNote.getValue() < getInstrument().getLowestNote().getValue())
+			lowestNote.changeValue(12);
+		while (lowestNote.getValue()+12 > getInstrument().getHighestNote().getValue())
+				lowestNote.changeValue(-12);
+		LOWEST_NOTE = new Note(lowestNote.getValue(), lowestNote.getDuration());
 	}
 	
 	public static final String NEXT = " ";
 	public static final String BIND = "+";
 	
-	private final Note LOWEST_NOTE = new Note(
-			Random.rangeInt(new Note("D4").getValue(),
-							new Note("A4").getValue()));
+	private final Note LOWEST_NOTE;
 
 	/**
 	 * Creates a random chord sequence in JFugue's Staccato String Syntax
@@ -49,6 +57,12 @@ public class ChordPadsRanged extends SongPartElement {
 				while (note.getValue() > LOWEST_NOTE.getValue()+12)
 					note.changeValue(-12);
 				note = new Note(note.getValue(), note.getDuration());
+				
+				// check assert
+				if (note.getValue() < getInstrument().getLowestNote().getValue()
+						|| note.getValue() > getInstrument().getHighestNote().getValue())
+					throw new IllegalStateException("Instrument "+getInstrument().getName()+" cannot play midi key "+note.getValue());
+				
 				musicStr += (i>0 ? BIND : "") + note;
 			}
 		}

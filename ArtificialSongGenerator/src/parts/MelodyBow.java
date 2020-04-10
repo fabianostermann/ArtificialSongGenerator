@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
+import org.jfugue.theory.Note;
 
 import util.JFugueExpansion;
 import util.Random;
@@ -128,18 +129,34 @@ public class MelodyBow extends SongPartElement {
 				melodyRaster[i] = null;
 		}
 		
-		// 6) translate to staccato and make quarter/half notes
-		// and transpose to 0=root of last chord
+		// calc reference tone and octave
 		int referenceTone = DIATONIC_MAP.get(chordRaster[(getLength()-1)*8]
 				.getNotes()[Random.nextBoolean(0.75f) ? 0 : 2].getToneString().substring(0, 1));
+		int referenceOctave = 5;
+		Note lowestMelodyNote = new Note(getMelodyToneByRelation(
+				referenceTone, referenceOctave, -hullInterval+hullOffset));
+		//  respect instrument range
+		while (lowestMelodyNote.getValue()-1 < getInstrument().getLowestNote().getValue()) {
+			lowestMelodyNote.changeValue(12);
+			referenceOctave++;
+		}
+		Note highestMelodyNote = new Note(getMelodyToneByRelation(
+				referenceTone, referenceOctave, hullInterval+hullOffset));
+		while (highestMelodyNote.getValue()+1 > getInstrument().getHighestNote().getValue()) {
+			highestMelodyNote.changeValue(-12);
+			referenceOctave--;
+		}
+		
+		// 6) translate to staccato and make quarter/half notes
+				// and transpose to 0=root of last chord
 		for (int i=0; i<melodyRaster.length; i++) {
 			melodyStr += NEXT;
 			if (melodyRaster[i] == null)
 				melodyStr += REST+EIGTH;
 			else {
 				// TODO 7) kill avoid notes (b2/b9 to any chord note)
-				melodyStr += getMelodyToneByRelation(
-						referenceTone, 5, melodyRaster[i]);
+				melodyStr += getMelodyToneByRelation( // TODO dont leave instrument range
+						referenceTone, referenceOctave, melodyRaster[i]);
 				if (i % 2 == 0 // is downbeat
 					&& i+3 < melodyRaster.length // space available
 					&& melodyRaster[i+1] == null

@@ -6,10 +6,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -21,12 +21,9 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
-import org.jfugue.theory.Note;
-
 import main.ArtificialSongGenerator;
 import main.Config;
 import parts.Instrument;
-import sun.nio.cs.ext.ISCII91;
 
 /**
  * This unit analyses a midi song file and writes an appropriate onset time (in seconds) of instruments annotation file (.arff)
@@ -139,8 +136,6 @@ public class OnsetAnnotator {
 
 	public void write(File file) {
 		
-		System.out.println("Write onset annotation file..");
-		
 		// arff file generation
         BufferedWriter writer = null;
 		try {
@@ -186,10 +181,14 @@ public class OnsetAnnotator {
 	        				noteOnMessages[key] = 1;
 	                        // check for notes that are out of the specific instrument range
 	                        // this is an error and should be prevented by element creators
-	                        if (instrument != null)
-	                        	if (key < instrument.getLowestNote().getValue()
-	                        			|| key > instrument.getHighestNote().getValue())
-	                        		System.out.println("WARNING: Unplayable pitch.. "+instrument+" cannot play midi note "+key);
+	                        if (instrument != null) {
+	                        	if (key < instrument.getLowestNote().getValue())
+	                        		ArtificialSongGenerator.LOGGER.log(Level.WARNING,
+	                        			"Unplayable pitch (too low).. "+instrument.getName()+" cannot play midi note "+key+ "(found in "+Config.GET.THESONG_TITLE+")");
+	                        	if (key > instrument.getHighestNote().getValue())
+	                        		ArtificialSongGenerator.LOGGER.log(Level.WARNING,
+		                        		"Unplayable pitch (too high).. "+instrument.getName()+" cannot play midi note "+key+ "(found in "+Config.GET.THESONG_TITLE+")");
+	                        }
 	        			}
 	        		}
 	        		// write instrument annotation entry
