@@ -8,37 +8,15 @@
 # executables
 ArtificialSongGenerator_JAR=../ArtificialSongGenerator/ArtificialSongGenerator.jar
 
-# audio settings
-BITRATE=128
-CHANNELS=1
-SAMPLERATE=44100
-
 DIR="." # if empty directory string, files will be stored on path directory
-CONFIG_COMMAND="" # config filename
-PROCESS_AUDIO="TRUE" # try to process wavs with vlc synth
-## codec settings for vlc lame
-# mp3 codec settings
-ACODEC_MP3="acodec=mp3,ab=$BITRATE,channels=$CHANNELS,samplerate=$SAMPLERATE}:std{access=file,mux=dummy"
-ASUFFIX_MP3=".mp3" # audio output file suffix
-# flac codec settings
-ACODEC_FLAC="acodec=flac,ab=$BITRATE,channels=$CHANNELS,samplerate=$SAMPLERATE}:std{access=file,mux=raw"
-ASUFFIX_FLAC=".flac"
-# wav codec settings
-ACODEC_WAV="acodec=s16l,ab=$BITRATE,channels=$CHANNELS,samplerate=$SAMPLERATE}:std{access=file,mux=wav"
-ASUFFIX_WAV=".wav"
-# set mp3 as default
-ACODEC=$ACODEC_MP3
-ASUFFIX=$ASUFFIX_MP3
+
 
 ### handle options ###
 
 # handle help option
 if [ "$1" == "-h" -o "$1" == "--help" ]; then
   echo "This scripts generates a bunch of random midi songs using the ArtificialSongGenerator"
-  echo "The ArtificialSongGenerator.jar must in the same directory as this file."
   echo "Java-Runtime-Env must be installed on the System."
-  echo "vlc fluidsynth and cvlc must be installed on the System for midi to audio."
-  echo "   -> try: sudo apt install vlc-plugin-fluidsynth vlc-nox"
   echo ""
   echo "ALL Parameters are used as file IDs."
   echo "Example: ./generate-songs File1 File2"
@@ -50,19 +28,13 @@ if [ "$1" == "-h" -o "$1" == "--help" ]; then
   echo "Use '--config' to specify a specific config file to be used (default is 'thesong.conf')"
   echo "Example: ./generate-songs --config <configfile> File1"
   echo ""
-  echo "Use '--midi-only' to skip audio conversion."
-  echo ""
-  echo "Use '--audio-format' for different audio codecs, mp3 is default."
-  echo "Example: ./generate-songs --audio-format <mp3|flac|wav> File1"
-  echo ""
   # help aborts program
-  exit
+  exit 0
 fi
 
 if [ ! -f $ArtificialSongGenerator_JAR ]; then
-  echo "No jar file to execute found."
-  echo "Run ./makejar first."
-  exit
+  echo "Jar file $ArtificialSongGenerator_JAR not found."
+  exit 1
 fi
 
 # handle directory option
@@ -84,30 +56,6 @@ if [ "$1" == "--config" ]; then
   shift $((OPTIND+1)) # consume option and argument
 fi
 
-# handle midi-only option
-if [ "$1" == "--midi-only" ]; then
-  PROCESS_AUDIO="FALSE"
-  shift $((OPTIND)) # consume option
-fi
-
-# handle audio format option
-if [ "$1" == "--audio-format" ]; then
-  FORMAT="$2"
-  if [ "$FORMAT" == "mp3" ]; then
-    ACODEC=$ACODEC_MP3
-    ASUFFIX=$ASUFFIX_MP3
-  fi
-  if [ "$FORMAT" == "flac" ]; then
-    ACODEC=$ACODEC_FLAC
-    ASUFFIX=$ASUFFIX_FLAC
-  fi
-  if [ "$FORMAT" == "wav" ]; then
-    ACODEC=$ACODEC_WAV
-    ASUFFIX=$ASUFFIX_WAV
-  fi
-  shift $((OPTIND+1)) # consume option and argument
-fi
-
 ### do actual calculations ###
 
 for ID in $@; do
@@ -115,10 +63,6 @@ for ID in $@; do
   echo "=== $ID ==="
   # generate midis and annotations
   java -jar $ArtificialSongGenerator_JAR --title=$ID --dir=$DIR $CONFIG_COMMAND
-  # convert to mp3
-  if [ "$PROCESS_AUDIO" == "TRUE" ]; then # use -vvv for verbose output
-  	cvlc --play-and-exit --sout "#transcode{$ACODEC,dst=$DIR/$ID$ASUFFIX}" $DIR/$ID.mid
-  fi
 done
 
 
