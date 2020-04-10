@@ -32,6 +32,8 @@ import record.AudioRecorder;
 
 public class SamplingRoboter {
 
+	public static final String DEFAULT_FILE_EXTENSION = ".mid";
+	
 	public static ArgsUtil argsUtil = null;
 	
 	public static List<File> INPUT_FILES = new ArrayList<>();
@@ -41,11 +43,6 @@ public class SamplingRoboter {
 	public static List<String> LAME_ARGS = null;
 	public static boolean COMPRESS = false;
 	public static boolean DELETE_RAW = false;
-	
-	public static enum Mode {
-	    MIX, MULTI_TRACK, ALL
-	}
-	public static Mode MODE = Mode.MIX; 
 	
 	public static void main(String[] args) {
 		argsUtil = new ArgsUtil(args);
@@ -72,15 +69,6 @@ public class SamplingRoboter {
 			System.exit(0);
 		}
 
-		// enable debug gui
-		String modeStr = argsUtil.get("--mode=");
-		if (modeStr != null) {
-			if (modeStr.equalsIgnoreCase("multitrack"))
-				MODE = Mode.MULTI_TRACK;
-			else if (modeStr.equalsIgnoreCase("all"))
-				MODE = Mode.ALL;
-			else MODE = Mode.MIX;
-		}
 		// enable debug gui
 		if (argsUtil.check("--debug-gui")) {
 			DEBUG_GUI_ENABLED = true;
@@ -125,13 +113,15 @@ public class SamplingRoboter {
 		}
 		else {
 			String midiDirStr = argsUtil.get("--mididir=");
+			final String fileExtension = argsUtil.get("--midiext=");
 			if (midiDirStr != null) {
 				File midiDir = new File(midiDirStr);
 				if (midiDir.exists() && midiDir.isDirectory())
 					for (File midiFile : midiDir.listFiles(
 							new FilenameFilter() {
 								@Override public boolean accept(File dir, String name) {
-									return name.endsWith(".mid") || name.endsWith(".midi"); } }))
+									return name.endsWith(fileExtension != null
+											? fileExtension : DEFAULT_FILE_EXTENSION); } }))
 						INPUT_FILES.add(midiFile);
 				else {
 					System.out.println("Directory '"+midiDir.getAbsolutePath()+"' does not exist or is not a directory. Exit.");
@@ -146,7 +136,7 @@ public class SamplingRoboter {
 		Sequencer sequencer = null;
 		MidiDevice midiDevice = null;
 		int[] numOfMidiOn = null;
-		Long[] firstTick = null;
+		long silenceOffset = Long.MAX_VALUE;
 		String[] firstInstrument = null;
 		try {
 			// opening a file
@@ -203,7 +193,7 @@ public class SamplingRoboter {
 				// MIDI file info
 		        System.out.println("Analysing song..");
 		        numOfMidiOn = new int[seq.getTracks().length];
-		        firstTick = new Long[seq.getTracks().length];
+				silenceOffset = Long.MAX_VALUE;
 		        firstInstrument = new String[seq.getTracks().length];
 		        for (int track=0; track<seq.getTracks().length; track++) {
 		        	numOfMidiOn[track] = 0;
@@ -216,8 +206,8 @@ public class SamplingRoboter {
 		                    if (sm.getCommand() == ShortMessage.NOTE_ON) {
 		                    	// collect note_on event
 		                    	numOfMidiOn[track] += 1;
-		                    	if (firstTick[track] == null)
-		                    		firstTick[track] = event.getTick();
+		                    	if (event.getTick() < silenceOffset)
+		                    		silenceOffset = event.getTick();
 		                    } else if (sm.getCommand() == ShortMessage.PROGRAM_CHANGE && firstInstrument[track] == null){
 		                    	// collect instrument changes
 		                    	firstInstrument[track] = MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)sm.getData1());
@@ -227,9 +217,9 @@ public class SamplingRoboter {
 		        	if (numOfMidiOn[track] != 0)
 		        		System.out.println("track="+track
 		        				+", "+"#midiOn="+numOfMidiOn[track]
-			        			+", "+"instr.name="+firstInstrument[track]
-			        			+", "+"starts at tick="+firstTick[track]);
+			        			+", "+"instr.name="+firstInstrument[track]);
 		        }
+		        System.out.println("music starts at tick="+silenceOffset);
 		        
 		        String fileStr = midiFile.getName();
 				int dotPos = fileStr.lastIndexOf('.');
@@ -237,32 +227,10 @@ public class SamplingRoboter {
 					fileStr = fileStr.substring(0,dotPos);
 				}
 				
-		        if (MODE == Mode.MIX || MODE == Mode.ALL) {
-		        	// #### Playback ####
-					System.out.println("# Playback full song starts..");
-					doRecording(midiFile.getParent(), fileStr+"-Mix", sequencer, 0);
-					System.out.println("Recording finished.");
-					
-		        }
-		        if (MODE == Mode.MULTI_TRACK || MODE == Mode.ALL) {
-		        	for (int track=0; track<seq.getTracks().length; track++) {
-			        	
-			        	if (numOfMidiOn[track] <= 0)
-			        		continue;
-			        	
-			        	// choose right track
-			        	for (int i=0; i<seq.getTracks().length; i++) {
-			        		sequencer.setTrackSolo(i, false);
-			        		sequencer.setTrackMute(i, false);
-			        	}
-				        sequencer.setTrackSolo(track, true);
-				        
-					    // #### Playback ####
-						System.out.println("# Playback of '"+ firstInstrument[track] +"' starts..");
-						doRecording(midiFile.getParent(), fileStr+"-"+firstInstrument[track], sequencer, firstTick[track]);
-						System.out.println("Recording of '"+ firstInstrument[track] +"' finished.");
-			        }
-		        }
+	        	// #### Playback ####
+				System.out.println("# Playback full song starts..");
+				doRecording(midiFile.getParent(), fileStr, sequencer, silenceOffset);
+				System.out.println("Recording finished.");
 			    
 		        if (sequencer != null)
 					sequencer.close();
@@ -281,10 +249,17 @@ public class SamplingRoboter {
 		System.out.println("Exit.");
 	}
 	
-	public static void doRecording(String folder, String filename, Sequencer sequencer, long tickPos) {
+	/**
+	 * Manages the recording of the midi file including playback, compression and cutting
+	 * @param folder The destination folder of the audio files
+	 * @param filename The audio file name
+	 * @param sequencer The midi sequencer to be used
+	 * @param silenceOffset The silence offset that can be skipped at the beginning
+	 */
+	public static void doRecording(String folder, String filename, Sequencer sequencer, long silenceOffset) {
 		
 		File wavfile = new File(folder+"/"+filename+".wav");
-		sequencer.setTickPosition(tickPos);
+		sequencer.setTickPosition(silenceOffset);
 		
 		final long lengthInMicros = sequencer.getMicrosecondLength();
 		final long startPosInMicros = sequencer.getMicrosecondPosition();
@@ -345,12 +320,10 @@ public class SamplingRoboter {
 				"Options:\n" +
 				"--midifile=<file>      Convert this midifile to audio.\n" +
 				"--mididir=<dir>        Convert all midifiles in specified directory (will be ignored if --midifile is used).\n" +
+				"--midiext=<extension>  Uses all files with given extension, may be used to choose multitrack.\n" +
+				"\n" +
 				"-h, --help             Prints help and infos about available MIDI devices.\n" +
 				"-v, --version          Prints version.\n" +
-				"\n" +
-				"--mode=mix             Play back whole song and record once (default).\n" +
-				"--mode=multitrack      Play and record each track of the midi file separately.\n" +
-				"--mode=all             Executes mix and multitrack mode respectively.\n" +
 				"\n" +
 				"--mididevice=<No>      The mididevice to use (default is 0).\n" +
 				"--sox-path=<path>      Explicit location of SoX executable.\n" +
@@ -360,7 +333,7 @@ public class SamplingRoboter {
 				"--delete-wav           Delete raw wavs after compression.\n" +
 				"\n" +
 				"--debug-gui            Using simple GUI for choosing file and MIDI device.\n" +
-				"--debug-recordings     Only recording first second of the tracks.\n"+
+				"--debug-recordings     Only recording first seconds of the tracks.\n"+
 				"\n"+
 				"Recommended usage for huge databases:\n   java SamplingRoboter --mididir=<dir> --compress --delete-wav\n"+
 				"\n");
