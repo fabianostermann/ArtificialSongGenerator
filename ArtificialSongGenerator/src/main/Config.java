@@ -282,7 +282,7 @@ public class Config {
 	public String OUTPUT_DIR = getConfigString("directory", ".");
 	
 	public final int Nof_DIFFERENT_SONGPARTS = getConfigInt("number-of-different-songparts", 3);
-	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2+30); // guaranteed
+	public final float MIN_LENGTH_IN_SEC = getConfigInt("minimum-song-length-in-seconds", 60*2); // guaranteed
 	public final float MAX_LENGTH_IN_SEC = getConfigInt("maximum-song-length-in-seconds", 60*3); // may be slightly more
 
 	public final String[] KEYS = getConfigStrings("keys", new String[]
