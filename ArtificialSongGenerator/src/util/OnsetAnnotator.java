@@ -184,10 +184,10 @@ public class OnsetAnnotator {
 	                        if (instrument != null) {
 	                        	if (key < instrument.getLowestNote().getValue())
 	                        		ArtificialSongGenerator.LOGGER.log(Level.WARNING,
-	                        			"Unplayable pitch (too low).. "+instrument.getName()+" cannot play midi note "+key+ "(found in "+Config.GET.THESONG_TITLE+")");
+	                        			"Unplayable pitch (too low).. "+instrument+" cannot play midi note "+key+ "(found in "+Config.GET.THESONG_TITLE+")");
 	                        	if (key > instrument.getHighestNote().getValue())
 	                        		ArtificialSongGenerator.LOGGER.log(Level.WARNING,
-		                        		"Unplayable pitch (too high).. "+instrument.getName()+" cannot play midi note "+key+ "(found in "+Config.GET.THESONG_TITLE+")");
+		                        		"Unplayable pitch (too high).. "+instrument+" cannot play midi note "+key+ "(found in "+Config.GET.THESONG_TITLE+")");
 	                        }
 	        			}
 	        		}

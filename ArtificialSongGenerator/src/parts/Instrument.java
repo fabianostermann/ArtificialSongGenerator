@@ -78,6 +78,16 @@ public class Instrument implements Comparable<Instrument> {
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public String toString() {
+		String s = getName()+Config.ATTR_OPEN+lowestNote+"-"+highestNote;
+		if (!getSampler().equals(getName()))
+			s += ","+getSampler();
+		if (!getMidiString().equals(getName()))
+			s += ","+getMidiString();
+		return s + Config.ATTR_CLOSE;
+	}
 
 	/** Getter & Setter */
 	public void setSampler(String sampler) {

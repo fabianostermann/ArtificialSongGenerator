@@ -95,11 +95,11 @@ public abstract class SongPartElement implements PatternProducer {
 		return length;
 	}
 	
-	public static Pattern newSilentElement(int length) {
+	public static Pattern newSilentElement(int length, int tempo) {
 		String restVoice = "";
 		for (int i=0; i<length; i++) {
 			restVoice += "Rw ";
 		}
-		return new Pattern(restVoice);
+		return (new Pattern(restVoice)).setTempo(tempo);
 	}
 }

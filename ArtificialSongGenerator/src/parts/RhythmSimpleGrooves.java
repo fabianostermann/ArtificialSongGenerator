@@ -201,16 +201,16 @@ public class RhythmSimpleGrooves implements PatternProducer {
         .addLayer(cymblAll);
 	}
 
-	public static Rhythm newSilentRhythm(int length) {
+	public static Pattern newSilentRhythm(int length, int tempo) {
 		String restDrums = "";
 		for (int i=0; i<length; i++) {
 			restDrums += "........";
 		}
 		// must match the number of layers from newRandomRhythm()
-		return new Rhythm()
+		return (new Rhythm()
         .addLayer(restDrums)
         .addLayer(restDrums)
-        .addLayer(restDrums);
+        .addLayer(restDrums)).getPattern().setTempo(tempo);
 	}
 	
 	@Override
