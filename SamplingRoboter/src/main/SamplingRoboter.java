@@ -136,7 +136,8 @@ public class SamplingRoboter {
 		Sequencer sequencer = null;
 		MidiDevice midiDevice = null;
 		int[] numOfMidiOn = null;
-		long silenceOffset = Long.MAX_VALUE;
+		long firstNoteOn = Long.MAX_VALUE;
+		long lastNoteOff = Long.MIN_VALUE;
 		String[] firstInstrument = null;
 		try {
 			// opening a file
@@ -193,7 +194,8 @@ public class SamplingRoboter {
 				// MIDI file info
 		        System.out.println("Analysing song..");
 		        numOfMidiOn = new int[seq.getTracks().length];
-				silenceOffset = Long.MAX_VALUE;
+				firstNoteOn = Long.MAX_VALUE;
+				lastNoteOff = Long.MIN_VALUE;
 		        firstInstrument = new String[seq.getTracks().length];
 		        for (int track=0; track<seq.getTracks().length; track++) {
 		        	numOfMidiOn[track] = 0;
@@ -206,24 +208,27 @@ public class SamplingRoboter {
 		                    if (sm.getCommand() == ShortMessage.NOTE_ON) {
 		                    	// collect note_on event
 		                    	numOfMidiOn[track] += 1;
-		                    	if (event.getTick() < silenceOffset)
-		                    		silenceOffset = event.getTick();
+		                    	if (event.getTick() < firstNoteOn)
+		                    		firstNoteOn = event.getTick();
+		                    } else if (sm.getCommand() == ShortMessage.NOTE_OFF) {
+		                    	if (event.getTick() > lastNoteOff)
+		                    		lastNoteOff = event.getTick();
 		                    } else if (sm.getCommand() == ShortMessage.PROGRAM_CHANGE && firstInstrument[track] == null){
 		                    	// collect instrument changes
 		                    	firstInstrument[track] = MidiDictionary.INSTRUMENT_BYTE_TO_STRING.get((byte)sm.getData1());
 		                	}
-		        		}	
+		        		}
 		        	}
 		        	if (numOfMidiOn[track] != 0)
 		        		System.out.println("track="+track
 		        				+", "+"#midiOn="+numOfMidiOn[track]
 			        			+", "+"instr.name="+firstInstrument[track]);
 		        }
-		        System.out.println("music starts at tick="+silenceOffset);
+		        System.out.println("music starts at tick="+firstNoteOn);
 			
 	        	// #### Playback ####
 				System.out.println("# Playback full song starts..");
-				doRecording(midiFile.getPath(), sequencer, silenceOffset);
+				doRecording(midiFile.getPath(), sequencer, firstNoteOn, lastNoteOff);
 				System.out.println("Recording finished.");
 			    
 		        if (sequencer != null)
@@ -248,16 +253,16 @@ public class SamplingRoboter {
 	 * @param folder The destination folder of the audio files
 	 * @param filename The audio file name
 	 * @param sequencer The midi sequencer to be used
-	 * @param silenceOffset The silence offset that can be skipped at the beginning
+	 * @param firstNoteOn The silence offset that can be skipped at the beginning
 	 */
-	public static void doRecording(String path, Sequencer sequencer, long silenceOffset) {
+	public static void doRecording(String path, Sequencer sequencer, long firstNoteOn, long lastNoteOff) {
 	
 		int dotPos = path.lastIndexOf('.');
 		if (dotPos > 0)
 			path = path.substring(0,dotPos);
 		
 		File wavfile = new File(path+".wav");
-		sequencer.setTickPosition(silenceOffset);
+		sequencer.setTickPosition(firstNoteOn);
 		
 		final long lengthInMicros = sequencer.getMicrosecondLength();
 		final long startPosInMicros = sequencer.getMicrosecondPosition();
@@ -279,7 +284,7 @@ public class SamplingRoboter {
 		sleep(1000);
 		// in DEBUG mode only record first two second
 		if (!DEBUG_RECORDINGS_ENABLED)
-			while (sequencer.isRunning())
+			while (sequencer.isRunning() && sequencer.getTickPosition() < lastNoteOff+1000)
 			{
 				progressBar.update(sequencer.getMicrosecondPosition()/1000);
 				sleep(1000);

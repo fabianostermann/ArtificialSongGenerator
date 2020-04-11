@@ -30,8 +30,8 @@ public class SoxWrapper {
 			pargs.addAll(Arrays.asList(
 					// verbosity (1: failures, 2: warnings, 3: processing details, 4-6: debugs)
 					"-V3",
-					// remove silence until sound louder than 0.1% and longer than 1.0sec
-					"silence", "1", "1.0", "0.1%",
+					// remove silence until sound louder than 0.01% and longer than 1.0sec
+					"silence", "1", "1.0", "0.01%",
 					// add silence that was skipped on recording to front of audio
 					"pad", ""+startTimeSecs, "0"));
 			

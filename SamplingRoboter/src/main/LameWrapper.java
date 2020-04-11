@@ -62,13 +62,13 @@ public class LameWrapper {
 	        if (p.exitValue() != 0)
 				System.out.println("Something went wrong using '"+LAME_PROGRAM+"'");
 
-			String fileStr = file.getName();
-			int i = fileStr.lastIndexOf('.');
+			String pathStr = file.getPath();
+			int i = pathStr.lastIndexOf('.');
 			if (i > 0) {
-				fileStr = fileStr.substring(0,i);
+				pathStr = pathStr.substring(0,i);
 			}
 			if (p.exitValue() == 0
-				&& (new File(file.getParent() +"/"+ fileStr+".mp3")).exists()) {
+				&& (new File(pathStr+".mp3")).exists()) {
 				System.out.println("mp3 succesfully generated.");
 				if (removeWav) {
 					System.out.println("Deleting tmp wav file: "+file.getAbsolutePath());

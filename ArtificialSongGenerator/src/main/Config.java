@@ -365,6 +365,8 @@ public class Config {
 		"Viola [48,84,Violas_SessionStringsPro]",
 		"Erhu [57,84,EthnoWorld_Erhu,Fiddle]",
 
+		"ElectricGuitarLead [40,79,ChrisHein????CleanGuitar+VSTAmp,Distortion_Guitar]",
+
 		"Trumpet [52,89,Trumpet1_SessionHornsPro]",
 		"Flugelhorn [52,83,Flugelhorn_SessionHornsPro,Trombone]",
 		"Trombone [40,72,TenorTrombone_SessionHornsPro]",
@@ -402,7 +404,7 @@ public class Config {
 
 		"AcousticGuitar [40,79,ChrisHein????AccGuitar,Guitar]",
 		"ElectricGuitarClean [40,79,ChrisHein????CleanGuitar,Electric_Clean_Guitar]",
-		"ElectricGuitarDistort [40,79,ChrisHein????CleanGuitar+VSTAmp,Overdriven_Guitar]",
+		"ElectricGuitarCrunch [40,79,ChrisHein????CleanGuitar+VSTAmp,Overdriven_Guitar]",
 		"Ukulele [57,83,EthnoWorld_Ukulele,Guitar]",
 		"Sitar [48,79,EthnoWorld_Sitar]",
 	});
@@ -444,6 +446,7 @@ public class Config {
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
 		"ElectricBass [28,55,Scarbee_JayBass_Neck,Electric_Bass_Finger]",
+		"SynthBass [28,55,Moog???Rhodes???Organ,Synth_Bass_1]",
 		"DoubleBassPizz [24,65,Basses_SessionStringsPro,Acoustic_Bass]",
 		"DoubleBassArco [24,65,Basses_SessionStringsPro,Contrabass]",
 	});

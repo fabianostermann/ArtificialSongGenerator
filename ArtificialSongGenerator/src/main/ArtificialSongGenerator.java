@@ -39,6 +39,7 @@ import util.Random;
 
 public class ArtificialSongGenerator {
 	
+	public static final String LOG_FILE = "log.txt";
 	public final static Logger LOGGER = Logger.getLogger(ArtificialSongGenerator.class.getName());
 
 	public static ArgsUtil argsUtil = null;
@@ -58,7 +59,7 @@ public class ArtificialSongGenerator {
 
 		try {
 //			LOGGER.addHandler(new ConsoleHandler());
-			LOGGER.addHandler(new FileHandler("log.txt", true));
+			LOGGER.addHandler(new FileHandler(LOG_FILE, true));
 		} catch (SecurityException | IOException e1) {
 			e1.printStackTrace();
 		}

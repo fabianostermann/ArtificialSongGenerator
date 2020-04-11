@@ -30,36 +30,39 @@ public class SongPart implements PatternProducer {
 	/**  used for chords, arpeggios and bass */
 	private final Chord[] chordProgression;
 	public final List<SongPartElement> elements = new ArrayList<>();
-	public final RhythmSimpleGrooves drums;
+	public RhythmSimpleGrooves drums = null;
 	
 	public SongPart() {
-		
+
 		// make chord progression
 		chordProgression = ChordProgressionFactory.makeChords(length, key);
 		
-		if (Random.nextBoolean(Config.GET.MELODY_ENABLED))
-			elements.add(new MelodyBow(
-					Config.GET.randomMelodyInstrument(),
-					tempo, length, key, chordProgression));
-		
-		if (Random.nextBoolean(Config.GET.CHORDS_ENABLED))
-			elements.add(new ChordPadsRanged(
-					Config.GET.randomChordInstrument(),
-					tempo, length, key, chordProgression));
-		
-		if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
-			elements.add(new ChordArpeggios(
-					Config.GET.randomArpeggioInstrument(),
-					tempo, length, key, chordProgression));
-
-		if (Random.nextBoolean(Config.GET.BASS_ENABLED))
-			elements.add(new BassLine(
-					Config.GET.randomBassInstrument(),
-					tempo, length, key, chordProgression));
-
-		if (Random.nextBoolean(Config.GET.DRUMS_ENABLED))
-			drums = new RhythmSimpleGrooves(tempo, length);
-		else drums = null;
+		while (elements.isEmpty() && drums == null) { // ensures songpart is not empty
+			
+			if (Random.nextBoolean(Config.GET.MELODY_ENABLED))
+				elements.add(new MelodyBow(
+						Config.GET.randomMelodyInstrument(),
+						tempo, length, key, chordProgression));
+			
+			if (Random.nextBoolean(Config.GET.CHORDS_ENABLED))
+				elements.add(new ChordPadsRanged(
+						Config.GET.randomChordInstrument(),
+						tempo, length, key, chordProgression));
+			
+			if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
+				elements.add(new ChordArpeggios(
+						Config.GET.randomArpeggioInstrument(),
+						tempo, length, key, chordProgression));
+	
+			if (Random.nextBoolean(Config.GET.BASS_ENABLED))
+				elements.add(new BassLine(
+						Config.GET.randomBassInstrument(),
+						tempo, length, key, chordProgression));
+	
+			if (Random.nextBoolean(Config.GET.DRUMS_ENABLED))
+				drums = new RhythmSimpleGrooves(tempo, length);
+			else drums = null;
+		}
 	}
 	
 	@Override
@@ -69,7 +72,10 @@ public class SongPart implements PatternProducer {
 		Iterator<SongPartElement> iterator = elements.iterator();
 		for (int ch = 0; ch < 16; ch++) {
 			if (ch == 9) {
-				pattern.add(getDrumPattern());
+				if (drums != null)
+					pattern.add(drums.getPattern());
+				else
+					pattern.add(RhythmSimpleGrooves.newSilentRhythm(length, tempo));
 				ch++;
 			}
 			if (iterator.hasNext())
@@ -101,7 +107,8 @@ public class SongPart implements PatternProducer {
 		while (iterator.hasNext()) {
 			SongPartElement element = iterator.next();
 			if (element.getInstrument().equals(instrument)) {
-				pattern.add(element.getPattern());
+				pattern = element.getPattern();
+				break;
 			}
 		}
 		while (iterator.hasNext()) {
@@ -110,6 +117,9 @@ public class SongPart implements PatternProducer {
 				ArtificialSongGenerator.LOGGER.log(Level.WARNING,
 						"Songpart "+mark+" has more than one songpart element using "+instrument.getName()+"."
 						+ " That is not supported at the moment and will cause errors on sampling!");
+				ArtificialSongGenerator.LOGGER.log(Level.SEVERE,
+						"Aborting.");
+				System.exit(1);
 			}
 		}
 		
@@ -126,7 +136,10 @@ public class SongPart implements PatternProducer {
 		else
 			drumPattern.add(RhythmSimpleGrooves.newSilentRhythm(length, tempo));
 		
-		return drumPattern;
+		// tempo track
+		drumPattern.add(SongPartElement.newSilentElement(length, tempo).setVoice(0));
+		
+		return JFugueExpansion.repairMusicString(drumPattern);
 	}
 	
 	public float getLengthInSeconds() {
