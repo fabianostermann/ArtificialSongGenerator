@@ -226,7 +226,7 @@ public class ArtificialSongGenerator {
 		OnsetAnnotator onsetAnnotator = new OnsetAnnotator();
 		for (Map.Entry<String, File> entry : createdMidiFiles.entrySet())
 			onsetAnnotator.parse(entry.getKey(), entry.getValue());
-		onsetAnnotator.write(new File(Config.GET.OUTPUT_DIR+File.separator+Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE
+		onsetAnnotator.write(new File(Config.GET.OUTPUT_DIR+File.separator+Config.GET.THESONG_TITLE
 				+Config.FILE_DELIM+Config.ONSETS_SUFFIX+Config.GET.ARFF_SUFFIX));
 
 		// play the demo song
