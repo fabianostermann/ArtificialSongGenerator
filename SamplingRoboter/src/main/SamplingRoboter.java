@@ -220,16 +220,10 @@ public class SamplingRoboter {
 			        			+", "+"instr.name="+firstInstrument[track]);
 		        }
 		        System.out.println("music starts at tick="+silenceOffset);
-		        
-		        String fileStr = midiFile.getName();
-				int dotPos = fileStr.lastIndexOf('.');
-				if (dotPos > 0) {
-					fileStr = fileStr.substring(0,dotPos);
-				}
-				
+			
 	        	// #### Playback ####
 				System.out.println("# Playback full song starts..");
-				doRecording(midiFile.getParent(), fileStr, sequencer, silenceOffset);
+				doRecording(midiFile.getPath(), sequencer, silenceOffset);
 				System.out.println("Recording finished.");
 			    
 		        if (sequencer != null)
@@ -256,14 +250,19 @@ public class SamplingRoboter {
 	 * @param sequencer The midi sequencer to be used
 	 * @param silenceOffset The silence offset that can be skipped at the beginning
 	 */
-	public static void doRecording(String folder, String filename, Sequencer sequencer, long silenceOffset) {
+	public static void doRecording(String path, Sequencer sequencer, long silenceOffset) {
+	
+		int dotPos = path.lastIndexOf('.');
+		if (dotPos > 0)
+			path = path.substring(0,dotPos);
 		
-		File wavfile = new File(folder+"/"+filename+".wav");
+		File wavfile = new File(path+".wav");
 		sequencer.setTickPosition(silenceOffset);
 		
 		final long lengthInMicros = sequencer.getMicrosecondLength();
 		final long startPosInMicros = sequencer.getMicrosecondPosition();
 		final float startPosInSecs = (float)(startPosInMicros)/1000000.f;
+		System.out.println("music starts at sec="+startPosInSecs);
 		
 		ASCIIProgressBar progressBar = new ASCIIProgressBar(50, 0, lengthInMicros/1000, true);
 		progressBar.setPrintStream(System.out);
