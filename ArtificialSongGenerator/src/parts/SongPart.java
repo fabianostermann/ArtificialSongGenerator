@@ -2,12 +2,14 @@ package parts;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 
+import main.ArtificialSongGenerator;
 import main.Config;
 import util.JFugueExpansion;
 import util.Random;
@@ -62,7 +64,25 @@ public class SongPart implements PatternProducer {
 	
 	@Override
 	public Pattern getPattern() {
-		return getPattern(null);
+		Pattern pattern = new Pattern();
+		
+		Iterator<SongPartElement> iterator = elements.iterator();
+		for (int ch = 0; ch < 16; ch++) {
+			if (ch == 9) {
+				pattern.add(getDrumPattern());
+				ch++;
+			}
+			if (iterator.hasNext())
+				pattern.add(iterator.next().getPattern().setVoice(ch));
+			else
+				pattern.add(SongPartElement.newSilentElement(length, tempo).setVoice(ch));
+		}
+		if (iterator.hasNext()) {
+			System.out.println("Warning: More than 16 SongPart elements (including drums)."
+					+ "Midi channels are full, so demo midi file is incomplete.");
+		}
+		
+		return JFugueExpansion.repairMusicString(pattern);
 	}
 	
 	/**
@@ -73,34 +93,24 @@ public class SongPart implements PatternProducer {
 	 * 			or demo music with up to 16 instruments if parameter was null
 	 */
 	public Pattern getPattern(final Instrument instrument) {
-		Pattern pattern = new Pattern();
+		Pattern pattern = SongPartElement.newSilentElement(length, tempo);
 		
+		// new version does not support voices (tracks) anymore for safety reasons!
+
 		Iterator<SongPartElement> iterator = elements.iterator();
-		for (int ch = 0; ch < 16; ch++) {
-			if (ch == 9) {
-				if (instrument == null)
-					pattern.add(getDrumPattern());
-				else
-					pattern.add(RhythmSimpleGrooves.newSilentRhythm(length).getPattern().setTempo(tempo));
-				ch++;
+		while (iterator.hasNext()) {
+			SongPartElement element = iterator.next();
+			if (element.getInstrument().equals(instrument)) {
+				pattern.add(element.getPattern());
 			}
-			SongPartElement currElement = null;
-			while (iterator.hasNext()) {
-				SongPartElement compElement = iterator.next();
-				if (instrument == null || compElement.getInstrument().equals(instrument)) {
-					currElement = compElement;
-					break;
-				}
-			}
-			if (currElement != null) {
-				pattern.add(currElement.getPattern().setVoice(ch%16));
-			}
-			else
-				pattern.add(SongPartElement.newSilentElement(length).setVoice(ch));
 		}
-		if (iterator.hasNext()) {
-			System.out.println("Warning: More than 16 SongPart elements (including drums)."
-					+ "Midi channels are full, so demo midi file is incomplete.");
+		while (iterator.hasNext()) {
+			SongPartElement element = iterator.next();
+			if (element.getInstrument().equals(instrument)) {
+				ArtificialSongGenerator.LOGGER.log(Level.WARNING,
+						"Songpart "+mark+" has more than one songpart element using "+instrument.getName()+"."
+						+ " That is not supported at the moment and will cause errors on sampling!");
+			}
 		}
 		
 		return JFugueExpansion.repairMusicString(pattern);
@@ -114,7 +124,7 @@ public class SongPart implements PatternProducer {
 		if (drums != null)
 			drumPattern.add(drums.getPattern());
 		else
-			drumPattern.add(RhythmSimpleGrooves.newSilentRhythm(length).getPattern().setTempo(tempo));
+			drumPattern.add(RhythmSimpleGrooves.newSilentRhythm(length, tempo));
 		
 		return drumPattern;
 	}
