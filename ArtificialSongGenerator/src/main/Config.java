@@ -364,6 +364,8 @@ public class Config {
 		"Violin [55,96,Violins_SessionStringsPro]",
 		"Viola [48,84,Violas_SessionStringsPro]",
 		"Erhu [57,84,EthnoWorld_Erhu,Fiddle]",
+		"Jinghu [69,93,EthnoWorld_JinghuOperaViolin,Fiddle]",
+		"MorinKhuur [50,84,EthnoWorld_MorinKhuurViolin,Fiddle]",
 
 		"ElectricGuitarLead [40,79,ChrisHein????CleanGuitar+VSTAmp,Distortion_Guitar]",
 
@@ -376,6 +378,7 @@ public class Config {
 		"TenorSax [44,76,TenorSax_SessionHornsPro,Tenor_Sax]",
 
 		"Flute [60,96,Flute_Essential]",
+		"PanFlute [41,75,EthnoWorld_PanFlute,Pan_Flute]",
 		"Shakuhachi [57,88,EthnoWorld_Shakuhachi,Skakuhachi]",
 		"Fujara [36,96,EthnoWorld_Fujara,Blown_Bottle]",
 	});
@@ -407,6 +410,7 @@ public class Config {
 		"ElectricGuitarCrunch [40,79,ChrisHein????CleanGuitar+VSTAmp,Overdriven_Guitar]",
 		"Ukulele [57,83,EthnoWorld_Ukulele,Guitar]",
 		"Sitar [48,79,EthnoWorld_Sitar]",
+		"Balalaika [45,77,EthnoWorld_Balalaika,Guitar]",
 	});
 	/** make random choice on chord instrument */
 	private int chordPos = -1;
@@ -446,7 +450,7 @@ public class Config {
 	
 	public final String[] BASS_INSTRUMENTS = getConfigStrings("bass-instruments", new String[] {
 		"ElectricBass [28,55,Scarbee_JayBass_Neck,Electric_Bass_Finger]",
-		"SynthBass [28,55,Moog???Rhodes???Organ,Synth_Bass_1]",
+		"OrganBass [36,96,SomeOrgan??,Percussive_Organ]",
 		"DoubleBassPizz [24,65,Basses_SessionStringsPro,Acoustic_Bass]",
 		"DoubleBassArco [24,65,Basses_SessionStringsPro,Contrabass]",
 	});

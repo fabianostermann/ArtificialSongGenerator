@@ -284,7 +284,7 @@ public class SamplingRoboter {
 		sleep(1000);
 		// in DEBUG mode only record first two second
 		if (!DEBUG_RECORDINGS_ENABLED)
-			while (sequencer.isRunning() && sequencer.getTickPosition() < lastNoteOff+1000)
+			while (sequencer.isRunning() && sequencer.getTickPosition() < lastNoteOff+10)
 			{
 				progressBar.update(sequencer.getMicrosecondPosition()/1000);
 				sleep(1000);
@@ -292,7 +292,7 @@ public class SamplingRoboter {
 		System.out.println();
 		sequencer.stop();
 		
-		sleep(1000);
+		sleep(2000);
 		AudioRecorder.stopRecording();
 		System.out.println("Recorded "+wavfile.getAbsolutePath()+"("+(System.currentTimeMillis()-startTime)+"ms)"
 				+ (DEBUG_RECORDINGS_ENABLED ? " !DEBUG RECORDINGS ENABLED!" : ""));
@@ -342,5 +342,5 @@ public class SamplingRoboter {
 				"Recommended usage for huge databases:\n   java SamplingRoboter --mididir=<dir> --compress --delete-wav\n"+
 				"\n");
 	}
-	
+
 }
