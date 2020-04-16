@@ -36,11 +36,12 @@
 - **DONE** generiert für jedes Instrument einen Midifile (Omni-Kanal) plus Demo-File (mit Midi-Instrumenten)
 - **DONE** Annotator und Generator fusionieren für einheitliche Arff-Files und Instrumenten-Pool
 - **DONE** OnsetAnnotator annotiert Events aller **Synthesizer-Instrument-Keywords**
-- *TODO* eventuell muss die Range jetzt mit einbezogen werden! (Programmieraufwand, erstmal nur check einbauen in onsetannotator)
+- **DONE** eventuell muss die Range jetzt mit einbezogen werden! (Programmieraufwand, erstmal nur check einbauen in onsetannotator)
+- *TODO* Range for BassLine
 
-- *TODO* SamplingRoboter nutzt **Synthesizer-Instrument-Keywords** an Dateinamen um den korrekten Synthesizer zu nutzen\
-	1. Entweder mehrere MidiPorts an Kontakt-Player A1-16,B1-16,C1-16)\
-	2. Oder jedes Instrument einzeln (zu bevorzugen wegen Memory-CPU-Last)\
+- **DONE** SamplingRoboter nutzt **Synthesizer-Instrument-Keywords** an Dateinamen um den korrekten Synthesizer zu nutzen\
+	Jedes Instrument einzeln (zu bevorzugen wegen Memory-CPU-Last)\
+- *TODO* padding to same length with sox/soxi after sampling with roboter
 
 
 # future ideas to get greater variation in the generated music
