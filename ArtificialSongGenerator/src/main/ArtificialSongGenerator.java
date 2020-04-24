@@ -114,6 +114,21 @@ public class ArtificialSongGenerator {
 		String dir = argsUtil.get("--dir=");
 		if (dir != null)
 			Config.GET.OUTPUT_DIR = dir;
+
+		if (argsUtil.check("--print-instruments")) {
+			System.out.println("Melody:");
+			for (String str : Config.GET.MELODY_INSTRUMENTS)
+				System.out.println("- "+str);
+			System.out.println("Chords:");
+			for (String str : Config.GET.CHORD_INSTRUMENTS)
+							System.out.println("- "+str);
+			System.out.println("Bass:");
+			for (String str : Config.GET.BASS_INSTRUMENTS)
+							System.out.println("- "+str);
+			System.out.println(Config.DRUMS_SUFFIX+".");
+			
+			System.exit(0);
+		}
 		
 		// #################################
 		// ### GENERATION PROCESS STARTS ###
@@ -280,7 +295,9 @@ public class ArtificialSongGenerator {
 			"--dir=<dir>            Specifies directory for output files " +
 				"(ATTENTION: fails if directory does not exist).\n" +
 			"--config=<configfile>  Specifies the config file to be used. Default is '"+Config.CONFIG_FILENAME+"'\n" +
-			"--config-dummy         Creates a config overview dummy file.\n"
+			"\n"+
+			"--config-dummy         Creates a config overview dummy file and exits.\n"+
+			"--print-instruments    Prints the current instrument configuration and exits.\n"
 		);
 	}
 

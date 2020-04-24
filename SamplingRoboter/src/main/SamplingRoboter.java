@@ -40,7 +40,7 @@ public class SamplingRoboter {
 	public static boolean DEBUG_GUI_ENABLED = false;
 	public static boolean DEBUG_RECORDINGS_ENABLED = false;
 	public static String MIDI_DEVICE_NO = "0";
-	public static List<String> LAME_ARGS = null;
+	public static List<String> FLAC_ARGS = null;
 	public static boolean COMPRESS = false;
 	public static boolean DELETE_RAW = false;
 	
@@ -89,16 +89,16 @@ public class SamplingRoboter {
 		}
 		// alter location of SoX executable
 		SoxWrapper.SOX_PROGRAM = argsUtil.get("--sox-path=", SoxWrapper.SOX_PROGRAM);
-		// alter location of Lame executable
-		LameWrapper.LAME_PROGRAM = argsUtil.get("--lame-path=", LameWrapper.LAME_PROGRAM);
+		// alter location of flac executable
+		FlacWrapper.FLAC_PROGRAM = argsUtil.get("--flac-path=", FlacWrapper.FLAC_PROGRAM);
 		// choose midi device by number
 		MIDI_DEVICE_NO = argsUtil.get("--mididevice=", MIDI_DEVICE_NO);
 		// choose midi device by number
-		String lameArgs = argsUtil.get("--lame-options=");
-		if (lameArgs != null) {
-			LAME_ARGS = new ArrayList<>();
-			for (String arg : lameArgs.trim().split(" "))
-				LAME_ARGS.add(arg);
+		String flacArgs = argsUtil.get("--flac-options=");
+		if (flacArgs != null) {
+			FLAC_ARGS = new ArrayList<>();
+			for (String arg : flacArgs.trim().split(" "))
+				FLAC_ARGS.add(arg);
 		}
 		// specify a midifile to use
 		String infileStr = argsUtil.get("--midifile=");
@@ -302,9 +302,9 @@ public class SamplingRoboter {
 		SoxWrapper.trim(wavfile, startPosInSecs);
 		
 		// do compression
-		LameWrapper.removeWavAfter(DELETE_RAW);
+		FlacWrapper.removeWavAfter(DELETE_RAW);
 		if (COMPRESS)
-			LameWrapper.compress(wavfile, LAME_ARGS);
+			FlacWrapper.compress(wavfile, FLAC_ARGS);
 	}
 
 	/**
@@ -331,9 +331,9 @@ public class SamplingRoboter {
 				"\n" +
 				"--mididevice=<No>      The mididevice to use (default is 0).\n" +
 				"--sox-path=<path>      Explicit location of SoX executable.\n" +
-				"--lame-path=<path>     Explicit location of Lame executable.\n" +
-				"--lame-options=<list>  List of arguments passed to the lame encoder (overwrites defaults).\n"+
-				"--compress             Compress audio using lame (must be installed or locally executable).\n" +
+				"--flac-path=<path>     Explicit location of flac executable.\n" +
+				"--flac-options=<list>  List of arguments passed to the flac encoder (overwrites defaults).\n"+
+				"--compress             Compress audio using flac (must be installed or locally executable).\n" +
 				"--delete-wav           Delete raw wavs after compression.\n" +
 				"\n" +
 				"--debug-gui            Using simple GUI for choosing file and MIDI device.\n" +
