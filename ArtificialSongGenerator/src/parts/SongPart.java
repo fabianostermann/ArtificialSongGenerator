@@ -44,15 +44,20 @@ public class SongPart implements PatternProducer {
 						Config.GET.randomMelodyInstrument(),
 						tempo, length, key, chordProgression));
 			
+			Instrument chordInstr = Config.GET.randomChordInstrument();
 			if (Random.nextBoolean(Config.GET.CHORDS_ENABLED))
 				elements.add(new ChordPadsRanged(
-						Config.GET.randomChordInstrument(),
+						chordInstr,
 						tempo, length, key, chordProgression));
 			
-			if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED))
+			if (Random.nextBoolean(Config.GET.ARPEGGIO_ENABLED)) {
+				Instrument arpInstr = null;
+				while (arpInstr == null || arpInstr.equals(chordInstr))
+					arpInstr = Config.GET.randomArpeggioInstrument();
 				elements.add(new ChordArpeggios(
-						Config.GET.randomArpeggioInstrument(),
+						arpInstr,
 						tempo, length, key, chordProgression));
+			}
 	
 			if (Random.nextBoolean(Config.GET.BASS_ENABLED))
 				elements.add(new BassLine(
