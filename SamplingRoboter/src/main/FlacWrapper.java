@@ -16,7 +16,7 @@ public class FlacWrapper {
 	private static boolean removeWav = false;
 	private static int QUALITY = 8;
 
-	private static List<String> defaultArgs = Arrays.asList("-"+QUALITY);
+	private static List<String> defaultArgs = Arrays.asList("-f", "-"+QUALITY);
 	
 	/**
 	 * Executes local or global installation of flac encoder on given wav file

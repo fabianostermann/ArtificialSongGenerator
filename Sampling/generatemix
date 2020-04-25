@@ -1,0 +1,30 @@
+#!/bin/bash
+
+for ID in {01..10}; do
+
+	echo "--- $ID ---"
+
+	# mp3s to wavs
+	find -name "$ID\_*.mp3" -exec lame --decode {} {}.wav \;
+	# mixing
+	sox --combine mix $ID\_*.mp3.wav $ID\_mix.wav gain -n
+	# find length of mix
+  mixlength=$(soxi -D $ID\_mix.wav)
+	echo "mix length=$mixlength"
+  for f in $ID\_*.mp3.wav; do
+  	flength=$(soxi -D $f)
+		diff=$(echo "$mixlength - $flength" | bc)
+		echo "$f length=$flength diff=$diff"
+		sox $f ${f%.mp3.wav}-padded.wav pad 0 $diff
+		lame --preset insane ${f%.mp3.wav}-padded.wav ${f%.mp3.wav}-padded.mp3
+	done
+
+	# reencode
+	lame --preset insane $ID\_mix.wav $ID\_mix.mp3
+
+	# cleanup
+  trash $ID\_*.wav
+
+done
+
+# for mixing, flac encoding of tracks would be better: check compression factor
