@@ -42,7 +42,6 @@ function delete_all_regions()
 		Editor:access_action("Region","remove-region")
 		::next::
 	end
-	collectgarbage ()
 end
 
 function sleep(n)
@@ -77,9 +76,6 @@ function mixdown(prefix,number,name,suffix)
 		print ("Track", name, "does not exist. Skipping..")
 		return
 	end
-
-	
-	sleep(1)
 	
 	delete_all_regions()
 	
@@ -105,26 +101,25 @@ function mixdown(prefix,number,name,suffix)
 	for r in sel.regions:regionlist ():iter () do
 		if r:isnil() then goto next end
 		print ("Ranging", r:name(), "Pos:", r:position(), "Start:", r:start(), "Length", r:length())
-		range:set_start(r:position()+3000,false,false,0)
+		range:set_start(r:position(),false,false,0)
 		range:set_end(r:length()+120000,false,false,0)
 		::next::
 	end
 
 	-- use xdotool for windows from: https://github.com/ebranlard/xdotool-for-windows/blob/master/_dev/SwitchAndPasteToMatlab.cs
 	print ("start os execute")
-	local handle = io.popen("ping -n 6 localhost > NUL && C:\\bin\\xdotool.exe key \"{Enter}\"")
+	local handle = io.popen("ping -n 4 localhost > NUL && C:\\bin\\xdotool.exe key \"{Enter}\"")
 	print("start export")
 	Editor:export_audio()
 	local result = handle:read("*a")
 	print (result)
 	handle:close()
-	
-	sleep(1)
 
 	print ("renaming..")
 	os.rename("C:/Users/oyster/Dropbox/WHF/ArtificialSongGenerator_workspace/Sampling/Database-ISMIR2020/AAM2020-flac-only-1000/session.flac", newfilestr)
 	
 	print("Mixdown of " .. number.."_"..name .. " completed.")
+	collectgarbage ()
 end
 
 function factory (params) return function ()
@@ -134,17 +129,14 @@ function factory (params) return function ()
 	
 	instrumentTable = {
 		--DONE "Violin", "Viola", "Erhu", "Jinghu", "MorinKhuur",
-		--"ElectricGuitarLead",
 		--DONE "Trumpet", "Flugelhorn", "Trombone", "Clarinet", "AltoSax", "TenorSax",
-		--"Flute", "PanFlute", "Shakuhachi", "Fujara",
-		--"Cello",
-		--"Piano", "BrightPiano", "ElectricPiano",
-		--"AcousticGuitar", "ElectricGuitarClean", "ElectricGuitarCrunch",
-		--"Ukulele", "Sitar", "Balalaika",
-		--"ElectricBass",
-		--"OrganBass", "DoubleBassPizz", "DoubleBassArco",
-		--"Drums"
-		}
+		--DONE "Flute", "PanFlute", "Shakuhachi", "Fujara", "Cello",
+		--DONE "Piano", "BrightPiano", "ElectricPiano",
+		--DONE "Ukulele", "Sitar", "Balalaika",
+		--DONE "ElectricGuitarLead", "AcousticGuitar", "ElectricGuitarClean", "ElectricGuitarCrunch",
+		--DONE "ElectricBass", "OrganBass", "DoubleBassPizz", "DoubleBassArco",
+		--Done "Drums"
+	}
 	
 	for k,instr in ipairs(instrumentTable) do
 		for i = 1,1001,1 do
@@ -154,5 +146,8 @@ function factory (params) return function ()
 	end
 	
 	print ("finished!")
+	
+	print ("prepare shutdown in 60sec..")
+	os.execute("shutdown /s /f /t 60")
 	
 end end
