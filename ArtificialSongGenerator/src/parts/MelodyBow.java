@@ -1,11 +1,13 @@
 package parts;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 import org.jfugue.theory.Note;
 
+import main.ArtificialSongGenerator;
 import util.JFugueExpansion;
 import util.Random;
 
@@ -135,7 +137,7 @@ public class MelodyBow extends SongPartElement {
 		int referenceOctave = 5;
 		Note lowestMelodyNote = new Note(getMelodyToneByRelation(
 				referenceTone, referenceOctave, -hullInterval+hullOffset));
-		//  respect instrument range
+		// respect instrument range
 		while (lowestMelodyNote.getValue()-1 < getInstrument().getLowestNote().getValue()) {
 			lowestMelodyNote.changeValue(12);
 			referenceOctave++;
@@ -155,8 +157,19 @@ public class MelodyBow extends SongPartElement {
 				melodyStr += REST+EIGTH;
 			else {
 				// TODO 7) kill avoid notes (b2/b9 to any chord note)
-				melodyStr += getMelodyToneByRelation( // TODO dont leave instrument range
-						referenceTone, referenceOctave, melodyRaster[i]);
+				Note nextNote = new Note(getMelodyToneByRelation(
+						referenceTone, referenceOctave, melodyRaster[i]));
+				// make sure to never leave instrument range
+				while (nextNote.getValue()-1 < getInstrument().getLowestNote().getValue()) {
+					nextNote = new Note(nextNote.changeValue(12).getValue());
+					ArtificialSongGenerator.LOGGER.log(Level.FINE, "Found too low note for "+getInstrument().getName()+". Changed +12 to "+nextNote);
+				}
+				while (nextNote.getValue()+1 > getInstrument().getHighestNote().getValue()) {
+					nextNote = new Note(nextNote.changeValue(-12).getValue());
+					ArtificialSongGenerator.LOGGER.log(Level.FINE, "Found too high note for "+getInstrument().getName()+". Changed +12 to "+nextNote);
+				}
+				// add note
+				melodyStr += nextNote;
 				if (i % 2 == 0 // is downbeat
 					&& i+3 < melodyRaster.length // space available
 					&& melodyRaster[i+1] == null
