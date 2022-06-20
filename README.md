@@ -1,6 +1,6 @@
 # ArtificialSongGenerator Project
 
-## Compile (via Ant) and easy use (mainly bash-scripts)
+## Compile and run
 
 The main directory provides an ant build file (`build.xml`): Use `ant pack` to generate an executable jar (including downloading the JFugue library).
 The main build file will call the build file of the subproject `ArtificialSongGenerator/`.\
