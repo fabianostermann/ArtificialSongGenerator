@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "CAREFUL: this script must be changed to be using flac format"
+
 for ID in {01..10}; do
 
 	echo "--- $ID ---"
