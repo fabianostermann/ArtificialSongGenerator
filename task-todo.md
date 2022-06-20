@@ -1,6 +1,6 @@
 # TODOs
 
-*TODOs AUFRÄUMEN!*
+*Tidy up this list! Not up-to-date..*
 
 ## Make Script erstellen
 - Hinweis auf fluid-synth und vlc-nox (mit option das direkt zu laden)
