@@ -7,6 +7,9 @@ import org.jfugue.pattern.Pattern;
 import org.jfugue.pattern.PatternProducer;
 import org.jfugue.rhythm.Rhythm;
 
+/**
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+ */
 
 public class RhythmSimpleGrooves implements PatternProducer {
 	

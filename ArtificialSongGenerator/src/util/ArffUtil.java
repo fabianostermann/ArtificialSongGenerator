@@ -17,6 +17,12 @@ import parts.SongPartElement;
 
 public class ArffUtil {
 
+	/**
+	 * Utility for writing Arff files (see https://www.cs.waikato.ac.nz/ml/weka/arff.html).
+	 *
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+	 */
+	 
 	public static final String NEXT = ",";
 	public static final String STR_SEP = ",";
 	public static final String STR_DELIM = "'";

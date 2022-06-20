@@ -11,6 +11,9 @@ import parts.Instrument;
  * Melody is played by Flute, chords by Piano.
  * Player playback can easily be stored in a midi file (see MidiFileManagerDemo).
  *
+ * Can be duplicated and/or used as a test space.
+ * 
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
  */
 
 public class Test {

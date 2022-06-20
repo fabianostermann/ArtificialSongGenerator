@@ -14,7 +14,10 @@ import main.Config;
 import util.JFugueExpansion;
 import util.Random;
 
-
+/**
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+ */
+ 
 public class SongPart implements PatternProducer {
 	
 	private final int quarterNotesPerBar = 4; // TODO creating music in 3/4 time measure
@@ -32,6 +35,9 @@ public class SongPart implements PatternProducer {
 	public final List<SongPartElement> elements = new ArrayList<>();
 	public RhythmSimpleGrooves drums = null;
 	
+	/**
+	 * One song part of the full composition.
+	 */
 	public SongPart() {
 
 		// make chord progression

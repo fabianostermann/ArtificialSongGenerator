@@ -5,6 +5,12 @@ import org.jfugue.pattern.PatternProducer;
 import org.jfugue.theory.Chord;
 import org.jfugue.theory.Key;
 
+/**
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+ *
+ * Abstract class for element generators.
+ */
+ 
 public abstract class SongPartElement implements PatternProducer {
 	
 	private final Instrument instrument;

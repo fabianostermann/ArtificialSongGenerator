@@ -8,6 +8,12 @@ import org.jfugue.tools.GetPatternStats;
 
 public class JFugueExpansion {
 
+	/**
+	 * Expands JFugue for specific use cases (and bug fixes).
+	 *
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+	 */
+
 	public class GeneralStats {
 		// From class org.jfugue.tools.GetPatternStats
 		// for function: public int[] getGeneralStats()

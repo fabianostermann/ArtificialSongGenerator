@@ -6,12 +6,15 @@ import util.JFugueExpansion;
 import util.Random;
 
 /**
- * creates a melody fully driven by random decisions,
- * will not follow anything and lead nowhere
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
  */
-
+	 
 public class MelodySimple extends SongPartElement {
 
+	/**
+	 * creates a melody fully driven by random decisions,
+	 * will not follow anything and lead nowhere
+	 */
 	public MelodySimple(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
 		super(instrument, tempo, length, key, chords);
 	}

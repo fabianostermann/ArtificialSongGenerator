@@ -6,7 +6,9 @@ import java.util.Map;
 public class Random {
 	
 	/**
-	 * This class has been extended on 6 March 2019
+	 * This static class provides individual wrapper functions for specific random number distributions.
+	 *
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
 	 */
 
 	private static SecureRandom random = new SecureRandom();

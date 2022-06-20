@@ -13,6 +13,10 @@ import org.jfugue.theory.Note;
 import util.JFugueExpansion;
 import util.Random;
 
+	/**
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+	 */
+
 public class ChordPadsRanged extends SongPartElement {
 	
 	/**

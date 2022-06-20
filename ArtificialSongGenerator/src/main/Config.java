@@ -19,6 +19,11 @@ import org.jfugue.theory.Note;
 import parts.Instrument;
 import util.Random;
 
+/**
+ * Configuration file, initializes with default values and loads differences from config file.
+ * 
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+ */
 
 public class Config {
 

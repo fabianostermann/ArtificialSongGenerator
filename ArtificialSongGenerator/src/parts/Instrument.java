@@ -8,6 +8,10 @@ import org.jfugue.theory.Note;
 import asglib.MidiDictionary;
 import main.Config;
 
+	/**
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+	 */
+	 
 public class Instrument implements Comparable<Instrument> {
 
 	private String name;

@@ -29,9 +29,9 @@ import util.OnsetAnnotator;
 import util.Random;
 
 /**
- * This unit creates pop music style midi files.
- * The artistic quality of the music is improved in respect to the original random only concept.
- * Especially the melody generator MelodyBow.java creates nice little and variation-full ideas.
+ * This is the main unit that actual creates pop music style midi files.
+ * The artistic quality of the music is improved in respect to the original random-only concept.
+ * Especially the melody generator MelodyBow.java now creates nice little and variation-full ideas.
  * Also a rich annotation file (.arff) is produced.
  * 
  * @author Fabian Ostermann (fabian.ostermann@udo.edu)

@@ -10,6 +10,10 @@ import org.jfugue.theory.Key;
 import util.JFugueExpansion;
 import util.Random;
 
+	/**
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+	 */
+	 
 public class ChordProgressionFactory {
 	
 	/** Probabilities for random choices in chord generation (memoized for one complete song) */

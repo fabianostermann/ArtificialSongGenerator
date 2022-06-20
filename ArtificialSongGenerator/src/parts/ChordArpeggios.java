@@ -8,6 +8,10 @@ import org.jfugue.theory.Note;
 
 import util.Random;
 
+	/**
+	 * @author Fabian Ostermann (fabian.ostermann@udo.edu)
+	 */
+	 
 public class ChordArpeggios extends SongPartElement {
 	
 	/**

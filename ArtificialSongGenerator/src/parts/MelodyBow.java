@@ -11,15 +11,20 @@ import main.ArtificialSongGenerator;
 import util.JFugueExpansion;
 import util.Random;
 
+
 /**
- * creates a melody fully driven by random decisions,
- * will not follow anything and lead nowhere
- * TODO BUG: for key F#maj the ending note is F
- * T--- that's not the root but the maj7, but that's accepted for now
+ * @author Fabian Ostermann (fabian.ostermann@udo.edu)
  */
 
 public class MelodyBow extends SongPartElement {
 	
+	/**
+	 * Creates a good sounding melody that respects a given chord progression.
+	 * It's based on the classical composition strategy called 'period' (see https://en.wikipedia.org/wiki/Period_(music))
+	 *
+	 * TODO BUG: for key F#maj the ending note is not the root but F
+	 * F is the maj7, sounds romatic, bug is accepted for now
+	 */
 	public MelodyBow(Instrument instrument, int tempo, int length, Key key, Chord[] chords) {
 		super(instrument, tempo, length, key, chords);
 	}
