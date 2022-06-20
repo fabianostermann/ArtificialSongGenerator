@@ -58,7 +58,7 @@ function mixdown(prefix,number,name,suffix)
 		return
 	end
 	
-	newfilestr = "C:/Users/oyster/Dropbox/WHF/ArtificialSongGenerator_workspace/Sampling/Database-ISMIR2020/AAM2020-flac-only-1000/" .. number .. "_" .. name .. ".flac"
+	newfilestr = "C:/Users/oyster/Dropbox/WHF/ArtificialSongGenerator_workspace/Sampling/Database-AAM2020-2001-3000/flac-multitracks/" .. number .. "_" .. name .. ".flac"
 	--os.remove(newfilestr)
 	if file_exists(newfilestr) then
 		print ("Flac already exists. Skipping..")
@@ -108,7 +108,7 @@ function mixdown(prefix,number,name,suffix)
 
 	-- use xdotool for windows from: https://github.com/ebranlard/xdotool-for-windows/blob/master/_dev/SwitchAndPasteToMatlab.cs
 	print ("start os execute")
-	local handle = io.popen("ping -n 4 localhost > NUL && C:\\bin\\xdotool.exe key \"{Enter}\"")
+	local handle = io.popen("ping -n 3 localhost > NUL && C:\\bin\\xdotool.exe key \"{Enter}\"") -- -n 4
 	print("start export")
 	Editor:export_audio()
 	local result = handle:read("*a")
@@ -116,30 +116,34 @@ function mixdown(prefix,number,name,suffix)
 	handle:close()
 
 	print ("renaming..")
-	os.rename("C:/Users/oyster/Dropbox/WHF/ArtificialSongGenerator_workspace/Sampling/Database-ISMIR2020/AAM2020-flac-only-1000/session.flac", newfilestr)
+	os.rename("C:/Users/Oyster/session.flac", newfilestr)
 	
 	print("Mixdown of " .. number.."_"..name .. " completed.")
 	collectgarbage ()
+	
 end
+
 
 function factory (params) return function ()
 
-	p = "C:/Users/oyster/Dropbox/WHF/ArtificialSongGenerator_workspace/Sampling/Database-ISMIR2020/midi-only-1000/"
+	--Editor:access_action("Main","CleanupUnused")
+
+	p = "C:/Users/oyster/Dropbox/WHF/ArtificialSongGenerator_workspace/Sampling/Database-AAM2020-2001-3000/midi/"
 	s = ".mid"
 	
 	instrumentTable = {
-		--DONE "Violin", "Viola", "Erhu", "Jinghu", "MorinKhuur",
-		--DONE "Trumpet", "Flugelhorn", "Trombone", "Clarinet", "AltoSax", "TenorSax",
-		--DONE "Flute", "PanFlute", "Shakuhachi", "Fujara", "Cello",
-		--DONE "Piano", "BrightPiano", "ElectricPiano",
-		--DONE "Ukulele", "Sitar", "Balalaika",
-		--DONE "ElectricGuitarLead", "AcousticGuitar", "ElectricGuitarClean", "ElectricGuitarCrunch",
-		--DONE "ElectricBass", "OrganBass", "DoubleBassPizz", "DoubleBassArco",
-		--Done "Drums"
+		-- DONE "Violin", "Viola", "Erhu", "Jinghu", "MorinKhuur",
+		-- DONE "Trumpet", "Flugelhorn", "Trombone", "Clarinet", "AltoSax", "TenorSax",
+		-- DONE "Flute", "PanFlute", "Shakuhachi", "Fujara", "Cello",
+		-- DONE "Piano", "BrightPiano", "ElectricPiano",
+		-- DONE "Ukulele", "Sitar", "Balalaika",
+		-- DONE "ElectricGuitarLead", "AcousticGuitar", "ElectricGuitarClean", "ElectricGuitarCrunch",
+		"ElectricBass", "OrganBass", "DoubleBassPizz", "DoubleBassArco",
+		--DONE "Drums"
 	}
 	
 	for k,instr in ipairs(instrumentTable) do
-		for i = 1,1001,1 do
+		for i = 2000,3001,1 do -- 2000 - 3001
 			numStr = string.format("%04.".."0".."f", i)
 			mixdown(p,numStr,instr,s)
 		end
@@ -147,7 +151,7 @@ function factory (params) return function ()
 	
 	print ("finished!")
 	
-	print ("prepare shutdown in 60sec..")
-	os.execute("shutdown /s /f /t 60")
+	print ("prepare shutdown in 300sec..")
+	os.execute("shutdown /s /f /t 300")
 	
 end end
