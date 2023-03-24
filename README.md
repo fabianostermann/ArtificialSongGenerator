@@ -2,7 +2,7 @@
 
 The ArtificialSongGenerator tool was used to compile the open research dataset [Artificial Audio Multitracks (AAM)](https://zenodo.org/record/5794629), that currently consists of 3000 artificial songs with rich annotations.
 
-Please find more details on the project in the accompying [paper](https://doi.org/10.1186/s13636-023-00278-7), that was published open-access in [EURASIP Journal on Audio, Speech, and Music Processing](https://doi.org/10.1186/s13636-023-00278-7).
+Please find more details on the project in the accompanying [paper](https://doi.org/10.1186/s13636-023-00278-7), that was published open-access in [EURASIP Journal on Audio, Speech, and Music Processing](https://doi.org/10.1186/s13636-023-00278-7).
 
 ## Create MIDIs with the JAR-executable
 
