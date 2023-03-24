@@ -6,7 +6,7 @@ Please find more details on the project in the accompanying [paper](https://doi.
 
 ## Create MIDIs with the JAR-executable
 
-For creating MIDI, download the latest [release](TODO) and run:\
+For creating MIDI, download the jar file from the [latest release](https://github.com/fabianostermann/ArtificialSongGenerator/releases/v0.2) and run:\
 `java -jar AtificialSongGenerator.jar`\
 The tool will generate a bunch of midi files based on the [standard configuration](https://github.com/fabianostermann/ArtificialSongGenerator/blob/master/ArtificialSongGenerator/src/main/Config.java).
 
@@ -33,6 +33,6 @@ Currently, the routine lacks full automization. This is planned to be accomplish
 ## General information and help
 
 For more usage information:\
-**All jars and scripts have usage and help files included via '--help' option**\
+All jars and scripts have usage and help files included via `--help`
 
-In case you need any more help, find a bug or want to raise an issue, don't hesitate to contact me!
+In case you need any more help, find a bug or want to raise an issue, don't hesitate to [contact me](mailto:fabian.ostermann@udo.edu)!
