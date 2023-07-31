@@ -47,7 +47,8 @@ public class Config {
 	public static final String ONSETS_SUFFIX = "onsets";
 	
 	/**
-	 * Some char constants for interpreting the config file
+	 * Char constants for interpreting the config file
+	 * DO NOT CHANGE, may break regex logic
 	 */
 	public static final String ASSIGN = "=";
 	public static final String DELIM = ",";
@@ -55,7 +56,7 @@ public class Config {
 	public static final String ATTR_CLOSE = "]";
 	public static final String COMMENT = "#";
 	/**
-	 * Some char constants for output files
+	 * Char constants for output files
 	 */
 	public static final String FILE_DELIM = "_";
 	
@@ -76,7 +77,8 @@ public class Config {
 		if (lineSet.length < 2)
 			throw new RuntimeException("Config line must include the ASSIGN character "+ASSIGN);
 		String key = lineSet[0].trim();
-		String[] values = lineSet[1].trim().split(DELIM, 0);
+		// find deliminters that are not inside square brackets
+		String[] values = lineSet[1].trim().split(DELIM+"(?![^\\"+ATTR_OPEN+"]*\\"+ATTR_CLOSE+")", 0);
 		for (int i=0; i<values.length; i++)
 			values[i] = values[i].trim();
 		configMap.put(key, values);
@@ -248,7 +250,7 @@ public class Config {
 		String[] strParts = instrStr.split("\\"+ATTR_OPEN);
 		try {
 			instrument = Instrument.findOrCreate(strParts[0]);
-			if (strParts.length > 1 && strParts[1].endsWith("]")) {
+			if (strParts.length > 1 && strParts[1].endsWith(ATTR_CLOSE)) {
 				strParts[1] = strParts[1].substring(0, strParts[1].length()-1);
 				String[] attrParts = strParts[1].split(DELIM);
 				int attrCount = 0;
