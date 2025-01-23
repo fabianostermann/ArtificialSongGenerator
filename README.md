@@ -7,11 +7,11 @@ Please find more details on the project in the accompanying [paper](https://doi.
 ## Create MIDIs with the JAR-executable
 
 For creating MIDI, download the jar file from the [latest release](https://github.com/fabianostermann/ArtificialSongGenerator/releases/v0.2) and run:\
-`java -jar AtificialSongGenerator.jar`\
+`java -jar ArtificialSongGenerator.jar`\
 The tool will generate a bunch of midi files based on the [standard configuration](https://github.com/fabianostermann/ArtificialSongGenerator/blob/master/ArtificialSongGenerator/src/main/Config.java).
 
 You can specify your own settings by running:\
-`java -jar ArtificialSongGenerator.jar --create-dummy`\
+`java -jar ArtificialSongGenerator.jar --config-dummy`\
 The config dummy file `dummy.conf` will then be created, which you can modify and feed back in to the generator by running:\
 `java -jar ArtificialSongGenerator.jar --config=dummy.conf`
 
@@ -28,7 +28,7 @@ Then use bash script `Sampling/generate-songs` under Linux to create a whole dat
 ## Generate audio
 
 Using Ardour or Mixbus one can then create audio using the Lua script `Sampling/mixbus_roboter.lua` therein.\
-Currently, the routine lacks full automization. This is planned to be accomplished next.  
+Currently, the routine lacks full automization. This is planned to be accomplished next.
 
 ## General information and help
 
